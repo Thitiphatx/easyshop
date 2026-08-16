@@ -13,6 +13,19 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off", // ตัวอย่าง: ปิดแจ้งเตือนเมื่อใช้ type any
+      "@typescript-eslint/no-unused-vars": "warn", // ตัวอย่าง: ปรับตัวแปรที่ไม่ได้ใช้เป็นแค่ warning
+      "react-hooks/exhaustive-deps": "warn",      // ตัวอย่าง: เตือน dependency ของ useEffect
+      "react/no-children-prop": [
+        true,
+        {
+          "allowFunctions": true
+        }
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

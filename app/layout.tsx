@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Pixelify_Sans, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const notoSans = Noto_Sans_Thai({
+  variable: "--font-noto-sans",
+  subsets: ["latin", "thai"]
+})
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const pixelifySans = Pixelify_Sans({
+  variable: "--font-pixelify-sans",
+  subsets: ["latin"]
+})
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,9 +23,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${notoSans.variable} ${pixelifySans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="w-full min-h-full flex flex-col font-sans!">
+        <header className="sticky top-0 z-50 w-full">
+          <Navbar />
+        </header>
+        <main className="flex-1 w-full flex flex-col">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
