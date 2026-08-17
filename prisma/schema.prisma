@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model AuthMe {
+  id           Int           @id @default(autoincrement()) @db.UnsignedMediumInt
+  username     String        @unique(map: "username") @db.VarChar(255)
+  realname     String        @db.VarChar(255)
+  password     String        @db.VarChar(255)
+  ip           String?       @db.VarChar(40)
+  lastlogin    BigInt?
+  x            Float         @default(0)
+  y            Float         @default(0)
+  z            Float         @default(0)
+  world        String        @default("world") @db.VarChar(255)
+  regdate      BigInt        @default(0)
+  regip        String?       @db.VarChar(40)
+  yaw          Float?        @db.Float
+  pitch        Float?        @db.Float
+  email        String?       @db.VarChar(255)
+  isLogged     Int           @default(0) @db.SmallInt
+  hasSession   Int           @default(0) @db.SmallInt
+  totp         String?       @db.VarChar(32)
+  isAdmin      Int           @default(0) @db.SmallInt
+  topups       Topup[]
+  transactions Transaction[]
+
+  @@map("authme")
+}
+
+model Server {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  image        String?
+  rconHost     String        @db.VarChar(100)
+  rconPort     Int           @default(25575)
+  rconPassword String        @db.VarChar(255)
+  isActive     Boolean       @default(true)
+  items        Item[]
+  transactions Transaction[]
+
+  @@map("server")
+}
+
+model Item {
+  id            Int           @id @default(autoincrement())
+  serverId      Int
+  name          String        @db.VarChar(100)
+  imageUrl      String        @db.VarChar(255)
+  command       String        @db.VarChar(255)
+  price         Int           @default(0)
+  amount        Int?          @default(1)
+  createdAt     DateTime      @default(now())
+  lastUpdatedAt DateTime      @default(now()) @updatedAt
+  server        Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+
+  @@index([serverId])
+  @@map("item")
+}
+
+model Transaction {
+  id              Int               @id @default(autoincrement())
+  userId          Int               @db.UnsignedMediumInt
+  itemId          Int
+  serverId        Int
+  pricePaid       Int
+  executedCommand String            @db.VarChar(255)
+  status          TransactionStatus @default(SUCCESS)
+  errorMessage    String?           @db.Text
+  createdAt       DateTime          @default(now())
+  item            Item              @relation(fields: [itemId], references: [id])
+  server          Server            @relation(fields: [serverId], references: [id])
+  user            AuthMe            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([itemId])
+  @@index([serverId])
+  @@map("transaction")
+}
+
+model Topup {
+  id          Int         @id @default(autoincrement())
+  userId      Int         @db.UnsignedMediumInt
+  amount      Float
+  pointsAdded Int
+  channel     String      @db.VarChar(50)
+  status      TopupStatus @default(SUCCESS)
+  reference   String?     @db.VarChar(255)
+  createdAt   DateTime    @default(now())
+  user        AuthMe      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("topup")
+}
+
+model SkinsRestorer_Cache {
+  name      String  @id @db.VarChar(16)
+  uuid      String? @db.VarChar(36)
+  timestamp BigInt
+
+  @@map("sr_cache")
+}
+
+model SkinsRestorer_Cooldown {
+  uuid          String @db.VarChar(36)
+  group_name    String @db.VarChar(36)
+  creation_time BigInt
+  duration      BigInt
+
+  @@id([uuid, group_name])
+  @@map("sr_cooldowns")
+}
+
+model SkinsRestorer_CustomSkin {
+  name         String  @id @db.VarChar(36)
+  display_name String? @db.Text
+  value        String  @db.Text
+  signature    String  @db.Text
+
+  @@map("sr_custom_skins")
+}
+
+model SkinsRestorer_PlayerFavourite {
+  uuid            String  @db.VarChar(36)
+  timestamp       BigInt
+  skin_identifier String  @db.VarChar(2083)
+  skin_variant    String? @db.VarChar(20)
+  skin_type       String  @db.VarChar(20)
+
+  @@id([uuid, timestamp])
+  @@map("sr_player_favourites")
+}
+
+model SkinsRestorer_PlayerHistory {
+  uuid            String  @db.VarChar(36)
+  timestamp       BigInt
+  skin_identifier String  @db.VarChar(2083)
+  skin_variant    String? @db.VarChar(20)
+  skin_type       String  @db.VarChar(20)
+
+  @@id([uuid, timestamp])
+  @@map("sr_player_history")
+}
+
+model SkinsRestorer_PlayerSkin {
+  uuid            String  @id @db.VarChar(36)
+  last_known_name String? @db.VarChar(16)
+  value           String  @db.Text
+  signature       String  @db.Text
+  timestamp       BigInt
+
+  @@map("sr_player_skins")
+}
+
+model SkinsRestorer_Player {
+  uuid                           String  @id @db.VarChar(36)
+  skin_identifier                String? @db.VarChar(2083)
+  skin_variant                   String? @db.VarChar(20)
+  skin_type                      String? @db.VarChar(20)
+  offline_mode_warning_dismissed Boolean @default(false)
+
+  @@map("sr_players")
+}
+
+model SkinsRestorer_UrlIndex {
+  url          String  @id @db.VarChar(266)
+  skin_variant String? @db.VarChar(20)
+
+  @@map("sr_url_index")
+}
+
+model SkinsRestorer_UrlSkin {
+  url          String  @db.VarChar(266)
+  mine_skin_id String? @db.VarChar(36)
+  value        String  @db.Text
+  signature    String  @db.Text
+  skin_variant String  @db.VarChar(20)
+
+  @@id([url, skin_variant])
+  @@map("sr_url_skins")
+}
+
+enum TopupStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+}

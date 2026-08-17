@@ -9,7 +9,9 @@ const Select: React.FC<ISelectProps> = ({
     variant = "Solid",
     icon,
     items,
-    children
+    children,
+    className,
+    ...props
 }) => {
     const [isEnableDropdown, setIsEnableDropdown] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -45,6 +47,8 @@ const Select: React.FC<ISelectProps> = ({
                 icon={icon}
                 onClick={() => setIsEnableDropdown((prev) => !prev)}
                 isActive={isEnableDropdown}
+                className={`${className}`}
+                {...props}
             >
                 <div className='flex items-center gap-2'>
                     <span>{children}</span>
@@ -58,12 +62,12 @@ const Select: React.FC<ISelectProps> = ({
 
             {/* Dropdown */}
             {isEnableDropdown && (
-                <Card className='absolute left-0 top-full mt-2 w-max z-50'>
+                <Card className='absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max z-50'>
                     <ul>
                         {items?.map((item, index) => (
-                            <li key={index}>
+                            <li key={index} className='not-last:border-b border-(--core-grey-5)'>
                                 <Button
-                                    className='p-2 w-full text-left'
+                                    className='p-2 w-full text-left!'
                                     onClick={() => handleItemClick(item.onClick)}
                                     variant='Ghost'
                                 >

@@ -1,20 +1,23 @@
 'use client'
 
+import Input from '@/components/Input/Input'
 import { useFieldContext } from '../context'
 import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import type { ITextFieldProps } from './interface'
 
 export function TextField({ label, required, ...inputProps }: ITextFieldProps) {
     const field = useFieldContext<string>()
+    const isError = field.state.meta.isTouched && field.state.meta.errors.length > 0
 
     return (
         <FieldWrapper label={label} required={required}>
-            <input
+            <Input
                 {...inputProps}
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                className="field-input"
+                isError={isError}
+                className='w-full'
             />
         </FieldWrapper>
     )

@@ -4,7 +4,7 @@ import { useFieldContext } from '../context'
 import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import type { ISelectFieldProps } from './interface'
 
-export function SelectField({ label, options, required, placeholder }: ISelectFieldProps) {
+export function SelectField({ label, options, required, placeholder, className, ...selectProps }: ISelectFieldProps) {
     const field = useFieldContext<string>()
 
     return (
@@ -13,7 +13,8 @@ export function SelectField({ label, options, required, placeholder }: ISelectFi
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                className="field-select"
+                className={`field-select ${className ?? ''}`}
+                {...selectProps}
             >
                 {placeholder && <option value="">{placeholder}</option>}
                 {options.map((opt) => (

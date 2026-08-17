@@ -4,6 +4,7 @@ import { TextField } from './TextField/TextField'
 import { SelectField } from './SelectField/SelectField'
 import { CheckboxField } from './CheckboxField/CheckboxField'
 import { SubmitButton } from './SubmitButton/SubmitButton'
+import { ResetButton } from './ResetButton/ResetButton'
 
 export const { useAppForm, withForm } = createFormHook({
   fieldContext,
@@ -15,5 +16,6 @@ export const { useAppForm, withForm } = createFormHook({
   },
   formComponents: {
     SubmitButton,
+    ResetButton
   },
 })

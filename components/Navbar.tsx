@@ -1,47 +1,72 @@
+"use client"
 import { AvatarCircle } from 'pixelarticons/react'
 import React, { useMemo } from 'react'
 import Button from './Button/Button'
 import Select from './Select/Select'
 import { ISelectItem } from './Select/interface'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/app/contexts/authContext'
+import { deleteSession } from '@/app/actions/session'
 
 const Navbar: React.FC = () => {
+    const router = useRouter();
+    const { setIsOpen, session, setSession } = useAuth()
 
     const paths = useMemo(() => [
         {
             label: "Home",
-            path: ""
+            path: "/"
         },
         {
             label: "TopUp",
-            path: ""
+            path: "/topup",
+            children: [
+                {
+                    label: "True Wallet",
+                    onClick: () => router.replace("/topup/truewallet")
+                },
+                {
+                    label: "ธนาคาร",
+                    onClick: () => router.replace("/topup/bank")
+                }
+            ]
         },
         {
             label: "Shop",
-            path: ""
+            path: "/shop"
         },
         {
             label: "Guide",
-            path: ""
+            path: "/guide"
         },
         {
             label: "Ranking",
-            path: ""
+            path: "/ranking"
         }
     ], [])
 
-    const accountDropdownItems: ISelectItem[] = useMemo(() => [
-        {
-            label: "เข้าสู่ระบบ",
-            href: ""
-        },
-        {
-            label: "ออกจากระบบ",
-            href: ""
+    const accountDropdownItems: ISelectItem[] = useMemo(() => {
+        if (session) {
+            return [
+                { label: "โปรไฟล์", onClick: () => router.push("/profile") },
+                { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
+                { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
+                {
+                    label: "ออกจากระบบ", onClick: async () => {
+                        await deleteSession()
+                        setSession(null)
+                        router.refresh()
+                    }
+                },
+            ]
         }
-    ], [])
+        return [
+            { label: "เข้าสู่ระบบ", onClick: () => setIsOpen(true) },
+        ]
+    }, [session, setIsOpen, setSession, router])
 
     return (
-        <div className='w-full h-20 bg-(--mc-vanilla-grey-6) px-24 flex flex-nowrap justify-between drop-shadow-[0_4px_0px_rgba(0,0,0,0.25)]'>
+        <div className='w-full h-20 bg-(--vanilla-grey-6) px-24 flex flex-nowrap justify-between drop-shadow-[0_4px_0px_rgba(0,0,0,0.25)]'>
             {/* Left Section */}
             <div className='w-24 flex-1 flex items-center'>
                 <img className='h-10' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" />
@@ -49,12 +74,23 @@ const Navbar: React.FC = () => {
 
             {/* Center Section */}
             <div className='w-24 flex-2'>
-                <ul className='flex items-center h-full gap-2 w-fit mx-auto'>
+                <ul className='flex items-center justify-center h-full mx-auto'>
                     {paths.map((path, index) => (
                         <li key={index}>
-                            <Button variant='Ghost'>
-                                {path.label.toUpperCase()}
-                            </Button>
+
+                            {path.children ? (
+                                <Select
+                                    variant='Ghost'
+                                    items={path.children}
+                                    className='text-sm! p-4!'
+                                >
+                                    {path.label.toUpperCase()}
+                                </Select>
+                            ) : (
+                                <Button variant='Ghost' className='text-sm! p-4!' onClick={() => router.replace(path.path)}>
+                                    {path.label.toUpperCase()}
+                                </Button>
+                            )}
                         </li>
                     ))}
                 </ul>
@@ -62,9 +98,9 @@ const Navbar: React.FC = () => {
 
             {/* Right Section */}
             <div className='flex justify-end items-center gap-6 h-full w-24 flex-1'>
-                <div className='flex gap-2 ring-(--mc-core-green-5) ring-2 p-2'>
-                    <span className='text-(--mc-core-green-3) font-bold text-sm'>99</span>
-                    <span className='text-(--mc-core-white) font-bold text-sm'>Online</span>
+                <div className='flex gap-2 ring-(--core-green-5) ring-2 p-2'>
+                    <span className='text-(--core-green-3) font-bold text-sm'>99</span>
+                    <span className='text-(--core-white) font-bold text-sm'>Online</span>
                 </div>
                 <Select
                     variant='Ghost'

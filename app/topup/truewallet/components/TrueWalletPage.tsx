@@ -1,99 +1,51 @@
 "use client"
-import Button from '@/components/Button/Button'
-import Input from '@/components/Form/Input'
-import { formOptions, useForm } from '@tanstack/react-form'
+import { useAppForm } from '@/components/Form'
 import React from 'react'
-import { z } from 'zod'
-
-const userSchema = z.object({
-    username: z.string().min(3, 'Username ต้องมีอย่างน้อย 3 ตัวอักษร'),
-    email: z.string().email('รูปแบบ Email ไม่ถูกต้อง'),
-    age: z.number({ error: 'กรุณากรอกตัวเลข' }).min(18, 'ต้องมีอายุ 18 ปีขึ้นไป'),
-})
-
-type UserFormData = z.infer<typeof userSchema>
+import { TrueWalletSchema } from '../schema'
 
 const TrueWalletPage: React.FC = () => {
-    const form = useForm({
-        defaultValues: {
-            username: '',
-            email: '',
-            age: 0,
-        } as UserFormData,
+    const form = useAppForm({
+        defaultValues: { giftUrl: '', agree: false },
         validators: {
-            // Validate ข้อมูลทั้ง form ก่อน Submit
-            onSubmit: userSchema,
+            onChange: TrueWalletSchema,
+            onSubmit: TrueWalletSchema
         },
-        onSubmit: async ({ value }) => {
-            console.log('Form Values:', value)
-            alert(JSON.stringify(value, null, 2))
-        },
+        onSubmit: async ({ value }) => console.log(value),
     })
 
     return (
-        <div className='flex-1 w-full bg-[url(https://images2.alphacoders.com/137/thumb-1920-1370592.jpeg)] bg-cover bg-center flex justify-center items-center'>
-            <div className='max-w-2xl w-full mx-auto z-10'>
-                <span className='text-center text-(--mc-core-white) drop-shadow-lg'>
-                    <h1 className='font-pixel text-8xl'>TrueWallet</h1>
-                    <h2 className='text-5xl '>กรอกลิงก์ซองของขวัญ</h2>
+        <div className='flex-1 w-full'>
+            {/* Form Section */}
+            <div className='relative max-w-4xl w-full p-32 mx-auto z-10'>
+                <span className='text-center text-(--core-white) drop-shadow-lg'>
+                    <h1 className='font-pixel text-8xl font-bold'>TrueWallet</h1>
+                    <h2 className='text-5xl font-bold'>กรอกลิงก์ซองของขวัญ</h2>
                 </span>
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        form.handleSubmit()
-                    }}
-                    className="space-y-4"
-                >
-                    {/* Username Field */}
-                    <form.Field
-                        name="username"
-                        validators={{
-                            onChange: userSchema.shape.username,
-                        }}
-                    >
-                        {(field) => (
-                            <div className="flex flex-col gap-1">
-                                <label htmlFor={field.name} className="text-sm font-bold text-(--mc-core-white)">
-                                    Username
-                                </label>
-                                <Input
-                                    id={field.name}
-                                    name={field.name}
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) => field.handleChange(e.target.value)}
-                                    placeholder="john_doe"
-                                />
-                                {field.state.meta.errors.length > 0 ? (
-                                    <p className="bg-(--mc-default-warning) p-2 text-(--mc-core-white) text-sm">
-                                        {field.state.meta.errors.map((err) => err?.message).join(', ')}
-                                    </p>
-                                ) : null}
-                            </div>
-                        )}
-                    </form.Field>
-
-                    {/* Submit Button */}
+                <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+                    <form.AppField
+                        name="giftUrl"
+                        children={(field) => <field.TextField label="ลิงค์ซองของขวัญ" required />}
+                    />
+                    <form.AppField
+                        name="agree"
+                        children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
+                    />
                     <div className='flex justify-center'>
-                        <form.Subscribe
-                            selector={(state) => [state.canSubmit, state.isSubmitting]}
-                        >
-                            {([canSubmit, isSubmitting]) => (
-                                <Button
-                                    type="submit"
-                                    variant='Solid'
-                                    color='Green'
-                                    disabled={!canSubmit || isSubmitting}
-                                >
-                                    {isSubmitting ? 'Submitting...' : 'ยืนยัน'}
-                                </Button>
-                            )}
-                        </form.Subscribe>
+                        <form.AppForm>
+                            <form.SubmitButton>ยืนยัน</form.SubmitButton>
+                        </form.AppForm>
                     </div>
                 </form>
             </div>
-            <div className='fixed top-0 left-0 w-full h-full bg-(--mc-core-off-black)/30 z-0'>
+
+            {/* Tutorial Section */}
+            <div className='relative bg-(--core-off-black) w-full h-96 z-10 p-12'>
+                <h1 className='text-5xl font-bold text-(--core-white) text-center'>วิธีสร้างซองของขวัญ</h1>
+            </div>
+
+            <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/40 z-0'>
+            </div>
+            <div className='fixed top-0 left-0 w-full h-full bg-[url(https://images2.alphacoders.com/137/thumb-1920-1370592.jpeg)] bg-cover bg-center -z-10'>
             </div>
         </div>
     )

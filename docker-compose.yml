@@ -2,12 +2,11 @@ services:
   mysql-db:
     image: mysql:8.4
     container_name: mysql_server
-    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 2n9R7RsnMwvwRWhZ
-      MYSQL_DATABASE: easyshop
-      MYSQL_USER: easyshop
-      MYSQL_PASSWORD: user_secure_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
