@@ -3,7 +3,7 @@ import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
 import { useRouter } from 'next/navigation'
-import { Box, Close, Money, Pencil, Plus } from 'pixelarticons/react'
+import { Box, Close, Money, Pencil, Plus, PlusBox } from 'pixelarticons/react'
 import React, { useCallback, useState } from 'react'
 import { IProductItem, IServerItem } from '../interface'
 import ModalManageServer from './modals/ModalManageServer'
@@ -133,10 +133,11 @@ const ItemSection: React.FC = () => {
                     <Card
                         hidden={!isEdit}
                         onClick={handleClickCreateServer}
-                        className='w-full h-full min-h-75 flex justify-center items-center'
+                        className='hover:bg-(--core-green-4)! w-full h-full min-h-75 flex justify-center! items-center! bg-(--core-green-5)! border-t-(--core-green-3)! border-b-(--core-green-6)! border-x-(--core-green-4)! ring-4! ring-(--core-rich-black)!'
                         isPressable
                     >
-                        <Plus width={128} height={128} />
+                        <PlusBox width={72} height={72} className='text-(--core-white) drop-shadow mx-auto' />
+                        <p className='text-center text-(--core-white) text-3xl font-bold'>เพิ่มสินค้าใหม่</p>
                     </Card>
                     {mockItems.map((item) => (
                         <Card key={item.id} className='w-full h-full flex flex-col group p-4' isPressable>

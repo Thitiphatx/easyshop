@@ -36,9 +36,9 @@ model AuthMe {
 model Server {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(50)
-  image        String?
+  imageUrl     String?
   rconHost     String        @db.VarChar(100)
-  rconPort     Int           @default(25575)
+  rconPort     String        @db.VarChar(5)
   rconPassword String        @db.VarChar(255)
   isActive     Boolean       @default(true)
   items        Item[]
@@ -55,6 +55,7 @@ model Item {
   command       String        @db.VarChar(255)
   price         Int           @default(0)
   amount        Int?          @default(1)
+  category      String        @db.VarChar(25)
   createdAt     DateTime      @default(now())
   lastUpdatedAt DateTime      @default(now()) @updatedAt
   server        Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)

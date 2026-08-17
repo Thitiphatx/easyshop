@@ -1,26 +1,12 @@
 import { IModalCommonProps } from "@/app/interface"
-
-export interface IServer {
-
-}
-
-export interface IServerItem {
-    id: string
-    name: string
-    sub?: string
-    imageUrl: string
-}
+import { Item, Server } from "../generated/prisma/client"
 
 export interface IModalServerProps extends IModalCommonProps {
     isEdit?: boolean
-    serverInfo?: IServerItem
+    serverInfo?: Server
 }
 
-export interface IProductItem {
-    id: number
-    imageUrl?: string
-    name: string
-    price: number
-    category: string
-    totalPurchase: number
+export interface IModalItemProps extends IModalCommonProps {
+    isEdit?: boolean
+    itemInfo?: Item
 }

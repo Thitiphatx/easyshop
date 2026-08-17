@@ -5,12 +5,14 @@ import { SelectField } from './SelectField/SelectField'
 import { CheckboxField } from './CheckboxField/CheckboxField'
 import { SubmitButton } from './SubmitButton/SubmitButton'
 import { ResetButton } from './ResetButton/ResetButton'
+import { FileField } from './FileField/FileField'
 
 export const { useAppForm, withForm } = createFormHook({
   fieldContext,
   formContext,
   fieldComponents: {
     TextField,
+    FileField,
     SelectField,
     CheckboxField,
   },
