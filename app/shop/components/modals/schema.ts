@@ -5,15 +5,17 @@ export const ServerSchema = z.object({
     rconPort: z.string().min(1, 'กรอก Port'),
     rconPassword: z.string().min(1, 'กรอกรหัสผ่าน RCON'),
     name: z.string().min(1, 'กรอกชื่อเซิร์ฟเวอร์'),
+    subtitle: z.string().nullable(),
     imageFile: z.instanceof(File, { message: 'กรุณาเลือกรูปภาพ' }).nullable(),
 })
 
 export const ItemSchema = z.object({
     name: z.string(),
-    imageUrl: z.url(),
+    imageFile: z.instanceof(File, { message: 'กรุณาเลือกรูปภาพ' }).nullable(),
     command: z.string(),
     price: z.number(),
     amount: z.number(),
+    category: z.string(),
 })
 
 export type ServerFormValues = z.infer<typeof ServerSchema>

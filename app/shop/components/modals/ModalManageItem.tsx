@@ -1,28 +1,31 @@
 "use client"
 import Modal from '@/components/Modal/Modal'
-import React, { useEffect } from 'react'
-import { IModalServerProps } from '../../interface'
+import React, { useEffect, useMemo } from 'react'
+import { IModalItemProps, IModalServerProps } from '../../interface'
 import { useAppForm } from '@/components/Form'
-import { ServerSchema } from './schema'
+import { ItemFormValues, ItemSchema } from './schema'
 
-const ModalManageItem: React.FC<IModalServerProps> = ({
+const ModalManageItem: React.FC<IModalItemProps> = ({
     isOpen,
     setIsOpen,
     isEdit,
     serverInfo
 }) => {
 
+    const defaultValues = useMemo<ItemFormValues>(() => ({
+        name: '',
+        imageFile: null,
+        command: '',
+        price: 0,
+        amount: 0,
+        category: ''
+    }), [])
+
     const form = useAppForm({
-        defaultValues: {
-            rconHost: '',
-            rconPort: 0,
-            rconPassword: '',
-            name: '',
-            imageUrl: ''
-        },
+        defaultValues,
         validators: {
-            onChange: ServerSchema,
-            onSubmit: ServerSchema
+            onChange: ItemSchema,
+            onSubmit: ItemSchema
         },
         onSubmit: async ({ value }) => console.log(value),
     })

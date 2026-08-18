@@ -30,7 +30,7 @@ export function FieldWrapper({
         <div className={`mb-3 ${className ?? ''}`}>
             <label
                 htmlFor={htmlFor}
-                className={`text-(--core-white) drop-shadow-xl text-xl flex ${layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'
+                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'
                     }`}
             >
                 <span className="flex items-center gap-1 mb-2">

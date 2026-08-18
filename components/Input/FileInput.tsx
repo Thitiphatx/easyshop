@@ -2,6 +2,8 @@
 
 import React, { useRef, useState } from 'react'
 import { IInputProps } from './interface'
+import { Upload, Image, Close } from 'pixelarticons/react'
+import Button from '../Button/Button'
 
 export interface IFileInputProps extends Omit<IInputProps, 'value' | 'onChange' | 'type'> {
     onChange?: (file: File | null) => void
@@ -59,7 +61,7 @@ const FileInput: React.FC<IFileInputProps> = ({
 
             <div
                 className={`
-                    w-full p-5 bg-(--core-off-black) outline-none transition-all duration-200
+                    w-full h-20 p-5 bg-(--core-off-black) outline-none transition-all duration-200
                     flex items-center gap-3 border-2 border-dashed
                     ${isDragging
                         ? 'border-(--default-primary) bg-(--core-off-black)/80 scale-[1.01]'
@@ -71,25 +73,14 @@ const FileInput: React.FC<IFileInputProps> = ({
             >
                 {/* Icon */}
                 <div className={`
-                    flex-shrink-0 w-10 h-10 flex items-center justify-center transition-colors duration-200
+                    shrink-0 w-10 h-10 flex items-center justify-center transition-colors duration-200
                     ${fileName ? 'text-(--default-primary)' : 'text-(--core-grey-2)'}
                 `}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        {fileName ? (
-                            <>
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <polyline points="12 18 15 15 12 12" />
-                                <line x1="9" y1="15" x2="15" y2="15" />
-                            </>
-                        ) : (
-                            <>
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="17 8 12 3 7 8" />
-                                <line x1="12" y1="3" x2="12" y2="15" />
-                            </>
-                        )}
-                    </svg>
+                    {fileName ? (
+                        <Image />
+                    ) : (
+                        <Upload />
+                    )}
                 </div>
 
                 {/* Text */}
@@ -110,20 +101,16 @@ const FileInput: React.FC<IFileInputProps> = ({
 
                 {/* Clear button */}
                 {fileName && (
-                    <button
-                        type="button"
+                    <Button
+                        isIconOnly
+                        icon={<Close />}
+                        variant='Ghost'
                         onClick={(e) => {
                             e.stopPropagation()
                             if (inputRef.current) inputRef.current.value = ''
                             handleFileChange(null)
                         }}
-                        className="flex-shrink-0 w-7 h-7 flex items-center justify-center text-(--core-grey-2) hover:text-(--default-warning) transition-colors duration-150"
-                    >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                    </button>
+                    />
                 )}
             </div>
         </div>

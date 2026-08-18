@@ -3,18 +3,19 @@ import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
 import { useRouter } from 'next/navigation'
-import { Box, Close, Money, Pencil, Plus, PlusBox } from 'pixelarticons/react'
+import { Box, ChevronLeft, Close, Money, Pencil, Plus, PlusBox } from 'pixelarticons/react'
 import React, { useCallback, useState } from 'react'
-import { IProductItem, IServerItem } from '../interface'
+import { IServerItem } from '../interface'
 import ModalManageServer from './modals/ModalManageServer'
+import { Item } from '@/app/generated/prisma/client'
+import Link from 'next/link'
 
-const mockItems: IProductItem[] = [
+const mockItems: Item[] = [
     {
         id: 1,
         name: "Wireless Noise-Canceling Headphones",
         price: 3490,
         category: "Electronics",
-        totalPurchase: 142,
         imageUrl: "https://xforgeassets001.xboxlive.com/pf-namespace-b63a0803d3653643/6e5cad2a-17a0-477e-8298-13d433129f88/BlueJean_thumbnail_0.jpg"
     },
     {
@@ -116,13 +117,18 @@ const ItemSection: React.FC = () => {
 
             <div className='relative bg-(--core-off-black) w-full h-fit z-10 p-12'>
                 <div className='grid grid-cols-3 items-center mb-6'>
-                    <div />
+                    <div>
+                        <Link href="/shop">
+                            <Button hidden={isEdit} variant='Retro' icon={<ChevronLeft />}>เลือกเซิร์ฟเวอร์</Button>
+                        </Link>
+                    </div>
                     <h1 className='text-5xl font-bold text-(--core-white) text-center'>
                         {`สินค้าทั้งหมด ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>
                     <div className='flex justify-end'>
                         <Button
-                            variant='Ghost'
+                            variant='Retro'
+                            color={isEdit ? "Red" : "Green"}
                             onClick={() => setIsEdit((prev) => !prev)}
                             icon={isEdit ? <Close /> : <Pencil />}
                             isIconOnly />

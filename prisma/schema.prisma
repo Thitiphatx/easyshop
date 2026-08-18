@@ -35,12 +35,12 @@ model AuthMe {
 
 model Server {
   id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(50)
+  name         String        @db.VarChar(25)
+  subtitle     String?       @db.VarChar(25)
   imageUrl     String?
   rconHost     String        @db.VarChar(100)
   rconPort     String        @db.VarChar(5)
   rconPassword String        @db.VarChar(255)
-  isActive     Boolean       @default(true)
   items        Item[]
   transactions Transaction[]
 

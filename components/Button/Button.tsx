@@ -167,7 +167,7 @@ const Button: React.FC<IButtonProps> = ({
     <button
       className={clsx(
         'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer',
-        !isRetro && (isIconOnly ? 'px-2 aspect-square' : 'px-12 gap-2'),
+        !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-12 gap-2'),
         currentVariant,
         block && 'w-full px-0!',
         className

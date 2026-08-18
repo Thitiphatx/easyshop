@@ -3,7 +3,7 @@
 import bcrypt from 'bcryptjs';
 import { IRequestAuthenticate, IResponseAuthenticate } from "./interface";
 import { SignInSchema } from '@/components/Auth/schema';
-import { prisma } from '@/prisma/seed';
+import { prisma } from '@/lib/prisma'
 import { createSession } from '../session';
 
 export async function authenticate(request: IRequestAuthenticate): Promise<IResponseAuthenticate> {
