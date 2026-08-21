@@ -4,8 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  relationMode = "prisma"
+  provider = "mysql"
 }
 
 model AuthMe {
@@ -28,8 +27,7 @@ model AuthMe {
   hasSession   Int           @default(0) @db.SmallInt
   totp         String?       @db.VarChar(32)
   isAdmin      Int           @default(0) @db.SmallInt
-  uuid         String?               @unique @db.VarChar(36)
-  points       playerpoints_points? @relation(fields: [uuid], references: [uuid])
+  uuid         String?       @db.VarChar(36)
   topups       Topup[]
   transactions Transaction[]
 
@@ -112,10 +110,9 @@ model playerpoints_migrations {
 }
 
 model playerpoints_points {
-  id     Int     @id @default(autoincrement())
-  uuid   String  @unique(map: "uuid") @db.VarChar(36)
+  id     Int    @id @default(autoincrement())
+  uuid   String @unique(map: "uuid") @db.VarChar(36)
   points Int
-  authme AuthMe?
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
