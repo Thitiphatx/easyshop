@@ -8,10 +8,13 @@ import Loading from '@/components/Loading'
 import { usePathname, useRouter } from 'next/navigation'
 import { Close, Pencil, PlusBox, Trash } from 'pixelarticons/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import Swal from 'sweetalert2'
+import Swal from '@/lib/Swal'
 import ModalManageServer from './modals/ModalManageServer'
+import { IServerSectionProps } from '../interface'
 
-const ServerSection: React.FC = () => {
+const ServerSection: React.FC<IServerSectionProps> = ({
+    session
+}) => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
@@ -41,17 +44,8 @@ const ServerSection: React.FC = () => {
             setServerList(res.data)
         } else {
             Swal.fire({
-                toast: true,
-                position: 'top-end',
                 icon: 'error',
                 title: res.error,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
             });
         }
         setIsLoading(false);
@@ -63,6 +57,8 @@ const ServerSection: React.FC = () => {
             text: "You won't be able to revert this!",
             icon: "warning",
             theme: 'dark',
+            toast: false,
+            showConfirmButton: true,
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
@@ -72,38 +68,21 @@ const ServerSection: React.FC = () => {
                 const res = await deleteServer(serverId);
                 if (res.success) {
                     Swal.fire({
-                        toast: true,
-                        position: 'top-end',
                         icon: 'success',
                         theme: 'dark',
                         title: "ลบเซิร์ฟเวอร์เรียบร้อย",
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal.stopTimer;
-                            toast.onmouseleave = Swal.resumeTimer;
-                        }
                     });
                     getServerList()
                 } else {
                     Swal.fire({
-                        toast: true,
-                        position: 'top-end',
                         icon: 'error',
                         title: res.error,
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.onmouseenter = Swal.stopTimer;
-                            toast.onmouseleave = Swal.resumeTimer;
-                        }
                     });
                 }
             }
         });
     }, [])
+
 
     useEffect(() => {
         getServerList()

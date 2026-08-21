@@ -4,7 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider     = "mysql"
+  relationMode = "prisma"
 }
 
 model AuthMe {
@@ -27,6 +28,8 @@ model AuthMe {
   hasSession   Int           @default(0) @db.SmallInt
   totp         String?       @db.VarChar(32)
   isAdmin      Int           @default(0) @db.SmallInt
+  uuid         String?               @unique @db.VarChar(36)
+  points       playerpoints_points? @relation(fields: [uuid], references: [uuid])
   topups       Topup[]
   transactions Transaction[]
 
@@ -58,6 +61,7 @@ model Item {
   category      String        @db.VarChar(25)
   createdAt     DateTime      @default(now())
   lastUpdatedAt DateTime      @default(now()) @updatedAt
+  description   String        @db.VarChar(255)
   server        Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
   transactions  Transaction[]
 
@@ -100,91 +104,38 @@ model Topup {
   @@map("topup")
 }
 
-model SkinsRestorer_Cache {
-  name      String  @id @db.VarChar(16)
-  uuid      String? @db.VarChar(36)
-  timestamp BigInt
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model playerpoints_migrations {
+  migration_version Int
 
-  @@map("sr_cache")
+  @@ignore
 }
 
-model SkinsRestorer_Cooldown {
-  uuid          String @db.VarChar(36)
-  group_name    String @db.VarChar(36)
-  creation_time BigInt
-  duration      BigInt
-
-  @@id([uuid, group_name])
-  @@map("sr_cooldowns")
+model playerpoints_points {
+  id     Int     @id @default(autoincrement())
+  uuid   String  @unique(map: "uuid") @db.VarChar(36)
+  points Int
+  authme AuthMe?
 }
 
-model SkinsRestorer_CustomSkin {
-  name         String  @id @db.VarChar(36)
-  display_name String? @db.Text
-  value        String  @db.Text
-  signature    String  @db.Text
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model playerpoints_transaction_log {
+  transaction_type String    @db.VarChar(20)
+  description      String    @db.VarChar(100)
+  source           String?   @db.VarChar(36)
+  receiver         String    @db.VarChar(36)
+  amount           Int
+  timestamp        DateTime? @default(now()) @db.Timestamp(0)
 
-  @@map("sr_custom_skins")
+  @@ignore
 }
 
-model SkinsRestorer_PlayerFavourite {
-  uuid            String  @db.VarChar(36)
-  timestamp       BigInt
-  skin_identifier String  @db.VarChar(2083)
-  skin_variant    String? @db.VarChar(20)
-  skin_type       String  @db.VarChar(20)
+model playerpoints_username_cache {
+  uuid     String @unique(map: "uuid") @db.VarChar(36)
+  username String @db.VarChar(30)
 
-  @@id([uuid, timestamp])
-  @@map("sr_player_favourites")
-}
-
-model SkinsRestorer_PlayerHistory {
-  uuid            String  @db.VarChar(36)
-  timestamp       BigInt
-  skin_identifier String  @db.VarChar(2083)
-  skin_variant    String? @db.VarChar(20)
-  skin_type       String  @db.VarChar(20)
-
-  @@id([uuid, timestamp])
-  @@map("sr_player_history")
-}
-
-model SkinsRestorer_PlayerSkin {
-  uuid            String  @id @db.VarChar(36)
-  last_known_name String? @db.VarChar(16)
-  value           String  @db.Text
-  signature       String  @db.Text
-  timestamp       BigInt
-
-  @@map("sr_player_skins")
-}
-
-model SkinsRestorer_Player {
-  uuid                           String  @id @db.VarChar(36)
-  skin_identifier                String? @db.VarChar(2083)
-  skin_variant                   String? @db.VarChar(20)
-  skin_type                      String? @db.VarChar(20)
-  offline_mode_warning_dismissed Boolean @default(false)
-
-  @@map("sr_players")
-}
-
-model SkinsRestorer_UrlIndex {
-  url          String  @id @db.VarChar(266)
-  skin_variant String? @db.VarChar(20)
-
-  @@map("sr_url_index")
-}
-
-model SkinsRestorer_UrlSkin {
-  url          String  @db.VarChar(266)
-  mine_skin_id String? @db.VarChar(36)
-  value        String  @db.Text
-  signature    String  @db.Text
-  skin_variant String  @db.VarChar(20)
-
-  @@id([url, skin_variant])
-  @@map("sr_url_skins")
+  @@index([username], map: "playerpoints_username_cache_username_index")
+  @@index([uuid], map: "playerpoints_username_cache_uuid_index")
 }
 
 enum TopupStatus {

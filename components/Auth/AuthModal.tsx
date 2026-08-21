@@ -1,45 +1,46 @@
 "use client"
-import React from 'react'
-import { useAppForm } from '@/components/Form'
-import { SignInSchema } from './schema'
-import Modal from '../Modal/Modal'
 import { authenticate } from '@/app/actions/authme'
+import { useAuth } from '@/app/contexts/authContext'
+import { useAppForm } from '@/components/Form'
+import Swal from '@/lib/Swal'
 import { useRouter } from 'next/navigation'
-import Swal from 'sweetalert2'
-import { ISessionPayload } from '@/app/actions/session/interface'
+import React, { useEffect } from 'react'
+import Modal from '../Modal/Modal'
+import { SignInSchema } from './schema'
 
-interface AuthModalProps {
-    isOpen: boolean
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setSession: React.Dispatch<React.SetStateAction<ISessionPayload | null>>
-}
-
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setIsOpen, setSession }) => {
+const AuthModal: React.FC = () => {
     const router = useRouter()
+    const { isOpen, setIsOpen, setSession, closeAuth } = useAuth()
 
     const form = useAppForm({
         defaultValues: { username: '', password: '' },
         validators: {
-            onChange: SignInSchema,
             onSubmit: SignInSchema
         },
         onSubmit: async ({ value }) => {
-            const result = await authenticate(value)
-            if (result.isSuccess) {
-                if (result.session) setSession(result.session)
-                setIsOpen(false)
+            const res = await authenticate(value)
+            if (res.success && res.data) {
+                setSession(res.data)
+                closeAuth()
                 await Swal.fire({
                     icon: 'success',
-                    title: 'เข้าสู่ระบบสำเร็จ',
-                    text: `ยินดีต้อนรับ ${value.username}`,
-                    timer: 2000,
-                    timerProgressBar: true,
-                    showConfirmButton: false,
+                    title: "เข้าสู่ระบบสำเร็จ",
                 })
                 router.refresh()
+            } else {
+                await Swal.fire({
+                    icon: 'error',
+                    title: res.error,
+                })
             }
         },
     })
+
+    useEffect(() => {
+        if (isOpen) {
+            form.reset()
+        }
+    }, [isOpen])
 
     return (
         <Modal
@@ -67,4 +68,5 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, setIsOpen, setSession }) 
 }
 
 export default AuthModal
+
 

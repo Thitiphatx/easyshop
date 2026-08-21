@@ -10,6 +10,7 @@ const prismaClientSingleton = () => {
         password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE,
         connectionLimit: 5,
+        connectTimeout: 30000,
     });
 
     return new PrismaClient({ adapter });

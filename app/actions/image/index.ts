@@ -2,8 +2,8 @@
 
 import fs from 'fs'
 import path from 'path'
-
-export type ImageGroup = 'server' | 'item' | 'banner'
+import { IActionResponse } from '../interface'
+import { ImageGroup } from './interface'
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
 const MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
@@ -15,11 +15,9 @@ function ensureDir(dir: string) {
 }
 
 export async function uploadImage(
-    formData: FormData,
+    file: File,
     group: ImageGroup
-): Promise<{ success: true; url: string } | { success: false; error: string }> {
-    const file = formData.get('file')
-
+): Promise<IActionResponse<string>> {
     if (!(file instanceof File)) {
         return { success: false, error: 'ไม่พบไฟล์' }
     }
@@ -43,16 +41,30 @@ export async function uploadImage(
     fs.writeFileSync(filePath, buffer)
 
     const url = `/images/${group}/${fileName}`
-    return { success: true, url }
+    return { success: true, data: url }
+}
+
+export async function listImages(
+    group: ImageGroup
+): Promise<IActionResponse<string[]>> {
+    const dir = path.join(process.cwd(), 'public', 'images', group)
+    if (!fs.existsSync(dir)) {
+        return { success: true, data: [] }
+    }
+    const files = fs.readdirSync(dir).filter((f) => {
+        const ext = f.split('.').pop()?.toLowerCase() ?? ''
+        return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)
+    })
+    const urls = files.map((f) => `/images/${group}/${f}`)
+    return { success: true, data: urls }
 }
 
 export async function deleteImage(
     url: string
-): Promise<{ success: true } | { success: false; error: string }> {
-    // Only allow paths inside /images/(server|item|banner)/
+): Promise<IActionResponse<undefined>> {
     const match = url.match(/^\/images\/(server|item|banner)\/[^/]+$/)
     if (!match) {
-        return { success: false, error: 'เส้นทางไฟล์ไม่ถูกต้อง' }
+        return { success: false, error: 'ตำแหน่งของภาพไม่ถูกต้อง' }
     }
 
     const filePath = path.join(process.cwd(), 'public', url)

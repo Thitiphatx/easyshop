@@ -1,14 +1,12 @@
 "use client"
-import { uploadImage } from '@/app/actions/image'
-import { createServer, deleteServer, updateServer } from '@/app/actions/server'
+import { createServer, updateServer } from '@/app/actions/server'
 import { useAppForm } from '@/components/Form'
 import Modal from '@/components/Modal/Modal'
-import { Image, Server, Trash } from 'pixelarticons/react'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { Image, Server } from 'pixelarticons/react'
+import React, { useEffect, useMemo } from 'react'
+import Swal from '@/lib/Swal'
 import { IModalServerProps } from '../../interface'
 import { ServerFormValues, ServerSchema } from './schema'
-import Button from '@/components/Button/Button'
-import Swal from 'sweetalert2'
 
 const ModalManageServer: React.FC<IModalServerProps> = ({
     isOpen,
@@ -24,60 +22,35 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
         rconPassword: isEdit && serverInfo ? serverInfo.rconPassword : '',
         name: isEdit && serverInfo ? serverInfo.name : '',
         subtitle: isEdit && serverInfo ? serverInfo.subtitle : '',
-        imageFile: null,
+        imageUrl: (isEdit && serverInfo ? serverInfo.imageUrl : '') as string,
     }), [isEdit, serverInfo])
 
     const form = useAppForm({
         defaultValues,
         validators: {
-            onChange: ServerSchema,
             onSubmit: ServerSchema,
         },
         onSubmit: async ({ value }: { value: ServerFormValues }) => {
-            if (!value.imageFile) return
-
-            // 1. Upload image → get URL
-            const fd = new FormData()
-            fd.append('file', value.imageFile)
-            const uploadResult = await uploadImage(fd, 'server')
-
-            if (!uploadResult.success) {
-                console.error('Upload failed:', uploadResult.error)
-                return
-            }
-
-            const payload = {
-                rconHost: value.rconHost,
-                rconPort: value.rconPort,
-                rconPassword: value.rconPassword,
-                name: value.name,
-                subtitle: value.subtitle,
-                imageUrl: uploadResult.url,
-            }
-
-            // 2. Call the correct action based on mode
             if (isEdit && serverInfo) {
-                await updateServer({ ...serverInfo, ...payload, id: Number(serverInfo.id) })
+                const res = await updateServer({ ...serverInfo, ...value, id: Number(serverInfo.id) })
             } else {
-                await createServer(payload)
+                const res = await createServer(value)
+                if (!res.success || !res.data) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: res.error,
+                        theme: 'dark',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "สำเร็จ",
+                        theme: 'dark',
+                    });
+                }
             }
             getServerList()
             setIsOpen(false)
-
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: "สำเร็จ",
-                theme: 'dark',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
         },
     })
 
@@ -110,8 +83,8 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                     </div>
                     <div className='p-4'>
                         <form.AppField
-                            name="imageFile"
-                            children={(field) => <field.FileField label="รูปภาพเซิร์ฟเวอร์" accept="image/*" required />}
+                            name="imageUrl"
+                            children={(field) => <field.ImageSelectField label="รูปภาพเซิร์ฟเวอร์" group="server" required />}
                         />
                         <form.AppField
                             name="name"

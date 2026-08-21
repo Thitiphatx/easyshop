@@ -5,6 +5,7 @@ export interface IFieldWrapperProps {
   htmlFor?: string
   required?: boolean
   hideLabel?: boolean
+  tooltip?: ReactNode
   layout?: 'horizontal' | 'vertical'
   className?: string
   children: ReactNode

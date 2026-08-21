@@ -1,0 +1,1 @@
+export type ImageGroup = 'server' | 'item' | 'banner' | 'brand'

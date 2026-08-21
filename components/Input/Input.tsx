@@ -8,7 +8,7 @@ const Input: React.FC<IInputProps> = ({
 }) => {
     return (
         <input
-            className={`p-3 focus:ring-2 ring-(--core-grey-1) border-2 border-(--core-grey-4) bg-(--core-off-black) text-(--core-grey-2) text-lg font-bold font-pixel outline-none ${isError ? 'ring-2 ring-(--default-warning)' : ''} ${className}`}
+            className={`p-3 focus:ring-2 ring-(--core-grey-1) border-2 border-(--core-grey-4) bg-(--core-off-black) text-(--core-grey-2) text-lg outline-none ${isError ? 'ring-2 ring-(--default-warning)' : ''} ${className}`}
             {...props}
         />
     )

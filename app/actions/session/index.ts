@@ -2,6 +2,7 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { ISessionPayload } from './interface';
+import { IActionResponse } from '../interface';
 
 const SECRET_KEY = new TextEncoder().encode(
     process.env.JWT_SECRET || 'default_secret_key_change_me_later_123456'
@@ -38,7 +39,17 @@ export async function getSession(): Promise<ISessionPayload | null> {
     }
 }
 
-export async function deleteSession() {
-    const cookieStore = await cookies();
-    cookieStore.delete('session');
+export async function deleteSession(): Promise<IActionResponse<void>> {
+    try {
+        const cookieStore = await cookies();
+        cookieStore.delete('session');
+        return {
+            success: true
+        }
+    } catch {
+        return {
+            success: false,
+            error: "เกิดข้อผิดพลาดขณะดำเนินการ"
+        }
+    }
 }

@@ -66,18 +66,38 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
         }
     }
 
-    const rconRes = await createConnection(request.serverId)
+    // Check player online status via AuthMe DB instead of RCON `list` command
+    const player = await prisma.authMe.findFirst({
+        where: { username: request.playerName },
+        select: { isLogged: true }
+    })
+
+    if (!player || player.isLogged !== 1) {
+        return {
+            success: false,
+            error: "ผู้เล่นไม่ได้อยู่ในเซิร์ฟเวอร์ กรุณาเข้าเกมก่อนทำรายการ"
+        }
+    }
+
+    const rconRes = await createConnection(product.serverId)
     if (!rconRes.success || !rconRes.data) {
         return {
             success: false,
-            error: rconRes.error || "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: rconRes.error || "เซิร์ฟเวอร์ออฟไลน์อยู่"
         }
     }
 
     const rcon = rconRes.data
 
     try {
-        await rcon.send(product.command.replace("%player%", request.playerName))
+        const command = product.command
+            .replace("%player%", request.playerName)
+            .replace("%quantity%", product.amount?.toString() || "1")
+
+        const broastcast = `${request.playerName} ได้ซื้อ ${product.name} ในราคา ${product.price} point`
+
+        await rcon.send(command)
+        await rcon.send(`bc ${broastcast}`)
 
         return {
             success: true

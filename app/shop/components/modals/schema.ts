@@ -6,15 +6,16 @@ export const ServerSchema = z.object({
     rconPassword: z.string().min(1, 'กรอกรหัสผ่าน RCON'),
     name: z.string().min(1, 'กรอกชื่อเซิร์ฟเวอร์'),
     subtitle: z.string().nullable(),
-    imageFile: z.instanceof(File, { message: 'กรุณาเลือกรูปภาพ' }).nullable(),
+    imageUrl: z.string().min(1, 'เลือกรูปภาพ'),
 })
 
 export const ItemSchema = z.object({
     name: z.string(),
-    imageFile: z.instanceof(File, { message: 'กรุณาเลือกรูปภาพ' }).nullable(),
+    description: z.string(),
+    imageUrl: z.string().min(1, 'เลือกรูปภาพ'),
     command: z.string(),
-    price: z.number(),
-    amount: z.number(),
+    price: z.string(),
+    amount: z.string().optional(),
     category: z.string(),
 })
 

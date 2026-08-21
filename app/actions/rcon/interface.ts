@@ -1,7 +1,5 @@
 export interface ISendItemRequest {
-    serverId: number
     itemId: number
-    quantity: number
     playerName: string
 }
 
