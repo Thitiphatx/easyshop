@@ -1,55 +1,55 @@
 "use server"
 
 import bcrypt from 'bcryptjs';
-import { IRequestAuthenticate, IResponseAuthenticate } from "./interface";
+import { IRequestAuthenticate } from "./interface";
 import { SignInSchema } from '@/components/Auth/schema';
-import { prisma } from '@/prisma/seed';
+import { prisma } from '@/lib/prisma'
 import { createSession } from '../session';
+import { IActionResponse } from '../interface';
+import { ISessionPayload } from '../session/interface';
 
-export async function authenticate(request: IRequestAuthenticate): Promise<IResponseAuthenticate> {
-    const validatedFields = SignInSchema.safeParse(request)
+export async function authenticate(request: IRequestAuthenticate): Promise<IActionResponse<ISessionPayload>> {
+    try {
+        const validatedFields = SignInSchema.safeParse(request)
 
-    if (!validatedFields.success) {
-        // ดึง fieldErrors จาก issues โดยตรง (ไม่ติด Deprecated)
-        const fieldErrors: Record<string, string[]> = {};
-
-        for (const issue of validatedFields.error.issues) {
-            const fieldName = issue.path[0]?.toString();
-            if (fieldName) {
-                if (!fieldErrors[fieldName]) {
-                    fieldErrors[fieldName] = [];
-                }
-                fieldErrors[fieldName].push(issue.message);
-            }
+        if (!validatedFields.success) {
+            return {
+                success: false,
+                error: validatedFields.error.issues[0]?.message || 'ข้อมูลไม่ถูกต้อง',
+            };
         }
 
+        const { username, password } = validatedFields.data;
+        const user = await prisma.authMe.findFirst({
+            where: { username },
+            include: { playerPoints: true }
+        });
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return {
+                success: false,
+                error: 'Username หรือ Password ไม่ถูกต้อง',
+            };
+        }
+
+        const sessionPayload: ISessionPayload = {
+            id: user.id,
+            username: user.username,
+            profileImageUrl: "",
+            isAdmin: Boolean(user.isAdmin),
+            point: user.playerPoints?.points ?? 0,
+        }
+
+        await createSession(sessionPayload);
+
         return {
-            isSuccess: false,
-            error: validatedFields.error.issues[0]?.message || 'ข้อมูลไม่ถูกต้อง',
-            fieldErrors,
+            success: true,
+            data: sessionPayload
         };
-    }
-
-    const { username, password } = validatedFields.data;
-    const user = await prisma.authMe.findFirst({
-        where: { username },
-    });
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    } catch {
         return {
-            isSuccess: false,
-            error: 'Username หรือ Password ไม่ถูกต้อง',
-        };
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+        }
     }
-    
-    const sessionPayload = {
-        id: user.id,
-        username: user.username,
-        profileImageUrl: "",
-        isAdmin: Boolean(user.isAdmin),
-    }
-
-    await createSession(sessionPayload);
-
-    return { isSuccess: true, session: sessionPayload };
 }

@@ -6,6 +6,7 @@ import { ColorVariant } from '@/app/interface'
 const colorStyle: Record<ColorVariant, string> = {
     Green: clsx("bg-(--core-green-3) text-(--core-rich-black)"),
     Default: clsx("bg-(--core-off-black) text-(--core-white) border-b-1 border-b-(--core-grey-5)"),
+    Red: '',
     Gold: '',
     Blue: '',
     Purple: ''

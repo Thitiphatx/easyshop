@@ -6,11 +6,11 @@ import Select from './Select/Select'
 import { ISelectItem } from './Select/interface'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/contexts/authContext'
-import { deleteSession } from '@/app/actions/session'
+import Image from 'next/image'
 
 const Navbar: React.FC = () => {
     const router = useRouter();
-    const { setIsOpen, session, setSession } = useAuth()
+    const { session, signOut, openAuth } = useAuth()
 
     const paths = useMemo(() => [
         {
@@ -45,25 +45,19 @@ const Navbar: React.FC = () => {
         }
     ], [])
 
-    const accountDropdownItems: ISelectItem[] = useMemo(() => {
-        if (session) {
-            return [
-                { label: "โปรไฟล์", onClick: () => router.push("/profile") },
-                { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
-                { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
-                {
-                    label: "ออกจากระบบ", onClick: async () => {
-                        await deleteSession()
-                        setSession(null)
-                        router.refresh()
-                    }
-                },
-            ]
-        }
-        return [
-            { label: "เข้าสู่ระบบ", onClick: () => setIsOpen(true) },
-        ]
-    }, [session, setIsOpen, setSession, router])
+    const accountDropdownItems: ISelectItem[] = useMemo(() => [
+        { label: `พ้อยท์: ${session?.point ?? 0}` },
+        { label: "โปรไฟล์", onClick: () => router.push("/profile") },
+        { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
+        { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
+        {
+            label: "ออกจากระบบ", onClick: async () => {
+                await signOut()
+                router.refresh()
+            }
+        },
+    ], [session, openAuth, signOut, router])
+
 
     return (
         <div className='w-full h-20 bg-(--vanilla-grey-6) px-24 flex flex-nowrap justify-between drop-shadow-[0_4px_0px_rgba(0,0,0,0.25)]'>
@@ -102,13 +96,18 @@ const Navbar: React.FC = () => {
                     <span className='text-(--core-green-3) font-bold text-sm'>99</span>
                     <span className='text-(--core-white) font-bold text-sm'>Online</span>
                 </div>
-                <Select
-                    variant='Ghost'
-                    icon={<AvatarCircle width={24} height={24} />}
-                    items={accountDropdownItems}
-                >
-                    ACCOUNT
-                </Select>
+                {session ? (
+                    <Select
+                        variant='Ghost'
+                        icon={<Image src={`https://mc-heads.net/avatar/${session.username}/24`} alt={session.username} width={24} height={24} />}
+                        items={accountDropdownItems}
+                    >
+                        ACCOUNT
+                    </Select>
+                ) : (
+                    <Button onClick={openAuth}>เข้าสู่ระบบ</Button>
+                )}
+
             </div>
         </div>
     )

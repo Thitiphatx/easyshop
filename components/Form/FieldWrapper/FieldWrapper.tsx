@@ -1,5 +1,6 @@
 'use client'
 
+import Tooltip from '@/components/Tooltip'
 import { useCallback, useMemo } from 'react'
 import { useFieldContext } from '../context'
 import { IFieldWrapperProps } from './interface'
@@ -11,6 +12,7 @@ export function FieldWrapper({
     layout = 'vertical',
     className,
     children,
+    tooltip,
 }: IFieldWrapperProps) {
     const field = useFieldContext()
     const errors = field.state.meta.errors
@@ -27,19 +29,20 @@ export function FieldWrapper({
     const errorMessages = useMemo(() => errors.map(getErrorMessage), [errors])
 
     return (
-        <div className={`mb-3 ${className ?? ''}`}>
+        <div className={`relative mb-3 hover:z-30 focus-within:z-30 ${className ?? ''}`}>
             <label
                 htmlFor={htmlFor}
-                className={`text-(--core-white) drop-shadow-xl text-xl flex ${layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'
+                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'
                     }`}
             >
                 <span className="flex items-center gap-1 mb-2">
                     {label}
                     {required && <span className="text-(--default-warning)">*</span>}
                 </span>
-                {children}
+                {tooltip ? <Tooltip content={tooltip} position='bottom' mode='focus'>
+                    {children}
+                </Tooltip> : children}
             </label>
-
             {showError && (
                 <div className="p-2 text-sm bg-(--default-warning) text-(--core-white) mt-2">{errorMessages.map((line, index) => (
                     <p key={index}>{line}</p>

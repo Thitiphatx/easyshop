@@ -1,8 +1,8 @@
 import React from 'react'
 import ItemSection from '../components/ItemSection'
 
-const Item = () => {
+const ItemPage = () => {
     return <ItemSection />
 }
 
-export default Item
+export default ItemPage

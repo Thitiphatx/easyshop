@@ -3,4 +3,5 @@ export interface ISessionPayload {
     username: string
     isAdmin: boolean
     profileImageUrl: string
+    point: number
 }
