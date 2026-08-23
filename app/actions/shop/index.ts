@@ -1,9 +1,9 @@
 "use server"
 
-import { IBuyItemRequest } from "./interface";
-import { IActionResponse } from "../interface";
-import { prisma } from "@/lib/prisma";
 import { sendItem } from "@/app/actions/rcon";
+import { prisma } from "@/lib/prisma";
+import { IActionResponse } from "../interface";
+import { IBuyItemRequest } from "./interface";
 
 export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse<void>> {
     const product = await prisma.item.findFirst({
@@ -16,36 +16,43 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
 
     const user = await prisma.authMe.findFirst({
         where: { username: request.playerName },
-        include: { points: true }
+        include: { playerPoints: true }
     })
 
     if (!user) {
         return { success: false, error: "ไม่พบผู้ใช้ในระบบ" }
     }
 
-    const userPoints = user.points?.points ?? 0;
+    const userPoints = user.playerPoints?.points ?? 0;
     if (userPoints < product.price) {
         return { success: false, error: "พอยท์ไม่เพียงพอ" }
     }
 
-    // Deduct points first inside a transaction, then attempt RCON.
-    // If RCON fails, roll back the point deduction.
-    let pointsDeducted = false;
-
     try {
         await prisma.$transaction(async (tx) => {
+            // deduct player point
             await tx.authMe.update({
                 where: { id: user.id },
                 data: {
-                    points: {
+                    playerPoints: {
                         update: { points: userPoints - product.price }
                     }
                 }
             })
 
-            pointsDeducted = true;
+            // create transaction
+            await tx.transaction.create({
+                data: {
+                    serverId: product.serverId,
+                    itemId: product.id,
+                    username: request.playerName,
+                    pricePaid: product.price,
+                    executedCommand: product.command,
+                    createdAt: new Date()
+                }
+            })
 
-            // Send item via RCON — if this throws, the transaction rolls back
+            // send command to rcon server
             const rconRes = await sendItem({
                 itemId: product.id,
                 playerName: request.playerName
@@ -57,10 +64,10 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
         })
 
         return { success: true }
-    } catch (err) {
+    } catch {
         return {
             success: false,
-            error: (err as Error).message
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fortune-inc/tw-voucher": "^1.1.2",
+    "@prakrit_m/tmn-voucher": "^2.0.0",
     "@prisma/adapter-mariadb": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@tanstack/react-form": "^1.33.5",

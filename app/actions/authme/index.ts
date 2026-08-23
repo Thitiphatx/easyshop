@@ -22,6 +22,7 @@ export async function authenticate(request: IRequestAuthenticate): Promise<IActi
         const { username, password } = validatedFields.data;
         const user = await prisma.authMe.findFirst({
             where: { username },
+            include: { playerPoints: true }
         });
 
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -36,6 +37,7 @@ export async function authenticate(request: IRequestAuthenticate): Promise<IActi
             username: user.username,
             profileImageUrl: "",
             isAdmin: Boolean(user.isAdmin),
+            point: user.playerPoints?.points ?? 0,
         }
 
         await createSession(sessionPayload);

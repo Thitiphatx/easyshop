@@ -7,6 +7,7 @@ import Swal from '@/lib/Swal'
 
 interface AuthContextValue {
     isOpen: boolean
+    isLoading: boolean
     session: ISessionPayload | null
     openAuth: () => void
     closeAuth: () => void
@@ -23,6 +24,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children, initialSession = null }: AuthProviderProps) {
+    const [isLoading, setIsLoading] = useState(true)
     const [isOpen, setIsOpen] = useState(false)
     const [session, setSession] = useState<ISessionPayload | null>(initialSession)
 
@@ -30,11 +32,14 @@ export function AuthProvider({ children, initialSession = null }: AuthProviderPr
     const closeAuth = () => setIsOpen(false)
 
     const fetchSession = useCallback(async () => {
+        setIsLoading(true)
         const res = await getSession()
         setSession(res)
+        setIsLoading(false)
     }, [])
 
     const signOut = useCallback(async () => {
+        setIsLoading(true)
         const res = await deleteSession()
         if (res.success) {
             Swal.fire({
@@ -48,6 +53,7 @@ export function AuthProvider({ children, initialSession = null }: AuthProviderPr
                 title: res.error,
             });
         }
+        setIsLoading(false)
     }, [])
 
 
@@ -58,7 +64,7 @@ export function AuthProvider({ children, initialSession = null }: AuthProviderPr
     }, [initialSession, fetchSession])
 
     return (
-        <AuthContext.Provider value={{ isOpen, session, openAuth, closeAuth, signOut, setIsOpen, setSession }}>
+        <AuthContext.Provider value={{ isOpen, isLoading, session, openAuth, closeAuth, signOut, setIsOpen, setSession }}>
             {children}
             <AuthModal />
         </AuthContext.Provider>

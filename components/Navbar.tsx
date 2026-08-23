@@ -45,24 +45,18 @@ const Navbar: React.FC = () => {
         }
     ], [])
 
-    const accountDropdownItems: ISelectItem[] = useMemo(() => {
-        if (session) {
-            return [
-                { label: "โปรไฟล์", onClick: () => router.push("/profile") },
-                { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
-                { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
-                {
-                    label: "ออกจากระบบ", onClick: async () => {
-                        await signOut()
-                        router.refresh()
-                    }
-                },
-            ]
-        }
-        return [
-            { label: "เข้าสู่ระบบ", onClick: () => openAuth() },
-        ]
-    }, [session, openAuth, signOut, router])
+    const accountDropdownItems: ISelectItem[] = useMemo(() => [
+        { label: `พ้อยท์: ${session?.point ?? 0}` },
+        { label: "โปรไฟล์", onClick: () => router.push("/profile") },
+        { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
+        { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
+        {
+            label: "ออกจากระบบ", onClick: async () => {
+                await signOut()
+                router.refresh()
+            }
+        },
+    ], [session, openAuth, signOut, router])
 
 
     return (
@@ -111,7 +105,7 @@ const Navbar: React.FC = () => {
                         ACCOUNT
                     </Select>
                 ) : (
-                    <Button></Button>
+                    <Button onClick={openAuth}>เข้าสู่ระบบ</Button>
                 )}
 
             </div>

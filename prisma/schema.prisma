@@ -4,33 +4,36 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider     = "mysql"
+  relationMode = "prisma"
 }
 
 model AuthMe {
-  id           Int           @id @default(autoincrement()) @db.UnsignedMediumInt
-  username     String        @unique(map: "username") @db.VarChar(255)
-  realname     String        @db.VarChar(255)
-  password     String        @db.VarChar(255)
-  ip           String?       @db.VarChar(40)
+  id           Int                 @id @default(autoincrement()) @db.UnsignedMediumInt
+  username     String              @unique(map: "username") @db.VarChar(255)
+  realname     String              @db.VarChar(255)
+  password     String              @db.VarChar(255)
+  ip           String?             @db.VarChar(40)
   lastlogin    BigInt?
-  x            Float         @default(0)
-  y            Float         @default(0)
-  z            Float         @default(0)
-  world        String        @default("world") @db.VarChar(255)
-  regdate      BigInt        @default(0)
-  regip        String?       @db.VarChar(40)
-  yaw          Float?        @db.Float
-  pitch        Float?        @db.Float
-  email        String?       @db.VarChar(255)
-  isLogged     Int           @default(0) @db.SmallInt
-  hasSession   Int           @default(0) @db.SmallInt
-  totp         String?       @db.VarChar(32)
-  isAdmin      Int           @default(0) @db.SmallInt
-  uuid         String?       @db.VarChar(36)
+  x            Float               @default(0)
+  y            Float               @default(0)
+  z            Float               @default(0)
+  world        String              @default("world") @db.VarChar(255)
+  regdate      BigInt              @default(0)
+  regip        String?             @db.VarChar(40)
+  yaw          Float?              @db.Float
+  pitch        Float?              @db.Float
+  email        String?             @db.VarChar(255)
+  isLogged     Int                 @default(0) @db.SmallInt
+  hasSession   Int                 @default(0) @db.SmallInt
+  totp         String?             @db.VarChar(32)
+  isAdmin      Int                 @default(0) @db.SmallInt
+  uuid         String              @db.VarChar(36)
+  playerPoints playerpoints_points @relation(fields: [uuid], references: [uuid])
   topups       Topup[]
   transactions Transaction[]
 
+  @@index([uuid])
   @@map("authme")
 }
 
@@ -68,20 +71,18 @@ model Item {
 }
 
 model Transaction {
-  id              Int               @id @default(autoincrement())
-  userId          Int               @db.UnsignedMediumInt
+  id              Int      @id @default(autoincrement())
+  username        String   @unique(map: "username") @db.VarChar(255)
   itemId          Int
   serverId        Int
   pricePaid       Int
-  executedCommand String            @db.VarChar(255)
-  status          TransactionStatus @default(SUCCESS)
-  errorMessage    String?           @db.Text
-  createdAt       DateTime          @default(now())
-  item            Item              @relation(fields: [itemId], references: [id])
-  server          Server            @relation(fields: [serverId], references: [id])
-  user            AuthMe            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  executedCommand String   @db.VarChar(255)
+  createdAt       DateTime @default(now())
+  item            Item     @relation(fields: [itemId], references: [id])
+  server          Server   @relation(fields: [serverId], references: [id])
+  user            AuthMe   @relation(fields: [username], references: [username], onDelete: Cascade)
 
-  @@index([userId])
+  @@index([username])
   @@index([itemId])
   @@index([serverId])
   @@map("transaction")
@@ -110,9 +111,10 @@ model playerpoints_migrations {
 }
 
 model playerpoints_points {
-  id     Int    @id @default(autoincrement())
-  uuid   String @unique(map: "uuid") @db.VarChar(36)
-  points Int
+  id      Int      @id @default(autoincrement())
+  uuid    String   @unique(map: "uuid") @db.VarChar(36)
+  points  Int      @default(0)
+  authMes AuthMe[]
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -137,11 +139,6 @@ model playerpoints_username_cache {
 
 enum TopupStatus {
   PENDING
-  SUCCESS
-  FAILED
-}
-
-enum TransactionStatus {
   SUCCESS
   FAILED
 }

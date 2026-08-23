@@ -66,7 +66,6 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
         }
     }
 
-    // Check player online status via AuthMe DB instead of RCON `list` command
     const player = await prisma.authMe.findFirst({
         where: { username: request.playerName },
         select: { isLogged: true }
@@ -94,7 +93,7 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
             .replace("%player%", request.playerName)
             .replace("%quantity%", product.amount?.toString() || "1")
 
-        const broastcast = `${request.playerName} ได้ซื้อ ${product.name} ในราคา ${product.price} point`
+        const broastcast = `${request.playerName} ได้ซื้อ ${product.name} ในราคา ${product.price} พอยท์`
 
         await rcon.send(command)
         await rcon.send(`bc ${broastcast}`)

@@ -18,7 +18,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
 }) => {
     const { session, openAuth } = useAuth()
     const params = useParams()
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const serverId = Number(params?.serverId)
 
@@ -37,7 +37,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
             return
         }
 
-        setIsSubmitting(true)
+        setIsLoading(true)
         try {
             const res = await buyItem({
                 itemId: itemInfo.id,
@@ -63,7 +63,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                 title: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
             })
         } finally {
-            setIsSubmitting(false)
+            setIsLoading(false)
         }
     }
 
@@ -111,11 +111,11 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                         color="Green"
                         variant="Solid"
                         block
-                        disabled={isSubmitting}
+                        disabled={isLoading}
                         onClick={handleBuyItem}
                         icon={<ShoppingBag width={24} height={24} />}
                     >
-                        {isSubmitting ? 'กำลังดำเนินการ...' : 'ยืนยันการสั่งซื้อ'}
+                        {isLoading ? 'กำลังดำเนินการ...' : 'ยืนยันการสั่งซื้อ'}
                     </Button>
                 </div>
             </div>

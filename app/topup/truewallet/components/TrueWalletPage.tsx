@@ -1,16 +1,35 @@
 "use client"
 import { useAppForm } from '@/components/Form'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { TrueWalletSchema } from '../schema'
+import { checkStatus, redeem } from '@/app/actions/truewallet'
+import { extractVoucherCode } from '@prakrit_m/tmn-voucher'
+import Swal from '@/lib/Swal'
 
 const TrueWalletPage: React.FC = () => {
     const form = useAppForm({
         defaultValues: { giftUrl: '', agree: false },
         validators: {
-            onChange: TrueWalletSchema,
             onSubmit: TrueWalletSchema
         },
-        onSubmit: async ({ value }) => console.log(value),
+        onSubmit: async ({ value }) => {
+            const voucherCode = extractVoucherCode(value.giftUrl);
+            if (!voucherCode) {
+                return;
+            }
+            const res = await redeem(voucherCode)
+            if (res.success) {
+                Swal.fire({
+                    text: `คุณได้รับพอยท์จำนวน ${res.data} บาท`,
+                    icon: "success",
+                })
+            } else {
+                Swal.fire({
+                    text: res.error,
+                    icon: "error"
+                })
+            }
+        },
     })
 
     return (
