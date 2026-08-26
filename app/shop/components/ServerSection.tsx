@@ -12,9 +12,7 @@ import Swal from '@/lib/Swal'
 import ModalManageServer from './modals/ModalManageServer'
 import { IServerSectionProps } from '../interface'
 
-const ServerSection: React.FC<IServerSectionProps> = ({
-    session
-}) => {
+const ServerSection: React.FC<IServerSectionProps> = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)

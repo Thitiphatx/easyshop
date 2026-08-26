@@ -98,8 +98,8 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     borderBottom: "border-b-(--core-rich-black)",
     text: "text-(--core-off-white)",
     textActive: "text-(--core-white)",
-    subtleHover: "hover:bg-(--core-grey-1)",
-    subtleActive: "active:bg-(--core-grey-2)",
+    subtleHover: "hover:bg-(--core-grey-5)",
+    subtleActive: "active:bg-(--core-grey-4)",
     retroBase: "bg-gray-300",
     retroShadow: "bg-gray-600",
     retroBorder: "border-gray-100",
@@ -110,10 +110,12 @@ const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorToken
   Solid: (c) => clsx("ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1 text-(--core-white) disabled:text-(--core-grey-3)! disabled:bg-(--core-grey-1) disabled:border-t-(--core-grey-3) disabled:border-b-(--core-grey-3)", c.base, c.hover, c.active, c.borderTop, c.borderBottom),
 
   Outline: (c) => clsx(
-    "border-2 bg-transparent ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1",
+    "border-solid border-2 border-l-0 border-r-0 bg-transparent ring-2 ring-(--core-off-black) border-t-2 border-b-2 py-2",
     c.text,
     c.subtleHover,
-    c.subtleActive
+    c.subtleActive,
+    c.borderTop,
+    c.borderBottom
   ),
 
   Link: (c) => clsx(

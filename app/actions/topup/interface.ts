@@ -1,0 +1,19 @@
+import { Prisma } from "@/app/generated/prisma/client";
+
+export interface ITopupFilter {
+    playerName?: string
+    page?: number
+    size?: number
+}
+
+export type ITopup = Prisma.TopupGetPayload<{
+    select: {
+        id: true;
+        amount: true;
+        pointsAdded: true;
+        channel: true;
+        status: true;
+        reference: true;
+        createdAt: true;
+    };
+}>;

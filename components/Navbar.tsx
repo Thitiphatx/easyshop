@@ -47,14 +47,16 @@ const Navbar: React.FC = () => {
 
     const accountDropdownItems: ISelectItem[] = useMemo(() => [
         { label: `พ้อยท์: ${session?.point ?? 0}` },
-        { label: "โปรไฟล์", onClick: () => router.push("/profile") },
-        { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
-        { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
+        { label: "โปรไฟล์", onClick: () => router.push("/user/profile") },
+        { label: "ประวัติการซื้อ", onClick: () => router.push("/user/purchase-history") },
+        { label: "ประวัติการเติม", onClick: () => router.push("/user/topup-history") },
+        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/settings/dashboard"), className: "hover:text-(--marketplace-gold-3)" },
         {
             label: "ออกจากระบบ", onClick: async () => {
                 await signOut()
                 router.refresh()
-            }
+            },
+            className: "hover:text-(--default-warning)"
         },
     ], [session, openAuth, signOut, router])
 
@@ -102,7 +104,7 @@ const Navbar: React.FC = () => {
                         icon={<Image src={`https://mc-heads.net/avatar/${session.username}/24`} alt={session.username} width={24} height={24} />}
                         items={accountDropdownItems}
                     >
-                        ACCOUNT
+                        Account
                     </Select>
                 ) : (
                     <Button onClick={openAuth}>เข้าสู่ระบบ</Button>

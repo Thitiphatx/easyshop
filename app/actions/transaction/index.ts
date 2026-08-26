@@ -1,57 +1,52 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { IActionResponse } from "../interface";
+import { IActionResponse, IPagination } from "../interface";
 import { ITransaction, ITransactionFilter } from "./interface";
+import { getSession } from "../session";
 
-export async function getTransactions(request: ITransactionFilter): Promise<IActionResponse<ITransaction[]>> {
+export async function getTransactions(request: ITransactionFilter): Promise<IActionResponse<IPagination<ITransaction>>> {
     try {
-        const { page = 1, size = 10, playerName } = request
+        const { page = 1, size = 10 } = request
+        const session = await getSession()
 
-        const result = await prisma.transaction.findMany({
-            skip: (page - 1) * size,
-            take: size,
-            select: {
-                id: true,
-                username: true,
-                itemId: true,
-                serverId: true,
-                pricePaid: true,
-                createdAt: true,
-                item: {
-                    select: {
-                        name: true,
-                        imageUrl: true,
-                    }
+        if (!session) {
+            return {
+                success: false,
+                error: "ไม่พบเซสชัน กรุณาเข้าสู่ระบบ"
+            }
+        }
+
+        let playerName = request.playerName
+        if (!session.isAdmin) {
+            playerName = session.username
+        }
+
+
+        const whereClause = playerName ? { username: { equals: playerName } } : undefined
+
+        const [result, total] = await Promise.all([
+            prisma.transaction.findMany({
+                where: whereClause,
+                skip: (page - 1) * size,
+                take: size,
+                select: {
+                    id: true,
+                    username: true,
+                    itemId: true,
+                    serverId: true,
+                    pricePaid: true,
+                    createdAt: true,
+                    item: { select: { name: true, imageUrl: true } },
+                    server: { select: { name: true } },
                 },
-                server: {
-                    select: {
-                        name: true,
-                    }
-                }
-            },
-            ...(playerName && {
-                where: {
-                    username: {
-                        equals: playerName,
-                    }
-                }
-            })
-        })
-
-        const data: ITransaction[] = result.map((item) => ({
-            ...item,
-            item: {
-                name: item.item?.name || '',
-            },
-            server: {
-                name: item.server?.name || '',
-            },
-        }))
+            }),
+            prisma.transaction.count({ where: whereClause }),
+        ])
 
         return {
             success: true,
-            data,
+            data: { data: result, total },
         }
     } catch {
         return {
