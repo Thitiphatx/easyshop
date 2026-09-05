@@ -30,6 +30,7 @@ export async function getTransactions(request: ITransactionFilter): Promise<IAct
                 where: whereClause,
                 skip: (page - 1) * size,
                 take: size,
+                orderBy: { createdAt: 'desc' },
                 select: {
                     id: true,
                     username: true,

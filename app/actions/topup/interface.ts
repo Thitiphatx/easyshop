@@ -15,5 +15,10 @@ export type ITopup = Prisma.TopupGetPayload<{
         status: true;
         reference: true;
         createdAt: true;
+        user: {
+            select: {
+                username: true;
+            };
+        };
     };
 }>;

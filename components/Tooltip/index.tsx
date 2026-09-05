@@ -1,42 +1,98 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
+import clsx from 'clsx'
 import { ITooltipProps } from './interface'
 
-const positionClasses: Record<string, string> = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-}
+const Tooltip: React.FC<ITooltipProps> = ({
+    children,
+    content,
+    position = 'top',
+    mode = 'hover',
+    className,
+}) => {
+    const [isVisible, setIsVisible] = useState(false)
+    const [coords, setCoords] = useState<{ top: number; left: number } | null>(null)
+    const [mounted, setMounted] = useState(false)
+    const triggerRef = useRef<HTMLDivElement>(null)
 
-const arrowClasses: Record<string, string> = {
-    top: 'top-full left-1/2 -translate-x-1/2 -mt-1 border-t-slate-900',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 -mb-1 border-b-slate-900',
-}
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
-const Tooltip: React.FC<ITooltipProps> = ({ children, content, position = 'top', mode = 'hover' }) => {
+    const updateCoords = useCallback(() => {
+        if (!triggerRef.current) return
+        const rect = triggerRef.current.getBoundingClientRect()
+        if (position === 'bottom') {
+            setCoords({
+                top: rect.bottom + 8,
+                left: rect.left + rect.width / 2,
+            })
+        } else {
+            setCoords({
+                top: rect.top - 8,
+                left: rect.left + rect.width / 2,
+            })
+        }
+    }, [position])
+
+    const show = () => {
+        updateCoords()
+        setIsVisible(true)
+    }
+
+    const hide = () => {
+        setIsVisible(false)
+    }
+
+    useEffect(() => {
+        if (!isVisible) return
+
+        const handleScrollOrResize = () => {
+            updateCoords()
+        }
+
+        window.addEventListener('scroll', handleScrollOrResize, true)
+        window.addEventListener('resize', handleScrollOrResize)
+
+        return () => {
+            window.removeEventListener('scroll', handleScrollOrResize, true)
+            window.removeEventListener('resize', handleScrollOrResize)
+        }
+    }, [isVisible, updateCoords])
+
     if (!content) return <>{children}</>
 
     const showHover = mode === 'hover' || mode === 'both'
     const showFocus = mode === 'focus' || mode === 'both'
 
-    const containerZIndex = [
-        'relative inline-flex group w-full',
-        showHover ? 'hover:z-50' : '',
-        showFocus ? 'focus-within:z-50' : '',
-    ].filter(Boolean).join(' ')
-
-    const tooltipVisibilityClasses = [
-        showHover ? 'group-hover:opacity-100 group-hover:scale-100' : '',
-        showFocus ? 'group-focus-within:opacity-100 group-focus-within:scale-100' : '',
-    ].filter(Boolean).join(' ')
-
     return (
-        <div className={containerZIndex}>
+        <div
+            ref={triggerRef}
+            className={clsx('relative inline-flex w-full justify-center', className)}
+            onMouseEnter={showHover ? show : undefined}
+            onMouseLeave={showHover ? hide : undefined}
+            onFocus={showFocus ? show : undefined}
+            onBlur={showFocus ? hide : undefined}
+        >
             {children}
-            <div
-                role="tooltip"
-                className={`absolute ${positionClasses[position] || positionClasses.top} z-999 w-max px-3 py-1.5 text-(--core-rich-black) bg-(--core-grey-2) pointer-events-none opacity-0 scale-95 transition-all duration-200 ease-out ${tooltipVisibilityClasses}`}
-            >
-                {content}
-            </div>
+            {mounted && isVisible && coords && createPortal(
+                <div
+                    role="tooltip"
+                    style={{
+                        position: 'fixed',
+                        top: coords.top,
+                        left: coords.left,
+                        transform: position === 'bottom' ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
+                        zIndex: 99999,
+                    }}
+                    className="w-max max-w-xs px-3 py-1.5 text-xs text-(--core-rich-black) bg-(--core-grey-2) pointer-events-none shadow-lg select-none whitespace-normal break-words"
+                >
+                    {content}
+                </div>,
+                document.body
+            )}
         </div>
     )
 }

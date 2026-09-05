@@ -17,9 +17,12 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             }
         }
 
-        const whereClause = session.isAdmin && request.playerName
-            ? { user: { username: { equals: request.playerName } } }
-            : { userId: session.id }
+        let whereClause: any = undefined
+        if (!session.isAdmin) {
+            whereClause = { userId: session.id }
+        } else if (request.playerName) {
+            whereClause = { user: { username: { equals: request.playerName } } }
+        }
 
         const [result, total] = await Promise.all([
             prisma.topup.findMany({
@@ -35,6 +38,11 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
                     status: true,
                     reference: true,
                     createdAt: true,
+                    user: {
+                        select: {
+                            username: true,
+                        },
+                    },
                 },
             }),
             prisma.topup.count({ where: whereClause }),

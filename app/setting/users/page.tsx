@@ -1,11 +1,10 @@
 "use client"
 
 import React from 'react'
+import UserPage from './components/UserPage'
 
 const UserSetting: React.FC = () => {
-    return (
-        <div>page</div>
-    )
+    return <UserPage />
 }
 
 export default UserSetting

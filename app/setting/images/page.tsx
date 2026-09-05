@@ -8,8 +8,7 @@ import Card from '@/components/Card/Card'
 import Button from '@/components/Button/Button'
 import { uploadImage, listImages, deleteImage } from '@/app/actions/image'
 import type { ImageGroup } from '@/app/actions/image/interface'
-import AppSwal from '@/lib/Swal'
-import Swal from 'sweetalert2'
+import Swal from '@/lib/Swal'
 
 const GROUPS: { key: ImageGroup; label: string }[] = [
     { key: 'server', label: 'Server' },
@@ -87,9 +86,9 @@ const ImageSetting: React.FC = () => {
             const res = await uploadImage(file, activeGroup)
             if (res.success && res.data) {
                 setImages((prev) => [...prev, res.data!])
-                AppSwal.fire({ icon: 'success', title: 'อัปโหลดสำเร็จ' })
+                Swal.fire({ icon: 'success', title: 'อัปโหลดสำเร็จ' })
             } else {
-                AppSwal.fire({ icon: 'error', title: res.error ?? 'อัปโหลดล้มเหลว' })
+                Swal.fire({ icon: 'error', title: res.error ?? 'อัปโหลดล้มเหลว' })
             }
         })
     }
@@ -114,9 +113,9 @@ const ImageSetting: React.FC = () => {
             setImages((prev) => prev.filter((url) => !selected.has(url)))
             setSelected(new Set())
             if (failed > 0) {
-                AppSwal.fire({ icon: 'warning', title: `ลบสำเร็จบางส่วน (${failed} ล้มเหลว)` })
+                Swal.fire({ icon: 'warning', title: `ลบสำเร็จบางส่วน (${failed} ล้มเหลว)` })
             } else {
-                AppSwal.fire({ icon: 'success', title: `ลบ ${urls.length} รายการสำเร็จ` })
+                Swal.fire({ icon: 'success', title: `ลบ ${urls.length} รายการสำเร็จ` })
             }
         })
     }
@@ -126,6 +125,7 @@ const ImageSetting: React.FC = () => {
         const filename = url.split('/').pop() ?? url
         const confirm = await Swal.fire({
             title: 'ลบรูปภาพนี้?',
+            position: 'center',
             text: filename,
             icon: 'warning',
             theme: 'dark',
@@ -140,9 +140,9 @@ const ImageSetting: React.FC = () => {
             if (res.success) {
                 setImages((prev) => prev.filter((u) => u !== url))
                 setSelected((prev) => { const n = new Set(prev); n.delete(url); return n })
-                AppSwal.fire({ icon: 'success', title: 'ลบสำเร็จ' })
+                Swal.fire({ icon: 'success', title: 'ลบสำเร็จ' })
             } else {
-                AppSwal.fire({ icon: 'error', title: res.error ?? 'ลบล้มเหลว' })
+                Swal.fire({ icon: 'error', title: res.error ?? 'ลบล้มเหลว' })
             }
         })
     }

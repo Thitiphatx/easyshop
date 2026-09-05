@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
         { label: "โปรไฟล์", onClick: () => router.push("/user/profile") },
         { label: "ประวัติการซื้อ", onClick: () => router.push("/user/purchase-history") },
         { label: "ประวัติการเติม", onClick: () => router.push("/user/topup-history") },
-        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/settings/dashboard"), className: "hover:text-(--marketplace-gold-3)" },
+        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/setting/overview"), className: "hover:text-(--marketplace-gold-3)" },
         {
             label: "ออกจากระบบ", onClick: async () => {
                 await signOut()
