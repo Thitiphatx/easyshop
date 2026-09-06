@@ -1,11 +1,8 @@
-"use client"
-
 import React from 'react'
+import OverviewPage from './components/OverviewPage'
 
 const Overview: React.FC = () => {
-    return (
-        <div>page</div>
-    )
+    return <OverviewPage />
 }
 
 export default Overview

@@ -2,7 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['mc-heads.net'],
+    domains: ['mc-heads.net',],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '20mb'
+    }
   },
   async rewrites() {
     return [
