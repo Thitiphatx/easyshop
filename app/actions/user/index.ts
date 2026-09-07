@@ -1,8 +1,9 @@
 'use server'
 
 import { prisma } from "@/lib/prisma";
-import { IActionResponse, IPagination } from "../interface";
+import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { IUser, IUserFilter } from "./interface";
+import { getLastWeekRange } from "@/app/utils/utils";
 
 export async function getUsers(request: IUserFilter): Promise<IActionResponse<IPagination<IUser>>> {
     const { page = 1, size = 10 } = request;
@@ -34,6 +35,49 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
         data: {
             data: result,
             total: total
+        }
+    }
+}
+
+export async function getUserSummary(): Promise<IActionResponse<ISummaryData>> {
+    try {
+        const { startOfWeek, endOfWeek } = getLastWeekRange()
+
+        const whereClause = {
+            regdate: {
+                gte: BigInt(startOfWeek.getTime()),
+                lte: BigInt(endOfWeek.getTime())
+            }
+        }
+
+        const [users, total] = await Promise.all([
+            prisma.authMe.findMany({
+                where: whereClause,
+                select: {
+                    id: true,
+                    regdate: true,
+                },
+            }),
+            prisma.authMe.count({ where: whereClause })
+        ])
+
+        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        const sums = Array(7).fill(0)
+
+        for (const user of users) {
+            const jsDay = new Date(Number(user.regdate)).getDay()
+            const idx = jsDay === 0 ? 6 : jsDay - 1
+            sums[idx] += 1
+        }
+
+        return {
+            success: true,
+            data: { data: sums, label: dayLabels, total }
+        }
+    } catch {
+        return {
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

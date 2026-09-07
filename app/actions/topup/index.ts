@@ -1,9 +1,10 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { IActionResponse, IPagination } from "../interface";
+import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { ITopup, ITopupFilter } from "./interface";
 import { getSession } from "../session";
+import { getLastWeekRange } from "@/app/utils/utils";
 
 export async function getTopups(request: ITopupFilter): Promise<IActionResponse<IPagination<ITopup>>> {
     try {
@@ -51,6 +52,43 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
         return {
             success: true,
             data: { data: result, total },
+        }
+    } catch {
+        return {
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+        }
+    }
+}
+
+export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> {
+    try {
+        const { startOfWeek, endOfWeek } = getLastWeekRange()
+
+        const topups = await prisma.topup.findMany({
+            where: {
+                createdAt: { gte: startOfWeek, lte: endOfWeek },
+            },
+            select: {
+                amount: true,
+                createdAt: true,
+            },
+        })
+
+        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        const sums = Array(7).fill(0)
+
+        for (const topup of topups) {
+            const jsDay = topup.createdAt.getDay()
+            const idx = jsDay === 0 ? 6 : jsDay - 1
+            sums[idx] += Number(topup.amount)
+        }
+
+        const total = sums.reduce((a, b) => a + b, 0)
+
+        return {
+            success: true,
+            data: { data: sums, label: dayLabels, total }
         }
     } catch {
         return {

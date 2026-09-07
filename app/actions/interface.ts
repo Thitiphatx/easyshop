@@ -8,3 +8,9 @@ export interface IPagination<T> {
     data: T[]
     total: number
 }
+
+export interface ISummaryData {
+    data: number[]
+    label: string[]
+    total: number
+}

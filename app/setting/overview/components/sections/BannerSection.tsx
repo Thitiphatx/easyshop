@@ -12,6 +12,7 @@ import Loading from '@/components/Loading'
 import Button from '@/components/Button/Button'
 import { Banner } from '@/app/generated/prisma/client'
 import { Plus, Trash } from 'pixelarticons/react'
+import { getTopupSummary } from '@/app/actions/topup'
 
 const BannerSection: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -55,7 +56,7 @@ const BannerSection: React.FC = () => {
             label: 'Image',
             render: (_: any, row: Banner) => (
                 <div className='relative w-32 h-16'>
-                    <Image src={row.imageUrl} alt="banner" fill className='object-cover rounded' />
+                    <Image src={row.imageUrl} sizes="64px" alt="banner" fill className='object-cover rounded' />
                 </div>
             )
         },
@@ -79,6 +80,7 @@ const BannerSection: React.FC = () => {
     ], [handleDelete])
 
     useEffect(() => {
+        getTopupSummary()
         fetchBanners()
     }, [fetchBanners])
 
