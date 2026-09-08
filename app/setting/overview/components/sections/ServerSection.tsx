@@ -4,9 +4,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import { ServerFormValues, ServerSchema } from '../../schema'
-import { IServerSetting } from '@/app/actions/setting/interface'
+import { getSetting, upsertServerSetting } from '@/app/actions/setting'
+import { IServerSetting, serverSettingSelect } from '@/app/actions/setting/interface'
 import Swal from '@/lib/Swal'
-import { getServerSetting, upsertServerSetting } from '@/app/actions/setting'
 import Loading from '@/components/Loading'
 
 const ServerSection: React.FC = () => {
@@ -36,7 +36,7 @@ const ServerSection: React.FC = () => {
 
     const fetchServerInfo = useCallback(async () => {
         setIsLoading(true)
-        const res = await getServerSetting()
+        const res = await getSetting(serverSettingSelect)
         if (res.success && res.data) {
             setServerInfo(res.data)
         }

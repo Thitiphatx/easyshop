@@ -6,7 +6,8 @@ import { DisplayFormValues, DisplaySchema } from '../../schema'
 import { useAppForm } from '@/components/Form'
 import { IDisplaySetting } from '@/app/actions/setting/interface'
 import Swal from '@/lib/Swal'
-import { getDisplaySetting, upsertDisplaySetting } from '@/app/actions/setting'
+import { getSetting, upsertDisplaySetting } from '@/app/actions/setting'
+import { displaySettingSelect } from '@/app/actions/setting/interface'
 import Loading from '@/components/Loading'
 
 const DisplaySection: React.FC = () => {
@@ -37,7 +38,7 @@ const DisplaySection: React.FC = () => {
 
     const fetchDisplayInfo = useCallback(async () => {
         setIsLoading(true)
-        const res = await getDisplaySetting()
+        const res = await getSetting(displaySettingSelect)
         if (res.success && res.data) {
             setDisplayInfo(res.data)
         }
@@ -56,7 +57,7 @@ const DisplaySection: React.FC = () => {
                 <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                     <form.AppField
                         name="logo"
-                        children={(field) => <field.ImageSelectField label="Logo" group="brand" required />}
+                        children={(field) => <field.ImageSelectField label="Logo (แนะนำขนาด 300x50)" group="brand" required />}
                     />
                     <form.AppField
                         name="favicon"

@@ -137,5 +137,4 @@ export async function sendCommand(request: ISendCommandRequest): Promise<IAction
     } finally {
         await rcon.end()
     }
-
 }

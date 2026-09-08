@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { IUser, IUserFilter } from "./interface";
 import { getLastWeekRange } from "@/app/utils/utils";
+import { getSession } from "../session";
 
 export async function getUsers(request: IUserFilter): Promise<IActionResponse<IPagination<IUser>>> {
     const { page = 1, size = 10 } = request;
@@ -19,6 +20,7 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
                 lastlogin: true,
                 email: true,
                 isLogged: true,
+                isAdmin: true,
                 uuid: true,
                 playerPoints: {
                     select: {
@@ -73,6 +75,31 @@ export async function getUserSummary(): Promise<IActionResponse<ISummaryData>> {
         return {
             success: true,
             data: { data: sums, label: dayLabels, total }
+        }
+    } catch {
+        return {
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+        }
+    }
+}
+
+export async function updateIsAdmin(id: number, isAdmin: boolean): Promise<IActionResponse<void>> {
+    const session = await getSession()
+    if (session?.id === id) {
+        return {
+            success: false,
+            error: "คุณไม่สามารถเปลี่ยนสิทธิ์ของตัวเองได้"
+        }
+    }
+
+    try {
+        await prisma.authMe.update({
+            where: { id },
+            data: { isAdmin: isAdmin ? 1 : 0 }
+        })
+        return {
+            success: true
         }
     } catch {
         return {

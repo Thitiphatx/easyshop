@@ -1,18 +1,22 @@
 'use server'
 
+import { Prisma } from '@/app/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
 import { DisplayFormValues, ServerFormValues } from '@/app/setting/overview/schema'
 import { IDisplaySetting, IServerSetting, displaySettingSelect, serverSettingSelect } from './interface'
 
-export async function getDisplaySetting(): Promise<IActionResponse<IDisplaySetting>> {
+export async function getSetting<S extends Prisma.SettingSelect>(
+    select: S
+): Promise<IActionResponse<Prisma.SettingGetPayload<{ select: S }>>> {
     try {
-        const res = await prisma.setting.findFirst({ select: displaySettingSelect })
-        return { success: true, data: res ?? undefined }
+        const res = await prisma.setting.findFirst({ select })
+        return { success: true, data: (res ?? undefined) as Prisma.SettingGetPayload<{ select: S }> | undefined }
     } catch {
         return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
+
 
 export async function upsertDisplaySetting(values: DisplayFormValues): Promise<IActionResponse<IDisplaySetting>> {
     try {
@@ -46,14 +50,6 @@ export async function upsertDisplaySetting(values: DisplayFormValues): Promise<I
     }
 }
 
-export async function getServerSetting(): Promise<IActionResponse<IServerSetting>> {
-    try {
-        const res = await prisma.setting.findFirst({ select: serverSettingSelect })
-        return { success: true, data: res ?? undefined }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
-    }
-}
 
 export async function upsertServerSetting(values: ServerFormValues): Promise<IActionResponse<IServerSetting>> {
     try {

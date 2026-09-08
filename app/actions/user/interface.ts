@@ -3,6 +3,7 @@ import { Prisma } from "@/app/generated/prisma/client";
 
 export interface IUserFilter {
     playerName?: string
+    isAdmin?: boolean
     page?: number
     size?: number
 }
@@ -15,6 +16,7 @@ export type IUser = Prisma.AuthMeGetPayload<{
         lastlogin: true;
         email: true;
         isLogged: true;
+        isAdmin: true;
         uuid: true;
         playerPoints: {
             select: {
