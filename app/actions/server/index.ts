@@ -35,7 +35,7 @@ export async function updateServer(values: Server) {
 
 export async function deleteServer(id: number): Promise<IActionResponse<undefined>> {
     try {
-        const res = await prisma.server.delete({
+        await prisma.server.delete({
             where: { id },
         })
         return {

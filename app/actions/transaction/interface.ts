@@ -1,4 +1,4 @@
-import { Transaction } from "@/app/generated/prisma/client";
+import { Prisma, Transaction } from "@/app/generated/prisma/client";
 
 export interface ITransactionFilter {
     playerName?: string
@@ -6,7 +6,26 @@ export interface ITransactionFilter {
     size?: number
 }
 
-export interface ITransaction extends Omit<Transaction, "executedCommand"> {
-}
+export type ITransaction = Prisma.TransactionGetPayload<{
+    select: {
+        id: true;
+        username: true;
+        itemId: true;
+        serverId: true;
+        pricePaid: true;
+        createdAt: true;
+        item: {
+            select: {
+                name: true;
+                imageUrl: true;
+            };
+        };
+        server: {
+            select: {
+                name: true;
+            };
+        };
+    };
+}>;
 
 export interface ICreateTransactionRequest extends Omit<Transaction, "id"> { }

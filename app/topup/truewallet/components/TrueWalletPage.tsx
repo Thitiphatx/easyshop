@@ -1,10 +1,13 @@
 "use client"
+import { redeem } from '@/app/actions/truewallet'
 import { useAppForm } from '@/components/Form'
-import React, { useEffect } from 'react'
-import { TrueWalletSchema } from '../schema'
-import { checkStatus, redeem } from '@/app/actions/truewallet'
-import { extractVoucherCode } from '@prakrit_m/tmn-voucher'
 import Swal from '@/lib/Swal'
+import { extractVoucherCode } from '@prakrit_m/tmn-voucher'
+import React from 'react'
+import { TrueWalletSchema } from '../schema'
+import Image from "next/image"
+import { ChevronRight } from 'pixelarticons/react'
+import Button from '@/components/Button/Button'
 
 const TrueWalletPage: React.FC = () => {
     const form = useAppForm({
@@ -43,7 +46,7 @@ const TrueWalletPage: React.FC = () => {
                 <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                     <form.AppField
                         name="giftUrl"
-                        children={(field) => <field.TextField label="ลิงค์ซองของขวัญ" required />}
+                        children={(field) => <field.TextField label="ลิงค์ซองของขวัญ" placeholder='https://gift.truemoney.com/campaign/?v=xxxxxxxxxxxxxxxxx' required />}
                     />
                     <form.AppField
                         name="agree"
@@ -58,8 +61,30 @@ const TrueWalletPage: React.FC = () => {
             </div>
 
             {/* Tutorial Section */}
-            <div className='relative bg-(--core-off-black) w-full h-96 z-10 p-12'>
+            <div className='relative bg-(--core-off-black) w-full h-fit z-10 p-12'>
                 <h1 className='text-5xl font-bold text-(--core-white) text-center'>วิธีสร้างซองของขวัญ</h1>
+                <div className='flex flex-nowrap items-center gap-10 mt-10'>
+                    <div className='flex flex-col justify-center items-center'>
+                        <Image src={`/images/others/step-1.webp`} className='w-120' width={720} height={1080} alt="Step-1" />
+                        <p>กดส่งซองทรูมันนี่ (ถ้าไม่มีกดดูทั้งหมด)</p>
+                    </div>
+                    <ChevronRight className='w-24 h-24 text-(--core-green-3)' />
+                    <div className='flex flex-col justify-center items-center'>
+                        <Image src={`/images/others/step-2.webp`} className='w-120' width={720} height={1080} alt="Step-2" />
+                        <p>เลือกส่งให้คนเดียว กรอกจำนวนเงิน และกดถัดไป</p>
+                    </div>
+                    <ChevronRight className='w-24 h-24 text-(--core-green-3)' />
+                    <div className='flex flex-col justify-center items-center'>
+                        <Image src={`/images/others/step-3.webp`} className='w-120' width={720} height={1080} alt="Step-3" />
+                        <p>ตรวจสอบจำนวนเงิน และกดยืนยัน</p>
+                    </div>
+                    <ChevronRight className='w-24 h-24 text-(--core-green-3)' />
+                    <div className='flex flex-col justify-center items-center'>
+                        <Image src={`/images/others/step-4.webp`} className='w-120' width={720} height={1080} alt="Step-4" />
+                        <p>คัดลอกลิงค์ที่ได้มากรอกด้านบน</p>
+                    </div>
+
+                </div>
             </div>
 
             <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/40 z-0'>

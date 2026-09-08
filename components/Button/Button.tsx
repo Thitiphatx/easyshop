@@ -13,6 +13,7 @@ type ColorTokens = {
   textActive: string   // text color when active (ghost variant)
   subtleHover: string  // faint bg on hover (outline variant)
   subtleActive: string // faint bg on active (outline variant)
+  ghostHover: string   // text color on hover (ghost variant)
   // --- Retro Tokens ---
   retroBase: string    // สีหน้าปุ่มส่วนบน
   retroShadow: string  // สีขอบล่าง/เงา
@@ -30,6 +31,7 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     textActive: "text-(--core-green-3)",
     subtleHover: "hover:bg-(--core-green-1)",
     subtleActive: "active:bg-(--core-green-2)",
+    ghostHover: "hover:text-(--core-green-3)",
     retroBase: "bg-(--core-green-3)",
     retroShadow: "bg-(--core-green-5)",
     retroBorder: "border-(--core-green-2)",
@@ -44,6 +46,7 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     textActive: "text-(--dungeons-red-3)",
     subtleHover: "hover:bg-(--dungeons-red-1)",
     subtleActive: "active:bg-(--dungeons-red-2)",
+    ghostHover: "hover:text-(--dungeons-red-3)",
     retroBase: "bg-(--dungeons-red-3)",
     retroShadow: "bg-(--dungeons-red-6)",
     retroBorder: "border-(--dungeons-red-2)",
@@ -58,6 +61,7 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     textActive: "text-(--core-gold-3)",
     subtleHover: "hover:bg-(--core-gold-1)",
     subtleActive: "active:bg-(--core-gold-2)",
+    ghostHover: "hover:text-(--core-gold-3)",
     retroBase: "bg-amber-400",
     retroShadow: "bg-amber-800",
     retroBorder: "border-amber-300",
@@ -72,6 +76,7 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     textActive: "text-(--core-blue-3)",
     subtleHover: "hover:bg-(--core-blue-1)",
     subtleActive: "active:bg-(--core-blue-2)",
+    ghostHover: "hover:text-(--core-blue-3)",
     retroBase: "bg-[#88CBEB]",
     retroShadow: "bg-[#6B8EBF]",
     retroBorder: "border-[#00A3E0]",
@@ -86,6 +91,7 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     textActive: "text-(--core-purple-3)",
     subtleHover: "hover:bg-(--core-purple-1)",
     subtleActive: "active:bg-(--core-purple-2)",
+    ghostHover: "hover:text-(--core-purple-3)",
     retroBase: "bg-purple-400",
     retroShadow: "bg-purple-800",
     retroBorder: "border-purple-300",
@@ -98,8 +104,9 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     borderBottom: "border-b-(--core-rich-black)",
     text: "text-(--core-off-white)",
     textActive: "text-(--core-white)",
-    subtleHover: "hover:bg-(--core-grey-1)",
-    subtleActive: "active:bg-(--core-grey-2)",
+    subtleHover: "hover:bg-(--core-grey-5)",
+    subtleActive: "active:bg-(--core-grey-4)",
+    ghostHover: "hover:text-(--core-off-white)",
     retroBase: "bg-gray-300",
     retroShadow: "bg-gray-600",
     retroBorder: "border-gray-100",
@@ -110,10 +117,12 @@ const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorToken
   Solid: (c) => clsx("ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1 text-(--core-white) disabled:text-(--core-grey-3)! disabled:bg-(--core-grey-1) disabled:border-t-(--core-grey-3) disabled:border-b-(--core-grey-3)", c.base, c.hover, c.active, c.borderTop, c.borderBottom),
 
   Outline: (c) => clsx(
-    "border-2 bg-transparent ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1",
+    "border-solid border-2 border-l-0 border-r-0 bg-transparent ring-2 ring-(--core-off-black) border-t-2 border-b-2 py-2",
     c.text,
     c.subtleHover,
-    c.subtleActive
+    c.subtleActive,
+    c.borderTop,
+    c.borderBottom
   ),
 
   Link: (c) => clsx(
@@ -122,8 +131,8 @@ const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorToken
   ),
 
   Ghost: (c, isActive) => clsx(
-    "font-bold text-sm border-transparent bg-transparent hover:text-(--core-green-3) py-1",
-    isActive ? c.textActive : "text-(--core-white)"
+    "font-bold text-sm border-transparent bg-transparent py-1",
+    isActive ? c.textActive : clsx("text-(--core-white)", c.ghostHover)
   ),
 
   Retro: (c) => clsx(

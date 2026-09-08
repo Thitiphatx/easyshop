@@ -3,6 +3,7 @@ import { Pixelify_Sans, Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/app/contexts/authContext";
+import { SettingProvider } from "@/app/contexts/settingContext";
 import { getSession } from "@/app/actions/session";
 
 const notoSans = Noto_Sans_Thai({
@@ -28,14 +29,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={`${notoSans.variable} ${pixelifySans.variable} h-full antialiased`}
     >
       <body className="w-full min-h-full flex flex-col font-sans!">
-        <AuthProvider>
-          <header className="sticky top-0 z-50 w-full">
-            <Navbar />
-          </header>
-          <main className="flex-1 w-full flex flex-col">
-            {children}
-          </main>
-        </AuthProvider>
+        <SettingProvider>
+          <AuthProvider>
+            <header className="sticky top-0 z-50 w-full">
+              <Navbar />
+            </header>
+            <main className="flex-1 w-full flex flex-col">
+              {children}
+            </main>
+          </AuthProvider>
+        </SettingProvider>
       </body>
     </html>
   );

@@ -4,6 +4,8 @@ import { ChevronDown, ChevronUp } from 'pixelarticons/react'
 import { ISelectProps } from './interface'
 import Button from '../Button/Button'
 import Card from '../Card/Card'
+import clsx from 'clsx'
+import { useAuth } from '@/app/contexts/authContext'
 
 const Select: React.FC<ISelectProps> = ({
     variant = "Solid",
@@ -14,6 +16,7 @@ const Select: React.FC<ISelectProps> = ({
     ...props
 }) => {
     const [isEnableDropdown, setIsEnableDropdown] = useState(false)
+    const { session } = useAuth()
     const containerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -67,7 +70,8 @@ const Select: React.FC<ISelectProps> = ({
                         {items?.map((item, index) => (
                             <li key={index} className='not-last:border-b border-(--core-grey-5)'>
                                 <Button
-                                    className='p-2 w-full text-left!'
+                                    hidden={!session?.isAdmin && item.isAdmin}
+                                    className={clsx('p-2 w-full text-left!', item.className)}
                                     onClick={() => handleItemClick(item.onClick)}
                                     variant='Ghost'
                                 >

@@ -142,3 +142,23 @@ enum TopupStatus {
   SUCCESS
   FAILED
 }
+
+model Setting {
+  id         Int    @id @default(autoincrement())
+  siteName   String @db.VarChar(255)
+  favicon    String @db.VarChar(255)
+  logo       String @db.VarChar(255)
+  serverIp   String @db.VarChar(15)
+  serverName String @db.VarChar(255)
+
+  @@map("setting")
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String   @db.VarChar(255)
+  link      String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+
+  @@map("banner")
+}

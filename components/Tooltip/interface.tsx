@@ -6,4 +6,5 @@ export interface ITooltipProps {
     mode?: TooltipMode
     content: React.ReactNode
     children: React.ReactNode
+    className?: string
 }

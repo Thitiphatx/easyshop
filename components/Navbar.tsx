@@ -6,11 +6,13 @@ import Select from './Select/Select'
 import { ISelectItem } from './Select/interface'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/contexts/authContext'
+import { useSetting } from '@/app/contexts/settingContext'
 import Image from 'next/image'
 
 const Navbar: React.FC = () => {
     const router = useRouter();
     const { session, signOut, openAuth } = useAuth()
+    const { displaySetting, mcStatus } = useSetting()
 
     const paths = useMemo(() => [
         {
@@ -47,14 +49,16 @@ const Navbar: React.FC = () => {
 
     const accountDropdownItems: ISelectItem[] = useMemo(() => [
         { label: `พ้อยท์: ${session?.point ?? 0}` },
-        { label: "โปรไฟล์", onClick: () => router.push("/profile") },
-        { label: "ประวัติการซื้อ", onClick: () => router.push("/history/purchase") },
-        { label: "ประวัติการเติม", onClick: () => router.push("/history/topup") },
+        { label: "โปรไฟล์", onClick: () => router.push("/user/profile") },
+        { label: "ประวัติการซื้อ", onClick: () => router.push("/user/purchase-history") },
+        { label: "ประวัติการเติม", onClick: () => router.push("/user/topup-history") },
+        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/setting/overview"), className: "hover:text-(--marketplace-gold-3)" },
         {
             label: "ออกจากระบบ", onClick: async () => {
                 await signOut()
                 router.refresh()
-            }
+            },
+            className: "hover:text-(--default-warning)"
         },
     ], [session, openAuth, signOut, router])
 
@@ -63,7 +67,11 @@ const Navbar: React.FC = () => {
         <div className='w-full h-20 bg-(--vanilla-grey-6) px-24 flex flex-nowrap justify-between drop-shadow-[0_4px_0px_rgba(0,0,0,0.25)]'>
             {/* Left Section */}
             <div className='w-24 flex-1 flex items-center'>
-                <img className='h-10' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" />
+                <div className='cursor-pointer' onClick={() => router.push("/")}>
+                    {displaySetting?.logo
+                        ? <Image alt="Logo" className='h-10 w-auto' src={displaySetting.logo} width={200} height={40} />
+                        : <Image alt="Logo" className='h-10 w-auto' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" width={200} height={40} />}
+                </div>
             </div>
 
             {/* Center Section */}
@@ -93,7 +101,7 @@ const Navbar: React.FC = () => {
             {/* Right Section */}
             <div className='flex justify-end items-center gap-6 h-full w-24 flex-1'>
                 <div className='flex gap-2 ring-(--core-green-5) ring-2 p-2'>
-                    <span className='text-(--core-green-3) font-bold text-sm'>99</span>
+                    <span className='text-(--core-green-3) font-bold text-sm'>{mcStatus?.playersOnline ?? 0}</span>
                     <span className='text-(--core-white) font-bold text-sm'>Online</span>
                 </div>
                 {session ? (
@@ -102,7 +110,7 @@ const Navbar: React.FC = () => {
                         icon={<Image src={`https://mc-heads.net/avatar/${session.username}/24`} alt={session.username} width={24} height={24} />}
                         items={accountDropdownItems}
                     >
-                        ACCOUNT
+                        Account
                     </Select>
                 ) : (
                     <Button onClick={openAuth}>เข้าสู่ระบบ</Button>

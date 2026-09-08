@@ -13,7 +13,7 @@ export function SubmitButton({ children, ...buttonProps }: ISubmitButtonProps) {
         >
             {([canSubmit, isSubmitting]) => (
                 <Button type="submit" color="Green" disabled={!canSubmit} {...buttonProps}>
-                    {isSubmitting ? 'กำลังบันทึก...' : children}
+                    {isSubmitting ? 'กำลังส่ง...' : children}
                 </Button>
             )}
         </form.Subscribe>
