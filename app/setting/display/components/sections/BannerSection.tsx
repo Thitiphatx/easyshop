@@ -6,13 +6,13 @@ import Table from '@/components/Table/Table'
 import { ITableColumn } from '@/components/Table/interface'
 import { getAllBanners, deleteBanner } from '@/app/actions/banner'
 import Swal from '@/lib/Swal'
-import ModalManageBanner from '../modals/ModalManageBanner'
 import Image from 'next/image'
 import Loading from '@/components/Loading'
 import Button from '@/components/Button/Button'
 import { Banner } from '@/app/generated/prisma/client'
 import { Plus, Trash } from 'pixelarticons/react'
 import { getTopupSummary } from '@/app/actions/topup'
+import ModalManageBanner from '../modals/ModalManageBanner'
 
 const BannerSection: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)

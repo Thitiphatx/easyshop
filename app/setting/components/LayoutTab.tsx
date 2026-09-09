@@ -5,7 +5,7 @@ import Button from '@/components/Button/Button'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { Bulletlist, BulletlistSharp, Home, Image as ImgIcon, Settings2, User } from 'pixelarticons/react'
+import { Bulletlist, BulletlistSharp, Home, Image as ImgIcon, Settings2, User, Chart } from 'pixelarticons/react'
 import React, { useMemo } from 'react'
 
 const LayoutTab: React.FC = () => {
@@ -13,7 +13,8 @@ const LayoutTab: React.FC = () => {
     const path = usePathname()
 
     const menu = useMemo(() => [
-        { label: 'Overview', href: '/setting/overview', icon: <Home className='size-8' />, active: path === '/setting/overview' },
+        { label: 'Dashboard', href: '/setting/dashboard', icon: <Chart className='size-8' />, active: path === '/setting/dashboard' },
+        { label: 'Display', href: '/setting/display', icon: <Home className='size-8' />, active: path === '/setting/display' },
         { label: 'Users', href: '/setting/users', icon: <User className='size-8' />, active: path === '/setting/users' },
         { label: 'Images', href: '/setting/images', icon: <ImgIcon className='size-8' />, active: path === '/setting/images' },
         { label: 'Purchases', href: '/setting/purchase-history', icon: <BulletlistSharp className='size-8' />, active: path === '/setting/purchase-history' },

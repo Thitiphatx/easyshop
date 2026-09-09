@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Pixelify_Sans, Noto_Sans_Thai } from "next/font/google";
+import { Pixelify_Sans, Noto_Sans_Thai, Silkscreen } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/app/contexts/authContext";
@@ -11,9 +11,10 @@ const notoSans = Noto_Sans_Thai({
   subsets: ["latin", "thai"]
 })
 
-const pixelifySans = Pixelify_Sans({
-  variable: "--font-pixelify-sans",
-  subsets: ["latin"]
+const silkscreen = Silkscreen({
+  variable: "--font-silkscreen",
+  subsets: ["latin"],
+  weight: ["400", "700"]
 })
 
 
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${notoSans.variable} ${pixelifySans.variable} h-full antialiased`}
+      className={`${notoSans.variable} ${silkscreen.variable} h-full antialiased`}
     >
       <body className="w-full min-h-full flex flex-col font-sans!">
         <SettingProvider>

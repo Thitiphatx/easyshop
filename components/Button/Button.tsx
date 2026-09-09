@@ -4,20 +4,19 @@ import { IButtonProps } from './interface'
 import clsx from 'clsx'
 
 type ColorTokens = {
-  base: string         // main background shade
-  hover: string        // background on hover (solid variant)
-  active: string       // background on active/press (solid variant)
-  borderTop: string    // top border accent (solid variant, lighter)
-  borderBottom: string // bottom border accent (solid variant, darker)
-  text: string         // text/border color for outline & link variants
-  textActive: string   // text color when active (ghost variant)
-  subtleHover: string  // faint bg on hover (outline variant)
-  subtleActive: string // faint bg on active (outline variant)
-  ghostHover: string   // text color on hover (ghost variant)
-  // --- Retro Tokens ---
-  retroBase: string    // สีหน้าปุ่มส่วนบน
-  retroShadow: string  // สีขอบล่าง/เงา
-  retroBorder: string  // สีกรอบขอบในหน้าปุ่ม
+  base: string
+  hover: string
+  active: string
+  borderTop: string
+  borderBottom: string
+  text: string
+  textActive: string
+  subtleHover: string
+  subtleActive: string
+  ghostHover: string
+  retroBase: string
+  retroShadow: string
+  retroBorder: string
 }
 
 const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
@@ -114,15 +113,15 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
 }
 
 const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorTokens, isActive?: boolean) => string> = {
-  Solid: (c) => clsx("ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1 text-(--core-white) disabled:text-(--core-grey-3)! disabled:bg-(--core-grey-1) disabled:border-t-(--core-grey-3) disabled:border-b-(--core-grey-3)", c.base, c.hover, c.active, c.borderTop, c.borderBottom),
+  Solid: (c) => clsx(
+    "ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1 text-(--core-white)",
+    "disabled:text-(--core-grey-3)! disabled:bg-(--core-grey-1) disabled:border-t-(--core-grey-3) disabled:border-b-(--core-grey-3)",
+    c.base, c.hover, c.active, c.borderTop, c.borderBottom
+  ),
 
   Outline: (c) => clsx(
-    "border-solid border-2 border-l-0 border-r-0 bg-transparent ring-2 ring-(--core-off-black) border-t-2 border-b-2 py-2",
-    c.text,
-    c.subtleHover,
-    c.subtleActive,
-    c.borderTop,
-    c.borderBottom
+    "border-2 border-l-0 border-r-0 bg-transparent ring-2 ring-(--core-off-black) py-2",
+    c.text, c.subtleHover, c.subtleActive, c.borderTop, c.borderBottom
   ),
 
   Link: (c) => clsx(
@@ -141,6 +140,12 @@ const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorToken
   ),
 }
 
+const IconSlot = ({ children, position }: { children: React.ReactNode; position: 'start' | 'end' }) => (
+  <div className={clsx("mx-4 absolute flex items-center", position === 'start' ? 'left-0' : 'right-0')}>
+    {children}
+  </div>
+)
+
 const Button: React.FC<IButtonProps> = ({
   variant = "Solid",
   color = "Default",
@@ -153,22 +158,16 @@ const Button: React.FC<IButtonProps> = ({
   className,
   ...props
 }) => {
-  const currentColor = colorTokens[color]
-  const currentVariant = variantStyles[variant]?.(currentColor, isActive)
+  const c = colorTokens[color]
+  const variantClass = variantStyles[variant]?.(c, isActive)
   const isRetro = variant === "Retro"
 
-  // Render เนื้อหาด้านในปุ่ม (Icon + Children)
   const content = isIconOnly ? (
     <div className="flex items-center justify-center">{icon}</div>
   ) : (
     <>
-      {icon && iconPosition === 'start' && (
-        <div className="mx-4 absolute left-0 flex items-center">{icon}</div>
-      )}
+      {icon && <IconSlot position={iconPosition}>{icon}</IconSlot>}
       {children}
-      {icon && iconPosition === 'end' && (
-        <div className="mx-4 absolute right-0 flex items-center">{icon}</div>
-      )}
     </>
   )
 
@@ -177,7 +176,7 @@ const Button: React.FC<IButtonProps> = ({
       className={clsx(
         'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer',
         !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-12 gap-2'),
-        currentVariant,
+        variantClass,
         block && 'w-full px-0!',
         className
       )}
@@ -187,9 +186,9 @@ const Button: React.FC<IButtonProps> = ({
         <span
           className={clsx(
             'flex w-full h-full items-center justify-center -translate-y-1 border-2 transition-transform group-active:translate-y-0 text-(--core-rich-black)',
-            currentColor.retroBorder,
-            currentColor.retroBase,
-            isIconOnly ? 'p-3 aspect-square' : 'px-12 py-3 gap-2'
+            c.retroBorder,
+            c.retroBase,
+            isIconOnly ? 'p-2 aspect-square' : 'px-12 py-2 gap-2'
           )}
         >
           {content}

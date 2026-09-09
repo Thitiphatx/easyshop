@@ -119,7 +119,7 @@ const UserPage: React.FC = () => {
 
     return (
         <Card className='h-full' cardTitle="รายชื่อผู้เล่น">
-            <Table columns={columns} loading={isLoading} data={users}
+            <Table columns={columns} data={users}
                 emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
                 pagination={{ page, total, size, onChange: setPage }}>
 

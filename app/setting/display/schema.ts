@@ -2,7 +2,7 @@ import z from "zod";
 
 export const DisplaySchema = z.object({
     siteName: z.string().min(1, 'กรอกชื่อเว็บช็อป'),
-    favicon: z.string().min(1, 'กรุณาเลือก Favicon'),
+    siteDesc: z.string().min(1, 'กรอกคำอธิบาย'),
     logo: z.string().min(1, 'กรุณาเลือก Logo'),
 })
 

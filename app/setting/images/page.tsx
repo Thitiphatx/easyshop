@@ -2,19 +2,21 @@
 
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
 import Image from 'next/image'
-import { Upload, Trash, Image as Photo, Image2Plus, Close, Repeat } from 'pixelarticons/react'
+import { Upload, Trash, Image as Photo, Image2Plus, Close, Repeat, Grid2x22Sharp, Check } from 'pixelarticons/react'
 import clsx from 'clsx'
 import Card from '@/components/Card/Card'
 import Button from '@/components/Button/Button'
 import { uploadImage, listImages, deleteImage } from '@/app/actions/image'
 import type { ImageGroup } from '@/app/actions/image/interface'
 import Swal from '@/lib/Swal'
+import Loading from '@/components/Loading'
 
 const GROUPS: { key: ImageGroup; label: string }[] = [
     { key: 'server', label: 'Server' },
     { key: 'item', label: 'Item' },
     { key: 'banner', label: 'Banner' },
     { key: 'brand', label: 'Brand' },
+    { key: 'others', label: 'Others' },
 ]
 
 const ImageSetting: React.FC = () => {
@@ -149,12 +151,25 @@ const ImageSetting: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-4">
-            <Card cardTitle="Image Manager">
-                <p className="text-(--core-grey-3) text-sm font-pixel">
-                    ศูนย์กลางจัดการรูปภาพทั้งหมดของเว็บไซต์ — อัปโหลด ลบ และจัดกลุ่มรูปภาพ
-                </p>
+            {/* Group Tabs */}
+            <Card>
+                <div className="flex gap-2 flex-wrap">
+                    {GROUPS.map((g) => (
+                        <button
+                            key={g.key}
+                            onClick={() => handleGroupChange(g.key)}
+                            className={clsx(
+                                'px-5 py-2 font-pixel font-bold text-sm transition-colors cursor-pointer border-2',
+                                activeGroup === g.key
+                                    ? 'bg-(--legends-light-blue-6) border-(--legends-light-blue-5) text-(--legends-light-blue-2)'
+                                    : 'bg-(--core-grey-5) border-(--core-grey-4) text-(--core-grey-2) hover:bg-(--core-grey-4)',
+                            )}
+                        >
+                            {g.label}
+                        </button>
+                    ))}
+                </div>
             </Card>
-
             {/* Upload Zone */}
             <div
                 className={clsx(
@@ -240,26 +255,6 @@ const ImageSetting: React.FC = () => {
                 </div>
             </div>
 
-            {/* Group Tabs */}
-            <Card>
-                <div className="flex gap-2 flex-wrap">
-                    {GROUPS.map((g) => (
-                        <button
-                            key={g.key}
-                            onClick={() => handleGroupChange(g.key)}
-                            className={clsx(
-                                'px-5 py-2 font-pixel font-bold text-sm transition-colors cursor-pointer border-2',
-                                activeGroup === g.key
-                                    ? 'bg-(--legends-light-blue-6) border-(--legends-light-blue-5) text-(--legends-light-blue-2)'
-                                    : 'bg-(--core-grey-5) border-(--core-grey-4) text-(--core-grey-2) hover:bg-(--core-grey-4)',
-                            )}
-                        >
-                            {g.label}
-                        </button>
-                    ))}
-                </div>
-            </Card>
-
             {/* Toolbar */}
             <div className="flex items-center gap-3 flex-wrap">
                 <span className="font-pixel text-sm text-(--core-grey-3)">
@@ -269,7 +264,7 @@ const ImageSetting: React.FC = () => {
                 <div className="flex-1" />
                 <Button
                     variant="Ghost"
-                    color="Default"
+                    color="Green"
                     onClick={() => loadImages(activeGroup)}
                     isIconOnly
                     icon={<Repeat className="size-5" />}
@@ -277,9 +272,6 @@ const ImageSetting: React.FC = () => {
                 />
                 {selected.size > 0 ? (
                     <>
-                        <Button variant="Outline" color="Default" onClick={clearSelection}>
-                            <Close className="size-4 inline mr-1" />ยกเลิก
-                        </Button>
                         <Button
                             variant="Solid"
                             color="Red"
@@ -289,10 +281,13 @@ const ImageSetting: React.FC = () => {
                         >
                             {isDeleting ? 'กำลังลบ…' : `ลบที่เลือก (${selected.size})`}
                         </Button>
+                        <Button variant="Retro" color="Default" onClick={clearSelection} icon={<Close className="size-6" />}>
+                            ยกเลิก
+                        </Button>
                     </>
                 ) : (
                     images.length > 0 && (
-                        <Button variant="Outline" color="Default" onClick={selectAll}>
+                        <Button variant="Retro" color="Purple" onClick={selectAll} icon={<Grid2x22Sharp className='size-6' />}>
                             เลือกทั้งหมด
                         </Button>
                     )
@@ -302,10 +297,7 @@ const ImageSetting: React.FC = () => {
             {/* Image Grid */}
             <Card>
                 {isLoading ? (
-                    <div className="flex flex-col items-center gap-3 py-16 text-(--core-grey-3)">
-                        <Repeat className="size-10 animate-spin" />
-                        <p className="font-pixel">กำลังโหลด…</p>
-                    </div>
+                    <Loading />
                 ) : images.length === 0 ? (
                     <div className="flex flex-col items-center gap-3 py-16 text-(--core-grey-3)">
                         <Image2Plus className="size-14" />
@@ -345,27 +337,26 @@ const ImageSetting: React.FC = () => {
                                     )} />
 
                                     {/* Delete button */}
-                                    <button
+                                    <Button
                                         className={clsx(
-                                            'absolute top-1 right-1 p-1 bg-(--core-off-black)/80 text-(--dungeons-red-3)',
-                                            'opacity-0 group-hover/img:opacity-100 transition-opacity cursor-pointer',
-                                            'hover:bg-(--dungeons-red-5) hover:text-(--core-white)',
+                                            'absolute! top-1 right-1 hidden!',
+                                            'group-hover/img:block!',
                                         )}
+                                        color="Red"
                                         onClick={(e) => handleDeleteSingle(url, e)}
-                                        title="Delete"
-                                    >
-                                        <Trash className="size-4" />
-                                    </button>
+                                        icon={<Trash className="size-4" />}
+                                        isIconOnly
+                                    />
 
                                     {/* Selected badge */}
                                     {isSelected && (
-                                        <span className="absolute bottom-0 inset-x-0 bg-(--core-green-3)/80 text-(--core-white) text-[10px] font-bold text-center py-0.5 font-pixel">
-                                            ✓ เลือกแล้ว
+                                        <span className="absolute bottom-0 inset-x-0 bg-(--core-green-3)/80 text-(--core-white) text-[10px] font-bold text-center py-0.5 font-pixel flex items-center gap-1 justify-center">
+                                            <Check className='size-4' /> เลือกแล้ว
                                         </span>
                                     )}
 
                                     {/* Filename tooltip */}
-                                    <span className="absolute top-1 left-1 right-7 truncate text-[9px] font-pixel text-(--core-white) bg-black/50 px-1 opacity-0 group-hover/img:opacity-100 transition-opacity">
+                                    <span className="absolute w-40 top-1 left-1 right-7 truncate text-[9px] font-pixel text-(--core-white) bg-black/50 px-1 opacity-0 group-hover/img:opacity-100 transition-opacity">
                                         {url.split('/').pop()}
                                     </span>
                                 </div>

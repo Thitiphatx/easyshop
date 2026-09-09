@@ -3,7 +3,7 @@
 import { Prisma } from '@/app/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
-import { DisplayFormValues, ServerFormValues } from '@/app/setting/overview/schema'
+import { DisplayFormValues, ServerFormValues } from '@/app/setting/display/schema'
 import { IDisplaySetting, IServerSetting, displaySettingSelect, serverSettingSelect } from './interface'
 
 export async function getSetting<S extends Prisma.SettingSelect>(
@@ -27,7 +27,7 @@ export async function upsertDisplaySetting(values: DisplayFormValues): Promise<I
                 where: { id: existing.id },
                 data: {
                     siteName: values.siteName,
-                    favicon: values.favicon,
+                    siteDesc: values.siteDesc,
                     logo: values.logo,
                 },
                 select: displaySettingSelect,
@@ -36,7 +36,7 @@ export async function upsertDisplaySetting(values: DisplayFormValues): Promise<I
             res = await prisma.setting.create({
                 data: {
                     siteName: values.siteName,
-                    favicon: values.favicon,
+                    siteDesc: values.siteDesc,
                     logo: values.logo,
                     serverIp: '',
                     serverName: '',
@@ -70,7 +70,7 @@ export async function upsertServerSetting(values: ServerFormValues): Promise<IAc
                     serverName: values.serverName,
                     serverIp: values.ip,
                     siteName: '',
-                    favicon: '',
+                    siteDesc: '',
                     logo: '',
                 },
                 select: serverSettingSelect,

@@ -47,6 +47,7 @@ const Select: React.FC<ISelectProps> = ({
         <div ref={containerRef} className="relative inline-block">
             <Button
                 variant={variant}
+                color="Green"
                 icon={icon}
                 onClick={() => setIsEnableDropdown((prev) => !prev)}
                 isActive={isEnableDropdown}
@@ -74,6 +75,7 @@ const Select: React.FC<ISelectProps> = ({
                                     className={clsx('p-2 w-full text-left!', item.className)}
                                     onClick={() => handleItemClick(item.onClick)}
                                     variant='Ghost'
+                                    color="Green"
                                 >
                                     {item.label}
                                 </Button>

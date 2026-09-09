@@ -22,7 +22,7 @@ const LayoutTab: React.FC = () => {
     return (
         <div className="bg-(--core-grey-6)">
             <div className="w-full flex flex-col justify-center items-center gap-2 p-8">
-                <Image src={`https://mc-heads.net/avatar/${session?.username}/128`} alt="Skin Profile" width={128} height={128} />
+                <img src={`https://mc-heads.net/avatar/${session?.username}/128`} alt="Skin Profile" width={128} height={128} />
                 <h1 className="font-pixel text-xl font-bold">{session?.username}</h1>
                 <p className="text-(--marketplace-gold-3) font-bold">{session?.point.toLocaleString()} พอยท์</p>
             </div>

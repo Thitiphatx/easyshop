@@ -15,7 +15,7 @@ const Card: React.FC<ICardProps> = ({
     return (
         <div {...props} className={`w-full drop-shadow-[0_4px_0px_rgba(0,0,0,0.25)] transition-colors p-3 bg-(--core-grey-6) text-(--core-white) border-l-2 border-b-2 border-l-(--core-rich-black) border-b-(--core-rich-black) border-r-2 border-r-(--core-grey-5) border-t-2 border-t-(--core-grey-5) ${clsx(className, pressableClass)}`}>
             {cardTitle && (
-                <div className='font-pixel font-bold text-3xl mb-2'>
+                <div className='font-pixel text-3xl mb-2'>
                     {cardTitle}
                 </div>
             )}

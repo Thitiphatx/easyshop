@@ -3,7 +3,7 @@ import { Prisma } from "@/app/generated/prisma/client";
 const displaySettingSelect = {
     id: true,
     siteName: true,
-    favicon: true,
+    siteDesc: true,
     logo: true,
 } satisfies Prisma.SettingSelect;
 

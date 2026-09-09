@@ -22,3 +22,13 @@ export type ITopup = Prisma.TopupGetPayload<{
         };
     };
 }>;
+
+export interface ITopDonateFilter {
+    top?: number
+    type: 'all' | 'month'
+}
+
+export interface ITopDonate {
+    username: string
+    amount: number
+}

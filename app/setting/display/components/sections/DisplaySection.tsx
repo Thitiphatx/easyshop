@@ -16,7 +16,7 @@ const DisplaySection: React.FC = () => {
 
     const defaultValues = useMemo<DisplayFormValues>(() => ({
         siteName: displayInfo?.siteName || '',
-        favicon: displayInfo?.favicon || '',
+        siteDesc: displayInfo?.siteDesc || '',
         logo: displayInfo?.logo || '',
     }), [displayInfo])
 
@@ -28,9 +28,9 @@ const DisplaySection: React.FC = () => {
         onSubmit: async ({ value }: { value: DisplayFormValues }) => {
             const res = await upsertDisplaySetting(value)
             if (!res.success) {
-                Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
+                Swal.fire({ icon: 'error', title: res.error })
             } else {
-                Swal.fire({ icon: 'success', title: 'บันทึกการตั้งค่าเรียบร้อยแล้ว', theme: 'dark' })
+                Swal.fire({ icon: 'success', title: 'บันทึกการตั้งค่าเรียบร้อยแล้ว' })
             }
             fetchDisplayInfo()
         },
@@ -60,12 +60,12 @@ const DisplaySection: React.FC = () => {
                         children={(field) => <field.ImageSelectField label="Logo (แนะนำขนาด 300x50)" group="brand" required />}
                     />
                     <form.AppField
-                        name="favicon"
-                        children={(field) => <field.ImageSelectField label="FavIcon" group="brand" required />}
+                        name="siteName"
+                        children={(field) => <field.TextField label="Webshop Name" placeholder='กรอกชื่อของเว็บช็อป' required />}
                     />
                     <form.AppField
-                        name="siteName"
-                        children={(field) => <field.TextField label="Site Name" placeholder='กรอกชื่อของเว็บช็อป' required />}
+                        name="siteDesc"
+                        children={(field) => <field.TextField label="Webshop Description" placeholder='กรอกรายละเอียดของเว็บช็อป' required />}
                     />
                     <form.AppForm>
                         <form.SubmitButton block>บันทึก</form.SubmitButton>
