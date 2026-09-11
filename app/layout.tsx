@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/app/contexts/authContext";
 import { SettingProvider } from "@/app/contexts/settingContext";
 import { getSession } from "@/app/actions/session";
+import Footer from "@/components/Footer";
 
 const notoSans = Noto_Sans_Thai({
   variable: "--font-noto-sans",
@@ -33,11 +34,16 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <SettingProvider>
           <AuthProvider>
             <header className="sticky top-0 z-50 w-full">
-              <Navbar />
+              <nav>
+                <Navbar />
+              </nav>
             </header>
             <main className="flex-1 w-full flex flex-col">
               {children}
             </main>
+            <footer>
+              <Footer />
+            </footer>
           </AuthProvider>
         </SettingProvider>
       </body>

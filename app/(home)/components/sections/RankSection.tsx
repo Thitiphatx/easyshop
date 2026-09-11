@@ -8,6 +8,7 @@ import Loading from '@/components/Loading'
 import Swal from '@/lib/Swal'
 import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/image'
+import { Hash } from 'pixelarticons/react'
 
 const RankSection: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -35,8 +36,8 @@ const RankSection: React.FC = () => {
     if (isLoading || topDonate.length < 3) return <Loading />
 
     return (
-        <div className='flex flex-col justify-center items-center gap-8 py-16'>
-            <Card className='w-full h-32 flex justify-center items-center'>
+        <div className='flex flex-col justify-center items-center gap-4 py-16'>
+            <Card className='w-full h-32 flex justify-center items-center border-b-0! border-l-0! border-r-0!'>
                 <div className='flex justify-center items-center'>
                     <Image src="/images/others/emerald.webp" className='size-16 object-cover object-center -rotate-30' width={64} height={64} alt="Emerald" />
                     <div className='flex flex-col justify-center items-center h-full'>
@@ -46,25 +47,34 @@ const RankSection: React.FC = () => {
                     <Image src="/images/others/emerald.webp" className='size-16 object-cover object-center rotate-30' width={64} height={64} alt="Emerald" />
                 </div>
             </Card>
-            <Card className='pb-16'>
+            <Card className='pb-16 border-t-0! border-l-0! border-r-0!'>
                 <div className='flex flex-row justify-center items-center gap-32'>
                     <div className='flex flex-col justify-center items-center translate-y-10'>
                         <h2 className='text-(--vanilla-green-3) font-bold text-xl'>{formatCurrency(topDonate[1].amount)}</h2>
-                        <h3 className='text-(--marketplace-grey-2)'>{topDonate[1].username}</h3>
+                        <h3 className='text-(--marketplace-grey-2) text-xl'>{topDonate[1].username}</h3>
                         <img loading="eager" src={`https://mc-heads.net/body/${topDonate[1]?.username}`} alt="Player Avatar" width={128} height={300} />
-                        <p className='text-xl font-bold font-pixel text-(--dungeons-orange-3)'>#2</p>
+                        <span className='flex items-center font-bold font-pixel text-(--dungeons-orange-3) mt-2'>
+                            <Hash className='stroke-current size-7' strokeWidth={2} />
+                            <p className='text-4xl'>2</p>
+                        </span>
                     </div>
                     <div className='flex flex-col justify-center items-center'>
                         <h2 className='text-(--vanilla-green-3) font-bold text-xl'>{formatCurrency(topDonate[0].amount)}</h2>
-                        <h3 className='text-(--marketplace-grey-2)'>{topDonate[0].username}</h3>
+                        <h3 className='text-(--marketplace-grey-2) text-xl'>{topDonate[0].username}</h3>
                         <img loading="eager" src={`https://mc-heads.net/body/${topDonate[0]?.username}`} alt="Player Avatar" width={128} height={300} />
-                        <p className='text-xl font-bold font-pixel text-(--dungeons2-red-3)'>#1</p>
+                        <span className='flex items-center font-bold font-pixel text-(--dungeons2-red-3)'>
+                            <Hash className='stroke-current size-7' strokeWidth={2} />
+                            <p className='text-4xl'>1</p>
+                        </span>
                     </div>
                     <div className='flex flex-col justify-center items-center translate-y-10'>
                         <h2 className='text-(--vanilla-green-3) font-bold text-xl'>{formatCurrency(topDonate[2].amount)}</h2>
-                        <h3 className='text-(--marketplace-grey-2)'>{topDonate[2].username}</h3>
+                        <h3 className='text-(--marketplace-grey-2) text-xl'>{topDonate[2].username}</h3>
                         <img loading="eager" src={`https://mc-heads.net/body/${topDonate[2]?.username}`} alt="Player Avatar" width={128} height={300} />
-                        <p className='text-xl font-bold font-pixel text-(--legends-light-blue-3)'>#3</p>
+                        <span className='flex items-center font-bold font-pixel text-(--legends-light-blue-3) mt-2'>
+                            <Hash className='stroke-current size-7' strokeWidth={2} />
+                            <p className='text-4xl'>3</p>
+                        </span>
                     </div>
                 </div>
             </Card>

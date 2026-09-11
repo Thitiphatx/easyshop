@@ -2,7 +2,14 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['mc-heads.net',],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'mc-heads.net',
+        port: '',
+        pathname: '**',
+      },
+    ],
   },
   experimental: {
     serverActions: {
