@@ -84,7 +84,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                     <div className='p-4'>
                         <form.AppField
                             name="imageUrl"
-                            children={(field) => <field.ImageSelectField label="รูปภาพเซิร์ฟเวอร์" group="server" required />}
+                            children={(field) => <field.ImageSelectField label="รูปภาพเซิร์ฟเวอร์" group="server" />}
                         />
                         <form.AppField
                             name="name"
@@ -92,7 +92,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                         />
                         <form.AppField
                             name="subtitle"
-                            children={(field) => <field.TextField label="Sub Name" placeholder='กรอกรายละเอียดสั้นๆ (เวอร์ชั่น, แนว)' />}
+                            children={(field) => <field.TextField label="Sub Name" placeholder='กรอกรายละเอียดสั้นๆ (เวอร์ชั่น, แนว)' nullable />}
                         />
                     </div>
                 </div>

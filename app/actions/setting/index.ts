@@ -1,48 +1,17 @@
 'use server'
 
-import { Prisma } from '@/app/generated/prisma/client'
+import { Setting } from '@/app/generated/prisma/client'
+import { DisplayFormValues, ServerFormValues } from '@/app/setting/display/schema'
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
-import { DisplayFormValues, ServerFormValues } from '@/app/setting/display/schema'
-import { IDisplaySetting, IServerSetting, displaySettingSelect, serverSettingSelect } from './interface'
+import { MethodFormValues, PromotionFormValues } from '@/app/setting/topup/schema'
 
-export async function getSetting<S extends Prisma.SettingSelect>(
-    select: S
-): Promise<IActionResponse<Prisma.SettingGetPayload<{ select: S }>>> {
+export async function getSetting(): Promise<IActionResponse<Setting>> {
     try {
-        const res = await prisma.setting.findFirst({ select })
-        return { success: true, data: (res ?? undefined) as Prisma.SettingGetPayload<{ select: S }> | undefined }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
-    }
-}
-
-
-export async function upsertDisplaySetting(values: DisplayFormValues): Promise<IActionResponse<IDisplaySetting>> {
-    try {
-        const existing = await prisma.setting.findFirst({ select: { id: true } })
-        let res: IDisplaySetting
-        if (existing) {
-            res = await prisma.setting.update({
-                where: { id: existing.id },
-                data: {
-                    siteName: values.siteName,
-                    siteDesc: values.siteDesc,
-                    logo: values.logo,
-                },
-                select: displaySettingSelect,
-            })
-        } else {
-            res = await prisma.setting.create({
-                data: {
-                    siteName: values.siteName,
-                    siteDesc: values.siteDesc,
-                    logo: values.logo,
-                    serverIp: '',
-                    serverName: '',
-                },
-                select: displaySettingSelect,
-            })
+        const res = await prisma.setting.findFirst()
+        if (!res) return {
+            success: false,
+            error: 'ไม่พบข้อมูลการตั้งค่า กรุณา Setup ระบบใหม่อีกครั้ง'
         }
         return { success: true, data: res }
     } catch {
@@ -51,31 +20,68 @@ export async function upsertDisplaySetting(values: DisplayFormValues): Promise<I
 }
 
 
-export async function upsertServerSetting(values: ServerFormValues): Promise<IActionResponse<IServerSetting>> {
+export async function updateDisplaySetting(values: DisplayFormValues): Promise<IActionResponse<Setting>> {
     try {
-        const existing = await prisma.setting.findFirst({ select: { id: true } })
-        let res: IServerSetting
-        if (existing) {
-            res = await prisma.setting.update({
-                where: { id: existing.id },
-                data: {
-                    serverName: values.serverName,
-                    serverIp: values.ip,
-                },
-                select: serverSettingSelect,
-            })
-        } else {
-            res = await prisma.setting.create({
-                data: {
-                    serverName: values.serverName,
-                    serverIp: values.ip,
-                    siteName: '',
-                    siteDesc: '',
-                    logo: '',
-                },
-                select: serverSettingSelect,
-            })
-        }
+        const { logo, siteDesc, siteName } = values
+        const res = await prisma.setting.update({
+            where: { id: 1 },
+            data: {
+                siteName,
+                siteDesc,
+                logo,
+            },
+        })
+        return { success: true, data: res }
+    } catch {
+        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    }
+}
+
+export async function updateServerSetting(values: ServerFormValues): Promise<IActionResponse<Setting>> {
+    try {
+        const { ip: serverIp, serverName, serverDesc, serverImageUrl } = values
+
+        const res = await prisma.setting.update({
+            where: { id: 1 },
+            data: {
+                serverName,
+                serverIp,
+                serverDesc,
+                serverImageUrl,
+            },
+        })
+        return { success: true, data: res }
+    } catch {
+        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    }
+}
+
+export async function updatePointMultiplier(values: PromotionFormValues): Promise<IActionResponse<Setting>> {
+    try {
+        const { pointMultiplier } = values
+
+        const res = await prisma.setting.update({
+            where: { id: 1 },
+            data: {
+                pointMultiplier,
+            },
+        })
+        return { success: true, data: res }
+    } catch {
+        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    }
+}
+
+export async function updatePaymentMethod(values: MethodFormValues): Promise<IActionResponse<Setting>> {
+    try {
+        const { enableBank, enableTruewallet } = values
+        const res = await prisma.setting.update({
+            where: { id: 1 },
+            data: {
+                enableBank,
+                enableTruewallet,
+            },
+        })
         return { success: true, data: res }
     } catch {
         return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }

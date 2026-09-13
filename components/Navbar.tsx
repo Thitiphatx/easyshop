@@ -12,7 +12,7 @@ import Image from 'next/image'
 const Navbar: React.FC = () => {
     const router = useRouter();
     const { session, signOut, openAuth } = useAuth()
-    const { displaySetting, mcStatus } = useSetting()
+    const { setting, mcStatus } = useSetting()
 
     const paths = useMemo(() => [
         {
@@ -36,10 +36,6 @@ const Navbar: React.FC = () => {
         {
             label: "Shop",
             path: "/shop"
-        },
-        {
-            label: "Guide",
-            path: "/guide"
         },
         {
             label: "Ranking",
@@ -68,8 +64,8 @@ const Navbar: React.FC = () => {
             {/* Left Section */}
             <div className='w-24 flex-1 flex items-center'>
                 <div className='cursor-pointer' onClick={() => router.push("/")}>
-                    {displaySetting?.logo
-                        ? <Image alt="Logo" className='h-12 w-auto' src={displaySetting.logo} width={260} height={50} />
+                    {setting?.logo
+                        ? <Image alt="Logo" className='h-12 w-auto' src={setting.logo} width={260} height={50} />
                         : <Image alt="Logo" className='h-12 w-auto' loading='eager' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" width={260} height={50} />}
                 </div>
             </div>

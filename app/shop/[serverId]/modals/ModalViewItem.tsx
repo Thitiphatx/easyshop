@@ -77,7 +77,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                 {/* Product Image */}
                 <div className="relative w-full h-64 overflow-hidden rounded-lg border-2 border-(--core-grey-5) bg-(--core-grey-6) flex items-center justify-center">
                     <img
-                        src={itemInfo.imageUrl}
+                        src={itemInfo.imageUrl ?? '/images/others/emerald.webp'}
                         alt={itemInfo.name}
                         className="w-full h-full object-cover object-center"
                     />

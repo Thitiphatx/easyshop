@@ -2,7 +2,7 @@ import type { SelectHTMLAttributes } from 'react'
 
 export interface ISelectOption {
   label: string
-  value: string
+  value: string | number
 }
 
 export interface ISelectFieldProps
@@ -11,4 +11,5 @@ export interface ISelectFieldProps
   options: ISelectOption[]
   required?: boolean
   placeholder?: string
+  layout?: 'horizontal' | 'vertical'
 }

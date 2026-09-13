@@ -1,24 +1,22 @@
 "use client"
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { updateDisplaySetting } from '@/app/actions/setting'
 import Card from '@/components/Card/Card'
-import { DisplayFormValues, DisplaySchema } from '../../schema'
 import { useAppForm } from '@/components/Form'
-import { IDisplaySetting } from '@/app/actions/setting/interface'
-import Swal from '@/lib/Swal'
-import { getSetting, upsertDisplaySetting } from '@/app/actions/setting'
-import { displaySettingSelect } from '@/app/actions/setting/interface'
 import Loading from '@/components/Loading'
+import Swal from '@/lib/Swal'
+import React, { useMemo, useState } from 'react'
+import { DisplayFormValues, DisplaySchema } from '../../schema'
+import { useSetting } from '@/app/contexts/settingContext'
 
 const DisplaySection: React.FC = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [displayInfo, setDisplayInfo] = useState<IDisplaySetting>()
+    const { setting, fetchSetting } = useSetting()
 
     const defaultValues = useMemo<DisplayFormValues>(() => ({
-        siteName: displayInfo?.siteName || '',
-        siteDesc: displayInfo?.siteDesc || '',
-        logo: displayInfo?.logo || '',
-    }), [displayInfo])
+        siteName: setting?.siteName || '',
+        siteDesc: setting?.siteDesc || '',
+        logo: setting?.logo || '',
+    }), [setting])
 
     const form = useAppForm({
         defaultValues,
@@ -26,52 +24,35 @@ const DisplaySection: React.FC = () => {
             onSubmit: DisplaySchema,
         },
         onSubmit: async ({ value }: { value: DisplayFormValues }) => {
-            const res = await upsertDisplaySetting(value)
+            const res = await updateDisplaySetting(value)
             if (!res.success) {
                 Swal.fire({ icon: 'error', title: res.error })
             } else {
                 Swal.fire({ icon: 'success', title: 'บันทึกการตั้งค่าเรียบร้อยแล้ว' })
+                await fetchSetting()
             }
-            fetchDisplayInfo()
         },
     })
 
-    const fetchDisplayInfo = useCallback(async () => {
-        setIsLoading(true)
-        const res = await getSetting(displaySettingSelect)
-        if (res.success && res.data) {
-            setDisplayInfo(res.data)
-        }
-        setIsLoading(false)
-    }, [])
-
-    useEffect(() => {
-        fetchDisplayInfo()
-    }, [fetchDisplayInfo])
-
     return (
         <Card cardTitle="Display" className='h-fit'>
-            {isLoading ? (
-                <div className='flex justify-center py-8'><Loading /></div>
-            ) : (
-                <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
-                    <form.AppField
-                        name="logo"
-                        children={(field) => <field.ImageSelectField label="Logo (แนะนำขนาด 300x50)" group="brand" required />}
-                    />
-                    <form.AppField
-                        name="siteName"
-                        children={(field) => <field.TextField label="Webshop Name" placeholder='กรอกชื่อของเว็บช็อป' required />}
-                    />
-                    <form.AppField
-                        name="siteDesc"
-                        children={(field) => <field.TextField label="Webshop Description" placeholder='กรอกรายละเอียดของเว็บช็อป' required />}
-                    />
-                    <form.AppForm>
-                        <form.SubmitButton block>บันทึก</form.SubmitButton>
-                    </form.AppForm>
-                </form>
-            )}
+            <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+                <form.AppField
+                    name="logo"
+                    children={(field) => <field.ImageSelectField label="Logo (แนะนำขนาด 300x50)" group="brand" />}
+                />
+                <form.AppField
+                    name="siteName"
+                    children={(field) => <field.TextField label="Webshop Name" placeholder='กรอกชื่อของเว็บช็อป' required />}
+                />
+                <form.AppField
+                    name="siteDesc"
+                    children={(field) => <field.TextField label="Webshop Description" placeholder='กรอกรายละเอียดของเว็บช็อป' />}
+                />
+                <form.AppForm>
+                    <form.SubmitButton block>บันทึก</form.SubmitButton>
+                </form.AppForm>
+            </form>
         </Card>
     )
 }

@@ -1,5 +1,5 @@
 import { IModalCommonProps } from "@/app/interface"
-import { Item, Server } from "../generated/prisma/client"
+import { Server } from "../generated/prisma/client"
 import { ISessionPayload } from "../actions/session/interface"
 import { IItem } from "../actions/item/interface"
 
@@ -11,7 +11,7 @@ export interface IModalServerProps extends IModalCommonProps {
 
 export interface IModalItemProps extends IModalCommonProps {
     isEdit?: boolean
-    itemInfo?: Item
+    itemInfo?: IItem
     getItemList: () => Promise<void>
     serverId: number
 }

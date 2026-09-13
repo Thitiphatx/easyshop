@@ -1,11 +1,9 @@
 "use client"
 
-import { useAuth } from '@/app/contexts/authContext'
 import Button from '@/components/Button/Button'
 import clsx from 'clsx'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { Bulletlist, BulletlistSharp, Home, Image as ImgIcon, Settings2, User, Chart } from 'pixelarticons/react'
+import { BulletlistSharp, Chart, CreditCard, Home, Image as ImgIcon, Settings2, User } from 'pixelarticons/react'
 import React, { useMemo } from 'react'
 
 const LayoutTab: React.FC = () => {
@@ -18,7 +16,7 @@ const LayoutTab: React.FC = () => {
         { label: 'Users', href: '/setting/users', icon: <User className='size-8' />, active: path === '/setting/users' },
         { label: 'Images', href: '/setting/images', icon: <ImgIcon className='size-8' />, active: path === '/setting/images' },
         { label: 'Purchases', href: '/setting/purchase-history', icon: <BulletlistSharp className='size-8' />, active: path === '/setting/purchase-history' },
-        { label: 'Topups', href: '/setting/topup-history', icon: <Bulletlist className='size-8' />, active: path === '/setting/topup-history' },
+        { label: 'Topup', href: '/setting/topup', icon: <CreditCard className='size-8' />, active: path === '/setting/topup' },
     ], [path])
 
     return (

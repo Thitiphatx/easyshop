@@ -32,16 +32,18 @@ export function FieldWrapper({
         <div className={`relative mb-3 hover:z-30 focus-within:z-30 ${className ?? ''}`}>
             <label
                 htmlFor={htmlFor}
-                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-row items-center' : 'flex-col'
+                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-row items-center gap-4' : 'flex-col'
                     }`}
             >
-                <span className="flex items-center gap-1 mb-2">
+                <span className={`flex items-center gap-1 shrink-0 ${layout === 'horizontal' ? '' : 'mb-2'}`}>
                     {label}
                     {required && <span className="text-(--default-warning)">*</span>}
                 </span>
-                {tooltip ? <Tooltip content={tooltip} position='bottom' mode='focus'>
-                    {children}
-                </Tooltip> : children}
+                <span className={layout === 'horizontal' ? 'flex-1' : ''}>
+                    {tooltip ? <Tooltip content={tooltip} position='bottom' mode='focus'>
+                        {children}
+                    </Tooltip> : children}
+                </span>
             </label>
             {showError && (
                 <div className="p-2 text-sm bg-(--default-warning) text-(--core-white) mt-2">{errorMessages.map((line, index) => (

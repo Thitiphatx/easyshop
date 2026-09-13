@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 const HeroSection: React.FC = () => {
     const router = useRouter()
-    const { serverSetting, displaySetting } = useSetting()
+    const { isLoading, setting } = useSetting()
     const [banners, setBanners] = useState<Banner[]>([])
     const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -34,13 +34,13 @@ const HeroSection: React.FC = () => {
     }, [currentBanner, router])
 
     const handleCopyIp = useCallback(() => {
-        if (!serverSetting?.serverIp) return
-        navigator.clipboard.writeText(serverSetting.serverIp)
+        if (!setting?.serverIp) return
+        navigator.clipboard.writeText(setting.serverIp)
         Swal.fire({
             icon: 'success',
             text: 'คัดลอก IP เรียบร้อยแล้ว'
         })
-    }, [serverSetting])
+    }, [setting])
 
     useEffect(() => {
         fetchBanners()
@@ -71,10 +71,10 @@ const HeroSection: React.FC = () => {
 
             {/* Info Card */}
             <Card
-                className="absolute bottom-0 left-24 z-10 flex flex-col gap-4! p-6 max-w-sm"
+                className="absolute bottom-0 left-24 z-10 flex flex-col gap-4! p-6 max-w-sm h-52"
                 cardTitle={
                     <h1 className='line-clamp-1'>
-                        {displaySetting?.siteName ?? 'Server Name'}
+                        {setting?.siteName ?? 'Easyshop'}
                     </h1>
                 }
                 cardFooter={
@@ -87,11 +87,12 @@ const HeroSection: React.FC = () => {
                         iconPosition="end"
                         block
                     >
-                        {serverSetting?.serverIp ?? 'SERVER IP'}
+                        {setting?.serverIp ?? 'Server IP Address'}
                     </Button>}
+                isLoading={isLoading}
             >
                 <p className='line-clamp-3'>
-                    {displaySetting?.siteDesc ?? 'Welcome to our Minecraft Webshop'}
+                    {setting?.siteDesc ?? 'Welcome to our Minecraft Webshop'}
                 </p>
             </Card>
 

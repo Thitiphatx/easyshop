@@ -55,7 +55,7 @@ model Item {
   id            Int           @id @default(autoincrement())
   serverId      Int
   name          String        @db.VarChar(100)
-  imageUrl      String        @db.VarChar(255)
+  imageUrl      String?       @db.VarChar(255)
   command       String        @db.VarChar(255)
   price         Int           @default(0)
   amount        Int?          @default(1)
@@ -63,6 +63,7 @@ model Item {
   createdAt     DateTime      @default(now())
   lastUpdatedAt DateTime      @default(now()) @updatedAt
   description   String        @db.VarChar(255)
+  isAvailable   Boolean       @default(false)
   server        Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
   transactions  Transaction[]
 
@@ -144,12 +145,17 @@ enum TopupStatus {
 }
 
 model Setting {
-  id         Int    @id @default(autoincrement())
-  siteName   String @db.VarChar(255)
-  siteDesc   String @db.VarChar(255)
-  logo       String @db.VarChar(255)
-  serverIp   String @db.VarChar(15)
-  serverName String @db.VarChar(255)
+  id               Int     @id @default(autoincrement())
+  siteName         String  @db.VarChar(255)
+  siteDesc         String? @db.Text
+  logo             String? @db.VarChar(255)
+  serverIp         String  @db.VarChar(15)
+  serverImageUrl   String? @db.VarChar(255)
+  serverName       String  @db.VarChar(255)
+  serverDesc       String? @db.Text
+  pointMultiplier  Float   @default(1)
+  enableTruewallet Boolean @default(true)
+  enableBank       Boolean @default(false)
 
   @@map("setting")
 }
