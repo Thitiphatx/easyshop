@@ -1,5 +1,4 @@
 "use client"
-import { createServer, updateServer } from '@/app/actions/server'
 import { useAppForm } from '@/components/Form'
 import Modal from '@/components/Modal/Modal'
 import { Image } from 'pixelarticons/react'
@@ -21,12 +20,12 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
     const defaultValues = useMemo<ItemFormValues>(() => ({
         name: isEdit && itemInfo ? itemInfo.name : '',
         description: isEdit && itemInfo ? itemInfo.description : '',
-        imageUrl: isEdit && itemInfo ? itemInfo.imageUrl : '',
+        imageUrl: isEdit && itemInfo ? itemInfo.imageUrl : null,
         command: isEdit && itemInfo ? itemInfo.command : '',
-        price: isEdit && itemInfo ? itemInfo.price : '0',
-        amount: isEdit && itemInfo?.amount ? itemInfo.amount : '0',
+        price: isEdit && itemInfo ? String(itemInfo.price) : '0',
+        amount: isEdit && itemInfo?.amount != null ? String(itemInfo.amount) : '1',
         category: isEdit && itemInfo ? itemInfo.category : ''
-    }), [isEdit])
+    }), [isEdit, itemInfo])
 
     const form = useAppForm({
         defaultValues,
@@ -35,21 +34,18 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
         },
         onSubmit: async ({ value }: { value: ItemFormValues }) => {
             if (isEdit && itemInfo) {
-                const res = await updateItem({ ...itemInfo, ...value })
+                const res = await updateItem(itemInfo, value)
+                if (!res.success) {
+                    Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
+                } else {
+                    Swal.fire({ icon: 'success', title: 'แก้ไขไอเท็มเรียบร้อยแล้ว', theme: 'dark' })
+                }
             } else {
                 const res = await createItem(value, serverId)
                 if (!res.success || !res.data) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: res.error,
-                        theme: 'dark',
-                    });
+                    Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
                 } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "สร้างไอเท็มใหม่เรียบร้อยแล้ว",
-                        theme: 'dark',
-                    });
+                    Swal.fire({ icon: 'success', title: 'สร้างไอเท็มใหม่เรียบร้อยแล้ว', theme: 'dark' })
                 }
             }
             getItemList()
@@ -74,7 +70,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                             แก้ไขไอเทม
                         </h1>
                     </div>
-                    : 'Add New Item'}
+                    : 'เพิ่มสินค้าใหม่'}
         >
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <div>
@@ -85,7 +81,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                     <div className='p-4'>
                         <form.AppField
                             name="imageUrl"
-                            children={(field) => <field.ImageSelectField label="รูปภาพไอเท็ม" group="item" required />}
+                            children={(field) => <field.ImageSelectField label="รูปภาพไอเท็ม" group="item" />}
                         />
                         <form.AppField
                             name="name"

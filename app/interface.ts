@@ -6,3 +6,5 @@ export interface IModalCommonProps {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
 }
+
+export interface ISectionCommonProps extends React.ComponentPropsWithRef<'div'> { }

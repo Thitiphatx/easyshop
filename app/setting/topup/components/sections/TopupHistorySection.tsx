@@ -9,6 +9,8 @@ import { ITableColumn } from '@/components/Table/interface'
 import Table from '@/components/Table/Table'
 import Swal from '@/lib/Swal'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { IMethodSectionProps } from '../../interface'
+import clsx from 'clsx'
 
 const statusColorMap: Record<string, "Green" | "Default" | "Red"> = {
     SUCCESS: 'Green',
@@ -22,7 +24,7 @@ const statusLabelMap: Record<string, string> = {
     FAILED: 'ล้มเหลว',
 }
 
-const TopupPage: React.FC = () => {
+const TopupHistorySection: React.FC<IMethodSectionProps> = ({ className }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [size, setSize] = useState<number>(10)
@@ -93,7 +95,7 @@ const TopupPage: React.FC = () => {
     }, [fetchTopups])
 
     return (
-        <Card className='h-full' cardTitle="ประวัติการเติมเงินทั้งหมด">
+        <Card className={clsx('h-full', className)} cardTitle="ประวัติการเติมเงินทั้งหมด">
             <Table
                 columns={columns}
                 loading={isLoading}
@@ -105,4 +107,4 @@ const TopupPage: React.FC = () => {
     )
 }
 
-export default TopupPage
+export default TopupHistorySection

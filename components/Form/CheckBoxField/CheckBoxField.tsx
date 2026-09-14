@@ -6,7 +6,7 @@ import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import Checkbox from '@/components/Checkbox/Checkbox'
 import { ICheckboxFieldProps } from './interface'
 
-export function CheckboxField({ label, className, labelClassName }: ICheckboxFieldProps) {
+export function CheckboxField({ label, className, labelClassName, variant }: ICheckboxFieldProps) {
     const field = useFieldContext<boolean>()
     const id = useId()
 
@@ -14,6 +14,7 @@ export function CheckboxField({ label, className, labelClassName }: ICheckboxFie
         <FieldWrapper htmlFor={id} layout="horizontal" className={className}>
             <Checkbox
                 id={id}
+                variant={variant}
                 checked={field.state.value}
                 onChange={(e) => field.handleChange(e.target.checked)}
                 onBlur={field.handleBlur}

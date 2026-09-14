@@ -13,7 +13,7 @@ import { uploadImage, listImages } from '@/app/actions/image'
 import type { IImageSelectFieldProps } from './interface'
 
 export function ImageSelectField({ label, required, group }: IImageSelectFieldProps) {
-    const field = useFieldContext<string>()
+    const field = useFieldContext<string | null>()
     const [isOpen, setIsOpen] = useState(false)
     const [images, setImages] = useState<string[]>([])
     const [isLoading, setIsLoading] = useState(false)
@@ -82,7 +82,7 @@ export function ImageSelectField({ label, required, group }: IImageSelectFieldPr
                 {selected && (
                     <button
                         type="button"
-                        onClick={() => field.handleChange('')}
+                        onClick={() => field.handleChange(null)}
                         className="text-(--default-warning) hover:opacity-70 cursor-pointer"
                         title="Clear"
                     >

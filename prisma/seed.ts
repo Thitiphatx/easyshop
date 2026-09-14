@@ -59,6 +59,20 @@ const itemCommands = ['give %player% diamond 1', 'give %player% gold_ingot 5', '
 async function main() {
     console.log('Seeding mock data...')
 
+    let setting = await prisma.setting.findFirst()
+    if (!setting) {
+        setting = await prisma.setting.create({
+            data: {
+                logo: '',
+                siteDesc: '',
+                siteName: 'Easyshop',
+                serverIp: '127.0.0.1',
+                serverName: 'Easyshop',
+            },
+        })
+        console.log('  Created setting:')
+    }
+
     let server = await prisma.server.findFirst()
     if (!server) {
         server = await prisma.server.create({

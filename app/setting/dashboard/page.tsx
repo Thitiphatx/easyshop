@@ -1,8 +1,8 @@
 import React from 'react'
-import OverviewPage from './components/OverviewPage'
+import DashboardPage from './components/DashboardPage'
 
 const Overview: React.FC = () => {
-    return <OverviewPage />
+    return <DashboardPage />
 }
 
 export default Overview

@@ -1,30 +1,41 @@
 "use client"
-import { deleteServer, getAllServers } from '@/app/actions/server'
+import { deleteServer, getAllServers, getServerById } from '@/app/actions/server'
 import { Server } from '@/app/generated/prisma/client'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
 import Empty from '@/components/Empty'
 import Loading from '@/components/Loading'
+import Swal from '@/lib/Swal'
 import { usePathname, useRouter } from 'next/navigation'
 import { Close, Pencil, PlusBox, Trash } from 'pixelarticons/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import Swal from '@/lib/Swal'
 import ModalManageServer from './modals/ModalManageServer'
-import { IServerSectionProps } from '../interface'
+import { useAuth } from '@/app/contexts/authContext'
+import Image from 'next/image'
+import { IServer } from '@/app/actions/server/interface'
 
-const ServerSection: React.FC<IServerSectionProps> = () => {
+const ServerSection: React.FC = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
     const [editServerInfo, setEditServerInfo] = useState<Server>()
-    const [serverList, setServerList] = useState<Server[]>([])
+    const [serverList, setServerList] = useState<IServer[]>([])
     const router = useRouter()
     const pathname = usePathname()
+    const { session } = useAuth()
 
-    const handleClickServer = useCallback((server: Server) => {
+    const handleClickServer = useCallback(async (server: IServer) => {
         if (isEdit) {
-            setEditServerInfo(server)
-            setIsOpenModal(true)
+            const res = await getServerById(server.id)
+            if (res.success && res.data) {
+                setEditServerInfo(res.data)
+                setIsOpenModal(true)
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: res.error,
+                });
+            }
         } else {
             router.push(`${pathname}/${server.id}`)
         }
@@ -40,6 +51,7 @@ const ServerSection: React.FC<IServerSectionProps> = () => {
         const res = await getAllServers();
         if (res.success && res.data) {
             setServerList(res.data)
+            console.log(res.data)
         } else {
             Swal.fire({
                 icon: 'error',
@@ -96,7 +108,7 @@ const ServerSection: React.FC<IServerSectionProps> = () => {
                     <h1 className='text-5xl font-bold text-(--core-white) text-center'>
                         {`เลือกเซิร์ฟเวอร์ ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>
-                    <div className='flex justify-end'>
+                    <div className='flex justify-end' hidden={!session?.isAdmin}>
                         <Button
                             variant='Retro'
                             color={isEdit ? "Red" : "Green"}
@@ -129,7 +141,7 @@ const ServerSection: React.FC<IServerSectionProps> = () => {
                                     icon={<Trash width={18} height={18} />}
                                     isIconOnly
                                 />
-                                <img src={server.imageUrl ?? ""} className='w-48 h-48 object-contain object-center mx-auto' />
+                                <Image src={server.imageUrl ?? "/images/others/1789120901925-dp6id8hy8o5.png"} alt={server.name} width={200} height={200} className='w-48 h-48 object-contain object-center mx-auto' />
                                 <div className='flex-1 flex flex-col items-center justify-center mt-2'>
                                     <h2 className='font-extrabold text-lg'>
                                         {server.name}

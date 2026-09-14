@@ -1,1 +1,1 @@
-export type ImageGroup = 'server' | 'item' | 'banner' | 'brand'
+export type ImageGroup = 'server' | 'item' | 'banner' | 'brand' | 'others'

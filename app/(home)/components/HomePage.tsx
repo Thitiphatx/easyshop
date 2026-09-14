@@ -2,11 +2,15 @@
 
 import React from 'react'
 import HeroSection from './sections/HeroSection'
+import AboutSection from './sections/AboutSection'
+import RankSection from './sections/RankSection'
 
 const HomePage: React.FC = () => {
     return (
         <div className='flex-1'>
             <HeroSection />
+            <AboutSection />
+            <RankSection />
         </div>
     )
 }

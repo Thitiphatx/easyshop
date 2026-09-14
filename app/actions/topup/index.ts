@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
-import { ITopup, ITopupFilter } from "./interface";
+import { ITopDonate, ITopDonateFilter, ITopup, ITopupFilter } from "./interface";
 import { getSession } from "../session";
 import { getLastWeekRange } from "@/app/utils/utils";
 
@@ -96,4 +96,48 @@ export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> 
             error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
+}
+
+export async function getTopDonate(request: ITopDonateFilter): Promise<IActionResponse<ITopDonate[]>> {
+    try {
+        const now = new Date()
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+        const res = await prisma.topup.findMany({
+            where: {
+                status: 'SUCCESS',
+                createdAt: {
+                    gte: request.type === 'month' ? startOfMonth : undefined,
+                    lte: request.type === 'month' ? endOfMonth : undefined,
+                }
+            },
+            select: {
+                amount: true,
+                user: {
+                    select: {
+                        username: true,
+                    },
+                },
+            },
+            orderBy: {
+                amount: 'desc'
+            },
+            take: request.top ?? 10
+        })
+
+        return {
+            success: true,
+            data: res.map((item) => ({
+                username: item.user.username,
+                amount: item.amount,
+            })),
+        }
+    } catch {
+        return {
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+        }
+    }
+
 }

@@ -1,7 +1,6 @@
 "use client"
 import { deleteItem, getAllItems } from '@/app/actions/item'
 import { IItem } from '@/app/actions/item/interface'
-import { Item } from '@/app/generated/prisma/client'
 import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
@@ -15,17 +14,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ModalViewItem from '../[serverId]/modals/ModalViewItem'
 import { IItemSectionProps } from '../interface'
 import ModalManageItem from './modals/ModalManageItem'
+import { useAuth } from '@/app/contexts/authContext'
+import Image from 'next/image'
 
 const ItemSection: React.FC<IItemSectionProps> = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isOpenManageModal, setIsOpenManageModal] = useState<boolean>(false)
     const [isOpenViewModal, setIsOpenViewModal] = useState<boolean>(false)
-    const [editItemInfo, setEditItemInfo] = useState<Item>()
+    const [editItemInfo, setEditItemInfo] = useState<IItem>()
     const [viewItemInfo, setViewItemInfo] = useState<IItem>()
     const [itemList, setItemList] = useState<IItem[]>([])
     const router = useRouter()
     const pathname = usePathname()
+    const { session } = useAuth()
 
     const serverId = useMemo(() => Number(pathname.split("/")[2]), [pathname])
 
@@ -114,7 +116,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                     <h1 className='text-5xl font-bold text-(--core-white) text-center'>
                         {`สินค้าทั้งหมด ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>
-                    <div className='flex justify-end'>
+                    <div className='flex justify-end' hidden={!session?.isAdmin}>
                         <Button
                             variant='Retro'
                             color={isEdit ? "Red" : "Green"}
@@ -147,7 +149,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                                     icon={<Trash width={18} height={18} />}
                                     isIconOnly
                                 />
-                                <img src={item.imageUrl} className='w-full h-48 object-cover object-center mx-auto rounded-lg' />
+                                <Image src={item.imageUrl ?? "/images/others/emerald.webp"} alt={item.name} width={200} height={200} className='w-full h-48 object-cover object-center mx-auto rounded-lg' />
 
                                 <h2 className='font-bold text-lg line-clamp-1 my-2 text-(--core-white) group-hover:underline'>
                                     {item.name}

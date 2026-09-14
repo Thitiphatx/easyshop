@@ -4,16 +4,21 @@ import { useFieldContext } from '../context'
 import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import type { ISelectFieldProps } from './interface'
 
-export function SelectField({ label, options, required, placeholder, className, ...selectProps }: ISelectFieldProps) {
-    const field = useFieldContext<string>()
+export function SelectField({ label, options, required, placeholder, layout, className, ...selectProps }: ISelectFieldProps) {
+    const field = useFieldContext<string | number>()
 
     return (
-        <FieldWrapper label={label} required={required}>
+        <FieldWrapper label={label} required={required} layout={layout}>
             <select
                 value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
+                onChange={(e) => {
+                    const val = e.target.value
+                    field.handleChange(
+                        typeof field.state.value === 'number' ? Number(val) : val
+                    )
+                }}
                 onBlur={field.handleBlur}
-                className={`field-select ${className ?? ''}`}
+                className={`p-3 focus:ring-2 ring-(--core-grey-1) border-2 border-(--core-grey-4) bg-(--core-off-black) text-(--core-grey-2) text-lg outline-none w-full ${className ?? ''}`}
                 {...selectProps}
             >
                 {placeholder && <option value="">{placeholder}</option>}

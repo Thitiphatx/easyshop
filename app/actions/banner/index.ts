@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
-import { BannerFormValues } from '@/app/setting/overview/schema'
+import { BannerFormValues } from '@/app/setting/display/schema'
 import { Banner } from '@/app/generated/prisma/client'
 
 export async function getAllBanners(): Promise<IActionResponse<Banner[]>> {

@@ -6,15 +6,20 @@ import Table from '@/components/Table/Table'
 import { ITableColumn } from '@/components/Table/interface'
 import { getAllBanners, deleteBanner } from '@/app/actions/banner'
 import Swal from '@/lib/Swal'
-import ModalManageBanner from '../modals/ModalManageBanner'
 import Image from 'next/image'
 import Loading from '@/components/Loading'
 import Button from '@/components/Button/Button'
 import { Banner } from '@/app/generated/prisma/client'
 import { Plus, Trash } from 'pixelarticons/react'
 import { getTopupSummary } from '@/app/actions/topup'
+import ModalManageBanner from '../modals/ModalManageBanner'
+import { IBannerSectionProps } from '../interface'
+import clsx from 'clsx'
 
-const BannerSection: React.FC = () => {
+const BannerSection: React.FC<IBannerSectionProps> = ({
+    className,
+    ...props
+}) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [banners, setBanners] = useState<Banner[]>([])
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -85,7 +90,7 @@ const BannerSection: React.FC = () => {
     }, [fetchBanners])
 
     return (
-        <>
+        <div className={clsx(className)} {...props}>
             <ModalManageBanner isOpen={isModalOpen} setIsOpen={setIsModalOpen} getBannerList={fetchBanners} />
             <Card cardTitle={
                 <div className='flex justify-between'>
@@ -105,7 +110,7 @@ const BannerSection: React.FC = () => {
                     <Table columns={columns} data={banners} loading={false} />
                 )}
             </Card>
-        </>
+        </div>
     )
 }
 

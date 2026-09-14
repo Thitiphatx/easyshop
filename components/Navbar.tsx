@@ -12,7 +12,7 @@ import Image from 'next/image'
 const Navbar: React.FC = () => {
     const router = useRouter();
     const { session, signOut, openAuth } = useAuth()
-    const { displaySetting, mcStatus } = useSetting()
+    const { setting, mcStatus } = useSetting()
 
     const paths = useMemo(() => [
         {
@@ -38,10 +38,6 @@ const Navbar: React.FC = () => {
             path: "/shop"
         },
         {
-            label: "Guide",
-            path: "/guide"
-        },
-        {
             label: "Ranking",
             path: "/ranking"
         }
@@ -52,7 +48,7 @@ const Navbar: React.FC = () => {
         { label: "โปรไฟล์", onClick: () => router.push("/user/profile") },
         { label: "ประวัติการซื้อ", onClick: () => router.push("/user/purchase-history") },
         { label: "ประวัติการเติม", onClick: () => router.push("/user/topup-history") },
-        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/setting/overview"), className: "hover:text-(--marketplace-gold-3)" },
+        { label: "ตั้งค่าเว็บช็อป", onClick: () => router.push("/setting/dashboard"), className: "hover:text-(--marketplace-gold-3)" },
         {
             label: "ออกจากระบบ", onClick: async () => {
                 await signOut()
@@ -68,9 +64,9 @@ const Navbar: React.FC = () => {
             {/* Left Section */}
             <div className='w-24 flex-1 flex items-center'>
                 <div className='cursor-pointer' onClick={() => router.push("/")}>
-                    {displaySetting?.logo
-                        ? <Image alt="Logo" className='h-10 w-auto' src={displaySetting.logo} width={200} height={40} />
-                        : <Image alt="Logo" className='h-10 w-auto' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" width={200} height={40} />}
+                    {setting?.logo
+                        ? <Image alt="Logo" className='h-12 w-auto' src={setting.logo} width={260} height={50} />
+                        : <Image alt="Logo" className='h-12 w-auto' loading='eager' src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg" width={260} height={50} />}
                 </div>
             </div>
 
@@ -85,11 +81,12 @@ const Navbar: React.FC = () => {
                                     variant='Ghost'
                                     items={path.children}
                                     className='text-sm! p-4!'
+                                    color="Green"
                                 >
                                     {path.label.toUpperCase()}
                                 </Select>
                             ) : (
-                                <Button variant='Ghost' className='text-sm! p-4!' onClick={() => router.replace(path.path)}>
+                                <Button variant='Ghost' color="Green" className='text-sm! p-4!' onClick={() => router.replace(path.path)}>
                                     {path.label.toUpperCase()}
                                 </Button>
                             )}
@@ -107,10 +104,10 @@ const Navbar: React.FC = () => {
                 {session ? (
                     <Select
                         variant='Ghost'
-                        icon={<Image src={`https://mc-heads.net/avatar/${session.username}/24`} alt={session.username} width={24} height={24} />}
+                        icon={<img src={`https://mc-heads.net/avatar/${session.username}/24`} alt={session.username} width={24} height={24} />}
                         items={accountDropdownItems}
                     >
-                        Account
+                        {session.username}
                     </Select>
                 ) : (
                     <Button onClick={openAuth}>เข้าสู่ระบบ</Button>
