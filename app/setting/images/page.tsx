@@ -173,8 +173,8 @@ const ImageSetting: React.FC = () => {
             {/* Upload Zone */}
             <div
                 className={clsx(
-                    'relative cursor-pointer border-2 border-dashed p-6 transition-all duration-200',
-                    'bg-(--core-off-black) flex items-center gap-4',
+                    'relative cursor-pointer border-2 border-dashed p-4 sm:p-6 transition-all duration-200',
+                    'bg-(--core-off-black) flex flex-col sm:flex-row items-start sm:items-center gap-4',
                     isDragging
                         ? 'border-(--core-green-3) bg-(--core-off-black)/80 scale-[1.005]'
                         : pendingFile
@@ -305,7 +305,7 @@ const ImageSetting: React.FC = () => {
                         <p className="text-sm">อัปโหลดรูปภาพด้านบนเพื่อเริ่มต้น</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-4 xl:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-3">
                         {images.map((url) => {
                             const isSelected = selected.has(url)
                             return (

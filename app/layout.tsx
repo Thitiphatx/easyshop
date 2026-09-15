@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${notoSans.variable} ${silkscreen.variable} h-full antialiased`}
     >
-      <body className="w-full min-h-full flex flex-col font-sans!">
+      <body className="w-full min-h-full flex flex-col font-sans! overflow-x-hidden">
         <SettingProvider>
           <AuthProvider>
             <header className="sticky top-0 z-50 w-full">
@@ -38,12 +38,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
                 <Navbar />
               </nav>
             </header>
-            <main className="flex-1 w-full flex flex-col">
+            <main className="flex-1 w-full min-h-[calc(100vh-5rem)] min-h-[calc(100dvh-5rem)] flex flex-col">
               {children}
             </main>
-            <footer>
-              <Footer />
-            </footer>
+            <Footer />
           </AuthProvider>
         </SettingProvider>
       </body>

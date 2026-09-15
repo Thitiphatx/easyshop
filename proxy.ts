@@ -5,7 +5,7 @@ const SECRET_KEY = new TextEncoder().encode(
     process.env.JWT_SECRET || 'default_secret_key_change_me_later_123456'
 )
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
     const token = request.cookies.get('session')?.value
 

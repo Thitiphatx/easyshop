@@ -69,7 +69,7 @@ const Select: React.FC<ISelectProps> = ({
                 <Card className='absolute left-1/2 -translate-x-1/2 top-full mt-2 w-max z-50'>
                     <ul>
                         {items?.map((item, index) => (
-                            <li key={index} className='not-last:border-b border-(--core-grey-5)'>
+                            <li key={index} className='not-last:border-b border-(--core-grey-5)' hidden={item.hidden}>
                                 <Button
                                     hidden={!session?.isAdmin && item.isAdmin}
                                     className={clsx('p-2 w-full text-left!', item.className)}

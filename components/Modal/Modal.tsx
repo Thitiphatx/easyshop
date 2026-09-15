@@ -34,7 +34,7 @@ const Modal: React.FC<IModalProps> = ({
             {/* Card Modal */}
             <Card
                 {...props}
-                className={clsx("relative z-10 w-125! max-h-screen overflow-y-auto", props.className)}
+                className={clsx("relative z-10 w-full max-w-lg! max-h-[90vh] overflow-y-auto", props.className)}
                 cardTitle={
                     modalTitle !== undefined ? (
                         <div className="flex justify-between items-center">

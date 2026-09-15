@@ -140,12 +140,6 @@ const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorToken
   ),
 }
 
-const IconSlot = ({ children, position }: { children: React.ReactNode; position: 'start' | 'end' }) => (
-  <div className={clsx("mx-4 absolute flex items-center", position === 'start' ? 'left-0' : 'right-0')}>
-    {children}
-  </div>
-)
-
 const Button: React.FC<IButtonProps> = ({
   variant = "Solid",
   color = "Default",
@@ -166,18 +160,23 @@ const Button: React.FC<IButtonProps> = ({
     <div className="flex items-center justify-center">{icon}</div>
   ) : (
     <>
-      {icon && <IconSlot position={iconPosition}>{icon}</IconSlot>}
+      {icon && iconPosition === 'start' && (
+        <span className="shrink-0 inline-flex items-center">{icon}</span>
+      )}
       {children}
+      {icon && iconPosition === 'end' && (
+        <span className="shrink-0 inline-flex items-center ml-auto">{icon}</span>
+      )}
     </>
   )
 
   return (
     <button
       className={clsx(
-        'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer',
-        !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-12 gap-2'),
+        'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer gap-2.5',
+        !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-6'),
         variantClass,
-        block && 'w-full px-0!',
+        block && 'w-full',
         className
       )}
       {...props}
@@ -185,10 +184,10 @@ const Button: React.FC<IButtonProps> = ({
       {isRetro ? (
         <span
           className={clsx(
-            'flex w-full h-full items-center justify-center -translate-y-1 border-2 transition-transform group-active:translate-y-0 text-(--core-rich-black)',
+            'flex w-full h-full items-center justify-center -translate-y-1 border-2 transition-transform group-active:translate-y-0 text-(--core-rich-black) gap-2.5',
             c.retroBorder,
             c.retroBase,
-            isIconOnly ? 'p-2 aspect-square' : 'px-12 py-2 gap-2'
+            isIconOnly ? 'p-2 aspect-square' : 'px-6 py-2'
           )}
         >
           {content}

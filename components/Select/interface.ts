@@ -5,6 +5,7 @@ export interface ISelectItem {
     onClick?: () => Promise<void> | void;
     className?: string
     isAdmin?: boolean
+    hidden?: boolean
 }
 
 export interface ISelectProps extends IButtonProps {

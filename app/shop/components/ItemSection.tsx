@@ -106,17 +106,17 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                 serverId={serverId}
             />
 
-            <div className='relative bg-(--core-off-black) min-h-screen w-full h-fit z-10 p-12'>
-                <div className='grid grid-cols-3 items-center mb-6'>
-                    <div>
+            <div className='relative bg-(--core-off-black) min-h-screen w-full h-fit z-10 p-4 sm:p-8 lg:p-12'>
+                <div className='flex flex-wrap sm:grid sm:grid-cols-3 items-center justify-between gap-4 mb-6 sm:mb-8'>
+                    <div className="order-2 sm:order-1">
                         <Link href="/shop">
-                            <Button hidden={isEdit} variant='Retro' icon={<ChevronLeft />}>เลือกเซิร์ฟเวอร์</Button>
+                            <Button hidden={isEdit} variant='Retro' icon={<ChevronLeft />} className="text-xs sm:text-sm!">เลือกเซิร์ฟเวอร์</Button>
                         </Link>
                     </div>
-                    <h1 className='text-5xl font-bold text-(--core-white) text-center'>
+                    <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-(--core-white) text-center order-1 sm:order-2 w-full sm:w-auto'>
                         {`สินค้าทั้งหมด ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>
-                    <div className='flex justify-end' hidden={!session?.isAdmin}>
+                    <div className='flex justify-end order-3 sm:order-3' hidden={!session?.isAdmin}>
                         <Button
                             variant='Retro'
                             color={isEdit ? "Red" : "Green"}
@@ -126,7 +126,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                     </div>
                 </div>
                 {isLoading ? <Loading /> :
-                    <div className='max-w-360 mx-auto grid grid-cols-4 gap-8 place-items-stretch justify-items-center'>
+                    <div className='max-w-360 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 place-items-stretch justify-items-center'>
                         <Card
                             hidden={!isEdit}
                             onClick={handleClickCreateItem}
@@ -134,7 +134,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                             isPressable
                         >
                             <PlusBox width={72} height={72} className='text-(--core-white) drop-shadow mx-auto' />
-                            <p className='text-center text-(--core-white) text-3xl font-bold'>เพิ่มสินค้าใหม่</p>
+                            <p className='text-center text-(--core-white) text-2xl sm:text-3xl font-bold'>เพิ่มสินค้าใหม่</p>
                         </Card>
                         {itemList.map((item) => (
                             <Card key={item.id} className='w-full h-full flex flex-col group p-4' onClick={() => handleClickItem(item)} isPressable>

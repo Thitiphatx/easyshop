@@ -102,10 +102,10 @@ const ServerSection: React.FC = () => {
         <>
             <ModalManageServer isOpen={isOpenModal} setIsOpen={setIsOpenModal} serverInfo={editServerInfo} isEdit={editServerInfo !== undefined} getServerList={getServerList} />
 
-            <div className='relative bg-(--core-off-black) w-full min-h-screen z-10 p-12'>
-                <div className='grid grid-cols-3 items-center mb-6'>
-                    <div /> {/* กล่องเปล่าซ้ายสุดเพื่อบาลานซ์ */}
-                    <h1 className='text-5xl font-bold text-(--core-white) text-center'>
+            <div className='relative bg-(--core-off-black) w-full min-h-screen z-10 p-4 sm:p-8 lg:p-12'>
+                <div className='flex flex-wrap sm:grid sm:grid-cols-3 items-center justify-between gap-4 mb-6 sm:mb-8'>
+                    <div className="hidden sm:block" /> {/* กล่องเปล่าซ้ายสุดเพื่อบาลานซ์ */}
+                    <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-(--core-white) text-center flex-1 sm:flex-none'>
                         {`เลือกเซิร์ฟเวอร์ ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>
                     <div className='flex justify-end' hidden={!session?.isAdmin}>
@@ -118,7 +118,7 @@ const ServerSection: React.FC = () => {
                     </div>
                 </div>
                 {isLoading ? <Loading /> :
-                    <div className='max-w-360 mx-auto grid grid-cols-4 gap-8 place-items-stretch justify-items-center'>
+                    <div className='max-w-360 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 place-items-stretch justify-items-center'>
                         <Card
                             hidden={!isEdit}
                             onClick={handleClickCreateServer}
@@ -126,7 +126,7 @@ const ServerSection: React.FC = () => {
                             isPressable
                         >
                             <PlusBox width={72} height={72} className='text-(--core-white) drop-shadow mx-auto' />
-                            <p className='text-center text-(--core-white) text-3xl font-bold'>เพิ่มเซิร์ฟเวอร์ใหม่</p>
+                            <p className='text-center text-(--core-white) text-2xl sm:text-3xl font-bold'>เพิ่มเซิร์ฟเวอร์ใหม่</p>
                         </Card>
                         {serverList.map((server) => (
                             <Card key={server.id} onClick={() => handleClickServer(server)} className='relative w-full min-h-75 flex flex-col justify-center items-center' isPressable>
@@ -141,12 +141,12 @@ const ServerSection: React.FC = () => {
                                     icon={<Trash width={18} height={18} />}
                                     isIconOnly
                                 />
-                                <Image src={server.imageUrl ?? "/images/others/1789120901925-dp6id8hy8o5.png"} alt={server.name} width={200} height={200} className='w-48 h-48 object-contain object-center mx-auto' />
+                                <Image src={server.imageUrl ?? "/images/others/1789120901925-dp6id8hy8o5.png"} alt={server.name} width={200} height={200} className='w-36 h-36 sm:w-48 sm:h-48 object-contain object-center mx-auto' />
                                 <div className='flex-1 flex flex-col items-center justify-center mt-2'>
-                                    <h2 className='font-extrabold text-lg'>
+                                    <h2 className='font-extrabold text-base sm:text-lg'>
                                         {server.name}
                                     </h2>
-                                    <p className='text-center'>{server.subtitle}</p>
+                                    <p className='text-center text-sm text-(--marketplace-grey-3)'>{server.subtitle}</p>
                                 </div>
                             </Card>
                         ))}
