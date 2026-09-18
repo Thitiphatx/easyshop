@@ -3,7 +3,7 @@
 import { Item } from '@/app/generated/prisma/client'
 import { IActionResponse } from '../interface'
 import { prisma } from '@/lib/prisma'
-import { ItemFormValues } from '@/app/shop/components/modals/schema'
+import { ItemFormValues } from '@/app/(main)/shop/components/modals/schema'
 import { IItem, IItemFilter } from './interface'
 import { getSession } from '../session'
 

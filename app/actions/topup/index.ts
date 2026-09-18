@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { ITopDonate, ITopDonateFilter, ITopup, ITopupFilter } from "./interface";
 import { getSession } from "../session";
-import { getLastWeekRange } from "@/app/utils/utils";
+import { getDateRange, SummaryType } from "@/app/utils/utils";
 
 export async function getTopups(request: ITopupFilter): Promise<IActionResponse<IPagination<ITopup>>> {
     try {
@@ -61,13 +61,13 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
     }
 }
 
-export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> {
+export async function getTopupSummary(type: SummaryType = 'week'): Promise<IActionResponse<ISummaryData>> {
     try {
-        const { startOfWeek, endOfWeek } = getLastWeekRange()
+        const { start, end, labels, buckets, getBucket } = getDateRange(type)
 
         const topups = await prisma.topup.findMany({
             where: {
-                createdAt: { gte: startOfWeek, lte: endOfWeek },
+                createdAt: { gte: start, lte: end },
             },
             select: {
                 amount: true,
@@ -75,12 +75,10 @@ export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> 
             },
         })
 
-        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        const sums = Array(7).fill(0)
+        const sums = Array(buckets).fill(0)
 
         for (const topup of topups) {
-            const jsDay = topup.createdAt.getDay()
-            const idx = jsDay === 0 ? 6 : jsDay - 1
+            const idx = getBucket(topup.createdAt)
             sums[idx] += Number(topup.amount)
         }
 
@@ -88,7 +86,7 @@ export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> 
 
         return {
             success: true,
-            data: { data: sums, label: dayLabels, total }
+            data: { data: sums, label: labels, total }
         }
     } catch {
         return {
@@ -128,7 +126,8 @@ export async function getTopDonate(request: ITopDonateFilter): Promise<IActionRe
 
         return {
             success: true,
-            data: res.map((item) => ({
+            data: res.map((item, index) => ({
+                rank: index + 1,
                 username: item.user.username,
                 amount: item.amount,
             })),

@@ -29,6 +29,7 @@ export interface ITopDonateFilter {
 }
 
 export interface ITopDonate {
+    rank: number
     username: string
     amount: number
 }

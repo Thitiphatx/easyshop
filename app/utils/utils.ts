@@ -1,3 +1,5 @@
+import { DateRange, SummaryType } from './interface'
+export type { SummaryType, DateRange }
 export function getLastWeekRange(): { startOfWeek: Date, endOfWeek: Date } {
     const now = new Date();
 
@@ -21,6 +23,61 @@ export function getLastWeekRange(): { startOfWeek: Date, endOfWeek: Date } {
     endOfWeek.setHours(23, 59, 59, 999);
 
     return { startOfWeek, endOfWeek };
+}
+
+export function getDateRange(type: SummaryType): DateRange {
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    if (type === 'now') {
+        // Current week: Mon–Sun of the current week
+        const day = today.getDay()
+        const diffToMonday = day === 0 ? 6 : day - 1
+        const start = new Date(today)
+        start.setDate(today.getDate() - diffToMonday)
+        const end = new Date(start)
+        end.setDate(start.getDate() + 6)
+        end.setHours(23, 59, 59, 999)
+        const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        return {
+            start, end, labels, buckets: 7,
+            getBucket: (date: Date) => {
+                const d = date.getDay()
+                return d === 0 ? 6 : d - 1
+            }
+        }
+    }
+
+    if (type === 'week') {
+        // Last week: Mon–Sun of previous week
+        const day = today.getDay()
+        const diffToMonday = day === 0 ? 6 : day - 1
+        const thisMonday = new Date(today)
+        thisMonday.setDate(today.getDate() - diffToMonday)
+        const start = new Date(thisMonday)
+        start.setDate(thisMonday.getDate() - 7)
+        const end = new Date(start)
+        end.setDate(start.getDate() + 6)
+        end.setHours(23, 59, 59, 999)
+        const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        return {
+            start, end, labels, buckets: 7,
+            getBucket: (date: Date) => {
+                const d = date.getDay()
+                return d === 0 ? 6 : d - 1
+            }
+        }
+    }
+
+    // month: current month, grouped by day (1–daysInMonth)
+    const start = new Date(today.getFullYear(), today.getMonth(), 1)
+    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()
+    const end = new Date(today.getFullYear(), today.getMonth(), daysInMonth, 23, 59, 59, 999)
+    const labels = Array.from({ length: daysInMonth }, (_, i) => String(i + 1))
+    return {
+        start, end, labels, buckets: daysInMonth,
+        getBucket: (date: Date) => date.getDate() - 1
+    }
 }
 
 export const fileToBase64 = (file: File): Promise<string> => {

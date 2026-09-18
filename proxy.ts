@@ -21,6 +21,11 @@ export async function proxy(request: NextRequest) {
             return NextResponse.redirect(new URL('/', request.url))
         }
 
+        // /topup/* requires user login
+        if (pathname.startsWith('/topup')) {
+            return NextResponse.next()
+        }
+
         return NextResponse.next()
     } catch {
         return NextResponse.redirect(new URL('/', request.url))
@@ -28,5 +33,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/setting/:path*', '/user/:path*', '/topup/:path*'],
+    matcher: ['/setting/:path*', '/user/:path*'],
 }

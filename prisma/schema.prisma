@@ -156,6 +156,7 @@ model Setting {
   pointMultiplier  Float   @default(1)
   enableTruewallet Boolean @default(true)
   enableBank       Boolean @default(false)
+  easyslipApiKey   String? @db.VarChar(255)
 
   @@map("setting")
 }

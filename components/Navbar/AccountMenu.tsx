@@ -140,6 +140,7 @@ export const AccountMenu: React.FC = () => {
                                 )}
                             </div>
                         </div>
+                        <ChevronRight className="size-3" />
                     </div>
 
                     {/* Points Balance Card */}

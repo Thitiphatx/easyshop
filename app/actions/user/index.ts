@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { IUser, IUserFilter } from "./interface";
-import { getLastWeekRange } from "@/app/utils/utils";
+import { getDateRange, SummaryType } from "@/app/utils/utils";
 import { getSession } from "../session";
 
 export async function getUsers(request: IUserFilter): Promise<IActionResponse<IPagination<IUser>>> {
@@ -41,14 +41,14 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
     }
 }
 
-export async function getUserSummary(): Promise<IActionResponse<ISummaryData>> {
+export async function getUserSummary(type: SummaryType = 'week'): Promise<IActionResponse<ISummaryData>> {
     try {
-        const { startOfWeek, endOfWeek } = getLastWeekRange()
+        const { start, end, labels, buckets, getBucket } = getDateRange(type)
 
         const whereClause = {
             regdate: {
-                gte: BigInt(startOfWeek.getTime()),
-                lte: BigInt(endOfWeek.getTime())
+                gte: BigInt(start.getTime()),
+                lte: BigInt(end.getTime())
             }
         }
 
@@ -63,18 +63,17 @@ export async function getUserSummary(): Promise<IActionResponse<ISummaryData>> {
             prisma.authMe.count({ where: whereClause })
         ])
 
-        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        const sums = Array(7).fill(0)
+        const sums = Array(buckets).fill(0)
 
         for (const user of users) {
-            const jsDay = new Date(Number(user.regdate)).getDay()
-            const idx = jsDay === 0 ? 6 : jsDay - 1
+            const date = new Date(Number(user.regdate))
+            const idx = getBucket(date)
             sums[idx] += 1
         }
 
         return {
             success: true,
-            data: { data: sums, label: dayLabels, total }
+            data: { data: sums, label: labels, total }
         }
     } catch {
         return {

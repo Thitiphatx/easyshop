@@ -8,16 +8,18 @@ const Checkbox: React.FC<ICheckboxProps> = ({
     onChange,
     onBlur,
     variant = 'normal',
+    disabled,
 }) => {
     if (variant === 'switch') {
         return (
-            <label htmlFor={id} className="relative inline-flex items-center cursor-pointer select-none">
+            <label htmlFor={id} className={`relative inline-flex items-center select-none ${disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}>
                 <input
                     id={id}
                     type="checkbox"
                     checked={checked}
                     onChange={onChange}
                     onBlur={onBlur}
+                    disabled={disabled}
                     className="sr-only peer"
                 />
                 {/* track */}
@@ -45,7 +47,8 @@ const Checkbox: React.FC<ICheckboxProps> = ({
                 checked={checked}
                 onChange={onChange}
                 onBlur={onBlur}
-                className="peer appearance-none size-6 border-2 border-(--core-grey-4) hover:border-(--core-grey-3) bg-(--core-grey-5) checked:bg-(--core-green-3) checked:border-(--core-grey-5) cursor-pointer transition-colors"
+                disabled={disabled}
+                className={`peer appearance-none size-6 border-2 border-(--core-grey-4) bg-(--core-grey-5) checked:bg-(--core-green-3) checked:border-(--core-grey-5) transition-colors ${disabled ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:border-(--core-grey-3)'}`}
             />
             <Check
                 className="pointer-events-none absolute size-4 text-white opacity-0 peer-checked:opacity-100"

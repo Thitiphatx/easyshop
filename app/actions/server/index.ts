@@ -3,7 +3,7 @@
 import { Server } from '@/app/generated/prisma/client'
 import { IActionResponse } from '../interface'
 import { prisma } from '@/lib/prisma'
-import { ServerFormValues } from '@/app/shop/components/modals/schema'
+import { ServerFormValues } from '@/app/(main)/shop/components/modals/schema'
 import { IServer } from './interface'
 import { getSession } from '../session'
 
