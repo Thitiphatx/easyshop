@@ -1,11 +1,11 @@
 "use client"
+import { updatePointMultiplier } from '@/app/actions/setting'
+import { useSetting } from '@/app/contexts/settingContext'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
-import React, { useEffect, useMemo } from 'react'
-import { PromotionFormValues, PromotionSchema } from '../../schema'
 import Swal from '@/lib/Swal'
-import { useSetting } from '@/app/contexts/settingContext'
-import { updatePointMultiplier } from '@/app/actions/setting'
+import React, { useMemo } from 'react'
+import { PromotionFormValues, PromotionSchema } from '../../schema'
 
 const PromotionSection: React.FC = () => {
     const { isLoading, fetchSetting, setting } = useSetting()
@@ -18,6 +18,16 @@ const PromotionSection: React.FC = () => {
             onSubmit: PromotionSchema,
         },
         onSubmit: async ({ value }: { value: PromotionFormValues }) => {
+            const confirm = await Swal.fire({
+                icon: 'warning',
+                title: 'ยืนยันการตั้งค่า Promotion',
+                text: 'ผู้เล่นที่เติมเงินหลังจากกดยืนยัน จะใช้ตัวคูณการเติมพอยท์ตามที่ตั้งค่าไว้ทันที',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+            })
+            if (!confirm.isConfirmed) return
+
             const res = await updatePointMultiplier(value)
             if (!res.success) {
                 Swal.fire({ icon: 'error', title: res.error })

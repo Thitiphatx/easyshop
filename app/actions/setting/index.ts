@@ -1,11 +1,11 @@
 'use server'
 
-import { Setting } from '@/app/generated/prisma/client'
 import { DisplayFormValues, ServerFormValues } from '@/app/(main)/setting/display/schema'
+import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, TrueWalletFormValues } from '@/app/(main)/setting/topup/schema'
+import { Setting } from '@/app/generated/prisma/client'
+import { decrypt, encrypt } from '@/lib/crypto'
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
-import { EasyslipFormValues, EasyslipSchema, MethodFormValues, PromotionFormValues } from '@/app/(main)/setting/topup/schema'
-import bcrypt from 'bcryptjs'
 
 export async function getSetting(): Promise<IActionResponse<Setting>> {
     try {
@@ -13,6 +13,9 @@ export async function getSetting(): Promise<IActionResponse<Setting>> {
         if (!res) return {
             success: false,
             error: 'ไม่พบข้อมูลการตั้งค่า กรุณา Setup ระบบใหม่อีกครั้ง'
+        }
+        if (res.easyslipApiKey) {
+            res.easyslipApiKey = decrypt(res.easyslipApiKey)
         }
         return { success: true, data: res }
     } catch {
@@ -73,22 +76,17 @@ export async function updatePointMultiplier(values: PromotionFormValues): Promis
     }
 }
 
-export async function updatePaymentMethod(values: MethodFormValues): Promise<IActionResponse<Setting>> {
+export async function updateTrueWalletSetting(values: TrueWalletFormValues): Promise<IActionResponse<Setting>> {
     try {
-        const { enableBank, enableTruewallet } = values
+        const { enableDirectTruewallet, truewalletPhoneNumber } = values
 
-        if (enableBank) {
-            const current = await prisma.setting.findUnique({ where: { id: 1 } })
-            if (!current?.easyslipApiKey) {
-                return { success: false, error: 'กรุณาตั้งค่า EasySlip API ก่อนเปิดใช้งานการชำระผ่านธนาคาร' }
-            }
-        }
+        const trimmedPhone = truewalletPhoneNumber ? truewalletPhoneNumber.trim() : ''
 
         const res = await prisma.setting.update({
             where: { id: 1 },
             data: {
-                enableBank,
-                enableTruewallet,
+                enableDirectTruewallet: trimmedPhone ? enableDirectTruewallet : false,
+                truewalletPhoneNumber: trimmedPhone,
             },
         })
         return { success: true, data: res }
@@ -101,23 +99,29 @@ export async function updateEasySlipApi(values: EasyslipFormValues): Promise<IAc
     try {
         const validatedFields = EasyslipSchema.safeParse(values)
 
+
+
         if (!validatedFields.success) {
             return {
                 success: false,
                 error: validatedFields.error.issues[0]?.message || 'ข้อมูลไม่ถูกต้อง',
-            };
+            }
         }
-        const { apiKey } = validatedFields.data
+        const { enableTruewallet, enableBank, easyslipApiKey } = validatedFields.data
 
-        const hashedPassword = apiKey ? await bcrypt.hash(apiKey, 10) : null
+        const trimmedApiKey = easyslipApiKey ? easyslipApiKey.trim() : ''
 
         const res = await prisma.setting.update({
             where: { id: 1 },
             data: {
-                easyslipApiKey: hashedPassword,
-                enableBank: apiKey ? true : false,
-            }
+                enableTruewallet: trimmedApiKey ? enableTruewallet : false,
+                enableBank: trimmedApiKey ? enableBank : false,
+                easyslipApiKey: trimmedApiKey ? encrypt(trimmedApiKey) : null,
+            },
         })
+        if (res.easyslipApiKey) {
+            res.easyslipApiKey = decrypt(res.easyslipApiKey)
+        }
         return { success: true, data: res }
     } catch {
         return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }

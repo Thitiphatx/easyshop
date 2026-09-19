@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import TopupHistorySection from './sections/TopupHistorySection'
 import PromotionSection from './sections/PromotionSection'
-import MethodSection from './sections/MethodSection'
+import TrueWalletSection from './sections/TrueWalletSection'
 import { useAuth } from '@/app/contexts/authContext'
 import Swal from '@/lib/Swal'
 import { useRouter } from 'next/navigation'
@@ -29,7 +29,7 @@ const TopupPage: React.FC = () => {
     return (
         <div className='flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4'>
             <PromotionSection />
-            <MethodSection />
+            <TrueWalletSection />
             <EasySlipSection />
             <TopupHistorySection className="col-span-1 lg:col-span-3" />
         </div>

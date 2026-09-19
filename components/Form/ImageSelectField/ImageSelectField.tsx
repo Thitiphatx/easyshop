@@ -12,7 +12,7 @@ import Card from '@/components/Card/Card'
 import { uploadImage, listImages } from '@/app/actions/image'
 import type { IImageSelectFieldProps } from './interface'
 
-export function ImageSelectField({ label, required, group }: IImageSelectFieldProps) {
+export function ImageSelectField({ label, required, group, layout, tooltip }: IImageSelectFieldProps) {
     const field = useFieldContext<string | null>()
     const [isOpen, setIsOpen] = useState(false)
     const [images, setImages] = useState<string[]>([])
@@ -62,7 +62,7 @@ export function ImageSelectField({ label, required, group }: IImageSelectFieldPr
     const selected = field.state.value
 
     return (
-        <FieldWrapper label={label} required={required}>
+        <FieldWrapper label={label} required={required} layout={layout} tooltip={tooltip}>
             {/* Trigger area */}
             <div className="flex gap-2 items-center">
                 <button
