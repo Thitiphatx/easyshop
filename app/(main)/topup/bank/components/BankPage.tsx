@@ -43,8 +43,8 @@ const BankPage: React.FC<IBankPageProps> = ({
         <div className='flex-1 w-full'>
             {/* Form Section */}
             <div className='relative max-w-6xl w-full px-4 py-12 sm:py-20 lg:py-24 mx-auto z-10 flex flex-col justify-center'>
-                <span className='text-center text-(--core-white) drop-shadow-lg flex flex-col justify-center items-center'>
-                    <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold'>Bank</h1>
+                <span className='text-center text-(--core-white) drop-shadow-2xl flex flex-col items-center'>
+                    <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>Bank</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>อัปโหลดสลิปโอนเงิน</h2>
                 </span>
                 <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-8 sm:mt-12'>
@@ -85,10 +85,8 @@ const BankPage: React.FC<IBankPageProps> = ({
                     </Card>
                 </div>
             </div>
-            <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/40 z-0'>
-            </div>
-            <div className='fixed top-0 left-0 w-full h-full bg-[url(/images/others/wallpaper_minecraft_update_aquatic_1920x1080.png)] bg-cover bg-center -z-10'>
-            </div>
+            <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/60 z-0' />
+            <div className='fixed top-0 left-0 w-full h-full bg-[url(/images/others/wallpaper_minecraft_update_aquatic_1920x1080.png)] bg-cover bg-center -z-10' />
         </div>
     )
 }

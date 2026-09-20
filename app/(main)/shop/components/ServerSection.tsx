@@ -104,7 +104,7 @@ const ServerSection: React.FC = () => {
 
             <div className='relative bg-(--core-off-black) w-full min-h-screen z-10 p-4 sm:p-8 lg:p-12'>
                 <div className='flex flex-wrap sm:grid sm:grid-cols-3 items-center justify-between gap-4 mb-6 sm:mb-8'>
-                    <div className="hidden sm:block" /> {/* กล่องเปล่าซ้ายสุดเพื่อบาลานซ์ */}
+                    <div className="hidden sm:block" />
                     <h1 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-(--core-white) text-center flex-1 sm:flex-none'>
                         {`เลือกเซิร์ฟเวอร์ ${isEdit ? "(แก้ไข)" : ""}`}
                     </h1>

@@ -2,6 +2,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { getSetting } from '@/app/actions/setting'
 import { Setting } from '@/app/generated/prisma/client'
+import { IClientSetting } from '../actions/setting/interface'
 
 interface MCServerStatus {
     online: boolean
@@ -9,8 +10,8 @@ interface MCServerStatus {
 }
 
 interface SettingContextValue {
-    setting: Setting | null
-    mcStatus: MCServerStatus | null
+    setting?: Setting | IClientSetting
+    mcStatus?: MCServerStatus
     fetchSetting: () => Promise<void>
     isLoading: boolean
 }
@@ -20,8 +21,8 @@ const SettingContext = createContext<SettingContextValue | null>(null)
 export function SettingProvider({ children }: { children: React.ReactNode }) {
     const [isSettingLoading, setIsSettingLoading] = useState<boolean>(false)
     const [isMcStatusLoading, setIsMcStatusLoading] = useState<boolean>(false)
-    const [setting, setSetting] = useState<Setting | null>(null)
-    const [mcStatus, setMcStatus] = useState<MCServerStatus | null>(null)
+    const [setting, setSetting] = useState<Setting | IClientSetting>()
+    const [mcStatus, setMcStatus] = useState<MCServerStatus>()
 
     const isLoading = useMemo(() => isSettingLoading || isMcStatusLoading, [isSettingLoading, isMcStatusLoading])
 
@@ -43,7 +44,7 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
                 playersOnline: json.players?.online ?? 0,
             })
         } catch {
-            setMcStatus(null)
+            setMcStatus(undefined)
         }
         setIsMcStatusLoading(false)
     }, [])

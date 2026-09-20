@@ -2,14 +2,38 @@
 
 import { DisplayFormValues, ServerFormValues } from '@/app/(main)/setting/display/schema'
 import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, TrueWalletFormValues } from '@/app/(main)/setting/topup/schema'
-import { Setting } from '@/app/generated/prisma/client'
+import { Prisma, Setting } from '@/app/generated/prisma/client'
 import { decrypt, encrypt } from '@/lib/crypto'
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
+import { IClientSetting } from './interface'
+import { getSession } from '../session'
 
-export async function getSetting(): Promise<IActionResponse<Setting>> {
+export async function getSetting(): Promise<IActionResponse<Setting | IClientSetting>> {
     try {
-        const res = await prisma.setting.findFirst()
+        let query: Prisma.SettingFindFirstArgs = {}
+
+        const session = await getSession()
+        if (session && !session.isAdmin) {
+            query = {
+                select: {
+                    enableBank: true,
+                    enableTruewallet: true,
+                    enableDirectTruewallet: true,
+                    siteName: true,
+                    siteDesc: true,
+                    logo: true,
+                    serverIp: true,
+                    serverImageUrl: true,
+                    serverName: true,
+                    serverDesc: true,
+                    pointMultiplier: true,
+                    truewalletPhoneNumber: true
+                }
+            }
+        }
+
+        const res = await prisma.setting.findFirst(query)
         if (!res) return {
             success: false,
             error: 'ไม่พบข้อมูลการตั้งค่า กรุณา Setup ระบบใหม่อีกครั้ง'

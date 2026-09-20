@@ -1,6 +1,7 @@
 "use client"
 
 import { updateEasySlipApi } from '@/app/actions/setting'
+import { Setting } from '@/app/generated/prisma/client'
 import { useSetting } from '@/app/contexts/settingContext'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
@@ -15,7 +16,7 @@ const EasySlipSection: React.FC = () => {
         defaultValues: {
             enableTruewallet: setting?.enableTruewallet ?? false,
             enableBank: setting?.enableBank ?? false,
-            easyslipApiKey: setting?.easyslipApiKey ?? '',
+            easyslipApiKey: (setting as Setting)?.easyslipApiKey ?? '',
         } as EasyslipFormValues,
         validators: {
             onSubmit: EasyslipSchema,
@@ -51,11 +52,11 @@ const EasySlipSection: React.FC = () => {
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <form.AppField
                     name="enableTruewallet"
-                    children={(field) => <field.CheckboxField variant='switch' label="True Wallet" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!setting?.easyslipApiKey} />}
+                    children={(field) => <field.CheckboxField variant='switch' label="True Wallet" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!(setting as Setting)?.easyslipApiKey} />}
                 />
                 <form.AppField
                     name="enableBank"
-                    children={(field) => <field.CheckboxField variant='switch' label="Bank" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!setting?.easyslipApiKey} />}
+                    children={(field) => <field.CheckboxField variant='switch' label="Bank" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!(setting as Setting)?.easyslipApiKey} />}
                 />
                 <form.AppField
                     name="easyslipApiKey"

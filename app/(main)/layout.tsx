@@ -2,6 +2,8 @@ import { AuthProvider } from "@/app/contexts/authContext";
 import { SettingProvider } from "@/app/contexts/settingContext";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { checkSettingExists } from "@/app/actions/setup";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import "../globals.css";
 
@@ -11,6 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+    const hasSetting = await checkSettingExists();
+    if (!hasSetting) {
+        redirect("/setup");
+    }
+
     return (
         <SettingProvider>
             <AuthProvider>

@@ -20,10 +20,8 @@ easyslip.interceptors.request.use(async (config) => {
                 return config
             }
         }
-    } catch {}
-
-    if (process.env.EASYSLIP_API_KEY) {
-        config.headers.Authorization = `Bearer ${process.env.EASYSLIP_API_KEY}`
+    } catch {
+        console.error('Failed to load EasySlip API key')
     }
     return config
 })

@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isMobileTopupOpen, setIsMobileTopupOpen] = useState(false)
 
-    const paths = useMemo(() => [
+    const paths: Array<{ label: string; path: string; children?: any }> = useMemo(() => [
         {
             label: "Home",
             path: "/"
@@ -36,16 +36,6 @@ const Navbar: React.FC = () => {
         {
             label: "TopUp",
             path: "/topup",
-            children: [
-                {
-                    label: "True Wallet",
-                    onClick: () => router.replace("/topup/truewallet")
-                },
-                {
-                    label: "ธนาคาร",
-                    onClick: () => router.replace("/topup/bank")
-                }
-            ]
         },
         {
             label: "Shop",
