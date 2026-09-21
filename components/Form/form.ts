@@ -1,4 +1,4 @@
-import { createFormHook } from '@tanstack/react-form'
+import { createFormHook, AppFieldExtendedReactFormApi } from '@tanstack/react-form'
 import { fieldContext, formContext } from './context'
 import { TextField } from './TextField/TextField'
 import { TextareaField } from './TextareaField/TextareaField'
@@ -25,3 +25,8 @@ export const { useAppForm, withForm } = createFormHook({
     ResetButton
   },
 })
+
+export type AppFormApi<TFormData = any> = AppFieldExtendedReactFormApi<
+  TFormData,
+  any, any, any, any, any, any, any, any, any, any, any, any, any
+>

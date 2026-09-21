@@ -6,16 +6,19 @@ import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
 import { ITableColumn } from '@/components/Table/interface'
-import { Crown, Laugh } from 'pixelarticons/react'
 import Table from '@/components/Table/Table'
 import Tooltip from '@/components/Tooltip'
 import Swal from '@/lib/Swal'
+import { Crown, Filter, Laugh } from 'pixelarticons/react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import TableFilter from './TableFilter'
+import { UserFilterFormValues } from '../schema'
 
 const UserPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
-    const [size, setSize] = useState<number>(10)
+    const [size] = useState<number>(10)
     const [total, setTotal] = useState<number>(0)
     const [users, setUsers] = useState<IUser[]>([]);
 
@@ -70,9 +73,9 @@ const UserPage: React.FC = () => {
         }
     ], [])
 
-    const fetchUser = useCallback(async () => {
+    const fetchUser = useCallback(async (filters?: UserFilterFormValues) => {
         setIsLoading(true)
-        const res = await getUsers({ page, size, isAdmin: false })
+        const res = await getUsers({ page, size, ...filters })
         if (res.success && res.data) {
             setUsers(res.data.data)
             setTotal(res.data.total)
@@ -118,13 +121,26 @@ const UserPage: React.FC = () => {
     }, [fetchUser])
 
     return (
-        <Card className='h-full' cardTitle="รายชื่อผู้เล่น">
-            <Table columns={columns} data={users}
-                emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
-                pagination={{ page, total, size, onChange: setPage }}>
+        <div>
+            <Card cardTitle={
+                <div className='flex justify-between items-center'>
+                    <div className='flex flex-col gap-1'>
+                        <h1 className='font-pixel'>Users</h1>
+                        <span className='text-sm text-(--core-off-white)'>ข้อมูลบัญชีผู้ใช้ทั้งหมดในเซิร์ฟเวอร์</span>
+                    </div>
+                    <Button onClick={() => setShowFilter((prev) => !prev)} isActive={isShowFilter} variant='Retro' color="Gold" icon={<Filter />} isIconOnly></Button>
+                </div>
+            }>
+            </Card>
+            <TableFilter hidden={!isShowFilter} fetchUser={fetchUser} />
+            <Card className='h-full'>
+                <Table columns={columns} data={users}
+                    emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
+                    pagination={{ page, total, size, onChange: setPage }}>
 
-            </Table>
-        </Card>
+                </Table>
+            </Card>
+        </div>
     )
 }
 

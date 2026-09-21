@@ -7,9 +7,13 @@ import Badge from '@/components/Badge'
 import Card from '@/components/Card/Card'
 import { ITableColumn } from '@/components/Table/interface'
 import Table from '@/components/Table/Table'
+import Button from '@/components/Button/Button'
+import { Filter } from 'pixelarticons/react'
 import Swal from '@/lib/Swal'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ITopupHistorySectionProps } from '../../interface'
+import { TopupFilterFormValues } from '../../schema'
+import TableFilter from '../TableFilter'
 import clsx from 'clsx'
 
 const statusColorMap: Record<string, "Green" | "Default" | "Red"> = {
@@ -26,6 +30,7 @@ const statusLabelMap: Record<string, string> = {
 
 const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [size, setSize] = useState<number>(10)
     const [total, setTotal] = useState<number>(0)
@@ -75,9 +80,9 @@ const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className })
         },
     ], [])
 
-    const fetchTopups = useCallback(async () => {
+    const fetchTopups = useCallback(async (filters?: TopupFilterFormValues) => {
         setIsLoading(true)
-        const res = await getTopups({ page, size })
+        const res = await getTopups({ page, size, ...filters })
         if (res.success && res.data) {
             setTopups(res.data.data)
             setTotal(res.data.total)
@@ -95,15 +100,28 @@ const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className })
     }, [fetchTopups])
 
     return (
-        <Card className={clsx('h-full', className)} cardTitle="ประวัติการเติมเงินทั้งหมด">
-            <Table
-                columns={columns}
-                loading={isLoading}
-                data={topups}
-                emptyText="ไม่พบประวัติการเติมเงินในระบบ"
-                pagination={{ page, total, size, onChange: setPage }}
-            />
-        </Card>
+        <div className={clsx(className)}>
+            <Card cardTitle={
+                <div className='flex justify-between items-center'>
+                    <div className='flex flex-col gap-1'>
+                        <h1 className='font-pixel'>Topup History</h1>
+                        <span className='text-sm text-(--core-off-white)'>ประวัติการเติมเงินทั้งหมด</span>
+                    </div>
+                    <Button onClick={() => setShowFilter((prev) => !prev)} isActive={isShowFilter} variant='Retro' color="Gold" icon={<Filter />} isIconOnly></Button>
+                </div>
+            }>
+            </Card>
+            <TableFilter hidden={!isShowFilter} fetchTopups={fetchTopups} />
+            <Card className='h-full'>
+                <Table
+                    columns={columns}
+                    loading={isLoading}
+                    data={topups}
+                    emptyText="ไม่พบประวัติการเติมเงินในระบบ"
+                    pagination={{ page, total, size, onChange: setPage }}
+                />
+            </Card>
+        </div>
     )
 }
 

@@ -1,7 +1,7 @@
+import { PurchaseFilterFormValues } from "@/app/(main)/setting/purchase-history/schema";
 import { Prisma, Transaction } from "@/app/generated/prisma/client";
 
-export interface ITransactionFilter {
-    playerName?: string
+export interface ITransactionFilter extends PurchaseFilterFormValues {
     page?: number
     size?: number
 }

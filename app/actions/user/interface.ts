@@ -1,9 +1,8 @@
 import { Prisma } from "@/app/generated/prisma/client";
+import { UserFilterFormValues } from "@/app/(main)/setting/users/schema";
 
 
-export interface IUserFilter {
-    playerName?: string
-    isAdmin?: boolean
+export interface IUserFilter extends UserFilterFormValues {
     page?: number
     size?: number
 }

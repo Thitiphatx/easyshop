@@ -1,6 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/app/generated/prisma/client";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { ITransaction, ITransactionFilter } from "./interface";
 import { getSession } from "../session";
@@ -8,7 +9,7 @@ import { getDateRange, SummaryType } from "@/app/utils/utils";
 
 export async function getTransactions(request: ITransactionFilter): Promise<IActionResponse<IPagination<ITransaction>>> {
     try {
-        const { page = 1, size = 10 } = request
+        const { page = 1, size = 10, search, sort, order } = request
         const session = await getSession()
 
         if (!session) {
@@ -18,20 +19,49 @@ export async function getTransactions(request: ITransactionFilter): Promise<IAct
             }
         }
 
-        let playerName = request.playerName
+        const where: Prisma.TransactionWhereInput = {};
+
         if (!session.isAdmin) {
-            playerName = session.username
+            where.username = session.username;
         }
 
+        if (search && search.trim()) {
+            const term = search.trim();
+            const numericVal = Number(term);
+            const isNumeric = !isNaN(numericVal) && Number.isInteger(numericVal);
 
-        const whereClause = playerName ? { username: { equals: playerName } } : undefined
+            where.OR = [
+                ...(isNumeric ? [{ id: numericVal }, { pricePaid: numericVal }] : []),
+                { username: { contains: term } },
+                { item: { name: { contains: term } } },
+                { server: { name: { contains: term } } },
+            ];
+        }
+
+        const orderDirection: Prisma.SortOrder = order === 'asc' ? 'asc' : 'desc';
+
+        let orderBy: Prisma.TransactionOrderByWithRelationInput = { createdAt: orderDirection };
+
+        if (sort === 'id') {
+            orderBy = { id: orderDirection };
+        } else if (sort === 'username' || sort === 'playerName') {
+            orderBy = { username: orderDirection };
+        } else if (sort === 'serverName') {
+            orderBy = { server: { name: orderDirection } };
+        } else if (sort === 'itemName') {
+            orderBy = { item: { name: orderDirection } };
+        } else if (sort === 'pricePaid') {
+            orderBy = { pricePaid: orderDirection };
+        } else if (sort === 'createdAt') {
+            orderBy = { createdAt: orderDirection };
+        }
 
         const [result, total] = await Promise.all([
             prisma.transaction.findMany({
-                where: whereClause,
+                where,
                 skip: (page - 1) * size,
                 take: size,
-                orderBy: { createdAt: 'desc' },
+                orderBy,
                 select: {
                     id: true,
                     username: true,
@@ -43,7 +73,7 @@ export async function getTransactions(request: ITransactionFilter): Promise<IAct
                     server: { select: { name: true } },
                 },
             }),
-            prisma.transaction.count({ where: whereClause }),
+            prisma.transaction.count({ where }),
         ])
 
         return {

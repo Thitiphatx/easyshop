@@ -15,6 +15,14 @@ export const EasyslipSchema = z.object({
     easyslipApiKey: z.string().nullable().optional(),
 })
 
+export const TopupFilterSchema = z.object({
+    search: z.string().optional(),
+    status: z.enum(['SUCCESS', 'PENDING', 'FAILED']).optional(),
+    sort: z.enum(['id', 'username', 'channel', 'amount', 'pointsAdded', 'status', 'createdAt']).optional(),
+    order: z.enum(['asc', 'desc']).optional()
+})
+
 export type PromotionFormValues = z.infer<typeof PromotionSchema>
 export type TrueWalletFormValues = z.infer<typeof TrueWalletSchema>
 export type EasyslipFormValues = z.infer<typeof EasyslipSchema>
+export type TopupFilterFormValues = z.infer<typeof TopupFilterSchema>

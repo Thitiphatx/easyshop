@@ -1,4 +1,5 @@
 export { useAppForm, withForm } from './form'
+export type { AppFormApi } from './form'
 export type { ITextFieldProps } from './TextField/interface'
 export type { ITextareaFieldProps } from './TextareaField/interface'
 export type { ISelectFieldProps, ISelectOption } from './SelectField/interface'
