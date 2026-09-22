@@ -52,7 +52,7 @@ const TableFilter: React.FC<ITablePurchaseFilterProps> = ({ hidden, fetchPurchas
                     name="search"
                     children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, Username, เซิร์ฟเวอร์, ไอเท็ม, ราคาที่จ่าย, วันที่ซื้อ" />}
                 />
-                <div className='grid grid-cols-4 gap-2'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
                     <form.AppField
                         name="sort"
                         children={(field) => <field.SelectField label="เรียงลำดับ" options={sortOptions} />}

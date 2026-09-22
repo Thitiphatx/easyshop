@@ -72,25 +72,23 @@ const Navbar: React.FC = () => {
                     }`}
             >
                 {/* Left Section (Logo) */}
-                <div className='flex items-center gap-3'>
-                    <div className='cursor-pointer' onClick={() => { setIsMobileMenuOpen(false); router.push("/"); }}>
-                        {setting?.logo ? (
-                            <Image alt="Logo" className='h-10 sm:h-12 w-auto' src={setting.logo} width={260} height={50} />
-                        ) : (
-                            <Image
-                                alt="Logo"
-                                className='h-10 sm:h-12 w-auto'
-                                loading='eager'
-                                src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg"
-                                width={260}
-                                height={50}
-                            />
-                        )}
-                    </div>
+                <div className='w-full' onClick={() => { setIsMobileMenuOpen(false); router.push("/"); }}>
+                    {setting?.logo ? (
+                        <Image alt="Logo" className='h-10 sm:h-12 w-auto cursor-pointer ' src={setting.logo} width={260} height={50} />
+                    ) : (
+                        <Image
+                            alt="Logo"
+                            className='h-10 sm:h-12 w-auto cursor-pointer'
+                            loading='eager'
+                            src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg"
+                            width={260}
+                            height={50}
+                        />
+                    )}
                 </div>
 
                 {/* Center Section (Desktop Navigation) */}
-                <div className='hidden lg:flex flex-1 justify-center'>
+                <div className='hidden lg:flex justify-center w-full'>
                     <ul className='flex items-center justify-center h-full mx-auto'>
                         {paths.map((path, index) => (
                             <li key={index}>
@@ -119,7 +117,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Right Section */}
-                <div className='flex items-center gap-3 sm:gap-6'>
+                <div className='flex items-center justify-end gap-3 sm:gap-6 w-full'>
                     {/* Players Online Badge */}
                     <div className='hidden sm:flex gap-2 ring-(--core-green-5) ring-2 p-1.5 sm:p-2 bg-(--core-off-black)/40'>
                         <span className='text-(--core-green-3) font-bold text-xs sm:text-sm'>{mcStatus?.playersOnline ?? 0}</span>

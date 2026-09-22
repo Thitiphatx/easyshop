@@ -45,23 +45,30 @@ const TrueWalletSection: React.FC = () => {
     })
 
     return (
-        <Card cardTitle="True Wallet" isLoading={isLoading} className='h-fit'>
-            <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
-                <form.AppField
-                    name="enableDirectTruewallet"
-                    children={(field) => <field.CheckboxField variant='switch' label="True Wallet" tooltip="จำเป็นต้องระบุเบอร์โทรศัพท์ TrueMoney Wallet" disabled={!setting?.truewalletPhoneNumber} />}
-                />
+        <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+            <Card cardTitle={
+                <div className='flex justify-between items-center'>
+                    <h1>True Wallet</h1>
+                    <div>
+                        <form.AppField
+                            name="enableDirectTruewallet"
+                            children={(field) => <field.CheckboxField variant='switch' label="" disabled={!setting?.truewalletPhoneNumber} />}
+                        />
+                    </div>
+                </div>
+            } isLoading={isLoading} className='h-fit'>
+                <p className='mb-3'>จำเป็นต้องระบุเบอร์โทรศัพท์ True Wallet เพื่อเปิดใช้งาน</p>
                 <form.AppField
                     name="truewalletPhoneNumber"
-                    children={(field) => <field.TextField label="เบอร์โทรศัพท์ TrueMoney Wallet" placeholder='กรอกเบอร์โทรศัพท์' required />}
+                    children={(field) => <field.TextField label="เบอร์โทรศัพท์ True Wallet" layout='horizontal' placeholder='กรอกเบอร์โทรศัพท์' required />}
                 />
-                <div className='flex justify-center'>
-                    <form.AppForm>
-                        <form.SubmitButton block>บันทึก</form.SubmitButton>
-                    </form.AppForm>
-                </div>
-            </form>
-        </Card>
+            </Card>
+            <Card>
+                <form.AppForm>
+                    <form.SubmitButton block>บันทึก</form.SubmitButton>
+                </form.AppForm>
+            </Card>
+        </form>
     )
 }
 

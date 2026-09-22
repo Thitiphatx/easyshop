@@ -82,19 +82,21 @@ const PromotionSection: React.FC = () => {
     ], [])
 
     return (
-        <Card cardTitle={"Promotion"} isLoading={isLoading} className='h-fit'>
-            <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+        <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+            <Card cardTitle="Promotion" isLoading={isLoading}>
+                <p className='mb-3'>กำหนดตัวคูณการเติมพอยท์ ผู้เล่นที่จะได้รับพอยท์เพิ่มขึ้น</p>
                 <form.AppField
                     name="pointMultiplier"
                     children={(field) => <field.SelectField layout='horizontal' label="ตัวคูณการเติมพอยท์" placeholder='เลือกตัวคูณการเติมพอยท์' options={options} />}
                 />
-                <div className='flex justify-center'>
-                    <form.AppForm>
-                        <form.SubmitButton block>บันทึก</form.SubmitButton>
-                    </form.AppForm>
-                </div>
-            </form>
-        </Card>
+            </Card>
+            <Card>
+
+                <form.AppForm>
+                    <form.SubmitButton block>บันทึก</form.SubmitButton>
+                </form.AppForm>
+            </Card>
+        </form>
     )
 }
 

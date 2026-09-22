@@ -67,7 +67,7 @@ const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => 
                     name="search"
                     children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, Username, Email, IP" />}
                 />
-                <div className='grid grid-cols-4 gap-2'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2'>
                     <form.AppField
                         name="isLogged"
                         children={(field) => <field.SelectField label="อยู่ในเกม" options={isLoggedOptions} />}

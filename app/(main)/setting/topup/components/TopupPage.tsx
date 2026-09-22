@@ -23,7 +23,6 @@ const TopupPage: React.FC = () => {
                 router.push('/')
             })
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoading])
 
     return (

@@ -5,55 +5,60 @@ import { ITransaction } from '@/app/actions/transaction/interface'
 import Swal from '@/lib/Swal'
 import Table from '@/components/Table/Table'
 import { ITableColumn } from '@/components/Table/interface'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Card from '@/components/Card/Card'
-
-const columns: ITableColumn<ITransaction>[] = [
-    {
-        key: 'id',
-        label: 'รายการที่',
-        align: 'center',
-    },
-    {
-        key: 'createdAt',
-        label: 'วันที่ซื้อ',
-        render: (value: Date) => new Date(value).toLocaleDateString('th-TH', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        }),
-    },
-    {
-        key: 'server',
-        label: 'เซิร์ฟเวอร์',
-        render: (_value, row) => row.server.name,
-    },
-    {
-        key: 'item',
-        label: 'ไอเท็ม',
-        render: (_value, row) => row.item.name,
-    },
-    {
-        key: 'pricePaid',
-        label: 'ราคาที่จ่าย',
-        align: 'right',
-        render: (value: number) => `${value.toLocaleString()} พอยท์`,
-    },
-]
+import Button from '@/components/Button/Button'
+import { Filter } from 'pixelarticons/react'
+import TableFilter from './TableFilter'
+import { PurchaseFilterFormValues } from '../schema'
 
 const PurchaseHistory: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [total, setTotal] = useState<number>(0)
     const size = 10
     const [purchaseHistory, setPurchaseHistory] = useState<ITransaction[]>([])
 
-    const getPurchaseHistory = useCallback(async () => {
+    const columns: ITableColumn<ITransaction>[] = useMemo(() => [
+        {
+            key: 'id',
+            label: 'รายการที่',
+            align: 'center',
+        },
+        {
+            key: 'createdAt',
+            label: 'วันที่ซื้อ',
+            render: (value: Date) => new Date(value).toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            }),
+        },
+        {
+            key: 'server',
+            label: 'เซิร์ฟเวอร์',
+            render: (_value, row) => row.server.name,
+        },
+        {
+            key: 'item',
+            label: 'ไอเท็ม',
+            render: (_value, row) => row.item.name,
+        },
+        {
+            key: 'pricePaid',
+            label: 'ราคาที่จ่าย',
+            align: 'right',
+            render: (value: number) => `${value.toLocaleString()} พอยท์`,
+        },
+    ], [])
+
+    const getPurchaseHistory = useCallback(async (filters?: PurchaseFilterFormValues) => {
         setIsLoading(true)
-        const res = await getTransactions({ page, size })
+        const res = await getTransactions({ page, size, ...filters })
         if (res.success && res.data) {
             setPurchaseHistory(res.data.data)
-            setTotal(100)
+            setTotal(res.data.total)
         } else {
             Swal.fire({
                 text: res.error,
@@ -69,7 +74,18 @@ const PurchaseHistory: React.FC = () => {
 
     return (
         <div className="h-full w-full">
-            <Card className='min-h-full' cardTitle="ประวัติการซื้อไอเท็ม">
+            <Card cardTitle={
+                <div className='flex justify-between items-center'>
+                    <div className='flex flex-col gap-1'>
+                        <h1 className='font-pixel'>Purchase History</h1>
+                        <span className='text-sm text-(--core-off-white)'>ประวัติการซื้อไอเท็ม</span>
+                    </div>
+                    <Button onClick={() => setShowFilter((prev) => !prev)} isActive={isShowFilter} variant='Retro' color="Gold" icon={<Filter />} isIconOnly></Button>
+                </div>
+            }>
+            </Card>
+            <TableFilter hidden={!isShowFilter} fetchPurchase={getPurchaseHistory} />
+            <Card className='h-full'>
                 <Table
                     columns={columns}
                     data={purchaseHistory}

@@ -48,27 +48,28 @@ const EasySlipSection: React.FC = () => {
     })
 
     return (
-        <Card cardTitle="EasySlip" isLoading={isLoading} className='h-fit'>
-            <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
-                <form.AppField
-                    name="enableTruewallet"
-                    children={(field) => <field.CheckboxField variant='switch' label="True Wallet" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!(setting as Setting)?.easyslipApiKey} />}
-                />
-                <form.AppField
-                    name="enableBank"
-                    children={(field) => <field.CheckboxField variant='switch' label="Bank" tooltip="จำเป็นต้องมี Api Key ของ EasySlip" disabled={!(setting as Setting)?.easyslipApiKey} />}
-                />
+        <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+            <Card cardTitle={
+                <div className='flex justify-between items-center'>
+                    <h1>EasySlip</h1>
+                    <form.AppField
+                        name="enableBank"
+                        children={(field) => <field.CheckboxField variant='switch' label="" tooltip="" disabled={!(setting as Setting)?.easyslipApiKey} />}
+                    />
+                </div>
+            } isLoading={isLoading} className='h-fit'>
+                <p className='mb-3'>จำเป็นต้องระบุ API Key ของ EasySlip เพื่อเปิดใช้งาน</p>
                 <form.AppField
                     name="easyslipApiKey"
-                    children={(field) => <field.TextField label="EasySlip API Key" placeholder='กรอก API Key' type="password" tooltip="ไปที่ https://easyslip.com เพื่อขอ API Key (มีค่าบริการตามการใช้งาน)" />}
+                    children={(field) => <field.TextField layout='horizontal' label="EasySlip API Key" placeholder='กรอก API Key' type="password" tooltip="ไปที่ https://easyslip.com เพื่อขอ API Key (มีค่าบริการตามการใช้งาน)" />}
                 />
-                <div className='flex justify-center'>
-                    <form.AppForm>
-                        <form.SubmitButton block>บันทึก</form.SubmitButton>
-                    </form.AppForm>
-                </div>
-            </form>
-        </Card>
+            </Card>
+            <Card>
+                <form.AppForm>
+                    <form.SubmitButton block>บันทึก</form.SubmitButton>
+                </form.AppForm>
+            </Card>
+        </form>
     )
 }
 

@@ -1,6 +1,6 @@
-import { IActionResponse } from "@/app/actions/interface";
-import { ITransaction } from "@/app/actions/transaction/interface";
+import { ISectionCommonProps } from "@/app/interface";
+import { PurchaseFilterFormValues } from "./schema";
 
-export interface IPurchaseHistoryProps {
-    getHistory: (page: number, size: number) => Promise<IActionResponse<ITransaction[]>>
+export interface ITablePurchaseFilterProps extends ISectionCommonProps {
+    fetchPurchase: (filters: PurchaseFilterFormValues) => Promise<void>
 }

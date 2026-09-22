@@ -62,7 +62,7 @@ const TableFilter: React.FC<ITableTopupFilterProps> = ({ hidden, fetchTopups }) 
                     name="search"
                     children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, Username, ช่องทาง, จำนวนเงิน, พอยท์, อ้างอิง" />}
                 />
-                <div className='grid grid-cols-4 gap-2'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2'>
                     <form.AppField
                         name="status"
                         children={(field) => <field.SelectField label="สถานะ" options={statusOptions} />}
