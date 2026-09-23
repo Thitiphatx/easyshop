@@ -68,6 +68,7 @@ async function main() {
                 siteName: 'Easyshop',
                 serverIp: '127.0.0.1',
                 serverName: 'Easyshop',
+                truewalletPhoneNumber: '',
             },
         })
         console.log('  Created setting:')

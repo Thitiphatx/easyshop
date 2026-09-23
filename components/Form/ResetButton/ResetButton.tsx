@@ -1,5 +1,6 @@
 'use client'
 
+import Button from '@/components/Button/Button'
 import { useFormContext } from '../context'
 import type { IResetButtonProps } from './interface'
 
@@ -9,15 +10,9 @@ export function ResetButton({ children, ...buttonProps }: IResetButtonProps) {
     return (
         <form.Subscribe selector={(state) => state.isSubmitting}>
             {(isSubmitting) => (
-                <button
-                    type="button"
-                    disabled={isSubmitting}
-                    onClick={() => form.reset()}
-                    className="field-reset"
-                    {...buttonProps}
-                >
-                    {children}
-                </button>
+                <Button type="reset" disabled={isSubmitting} {...buttonProps}>
+                    {isSubmitting ? 'กำลังส่ง...' : children}
+                </Button>
             )}
         </form.Subscribe>
     )

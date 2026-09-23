@@ -10,5 +10,7 @@ export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
     iconPosition?: ButtonIconPosition
     isIconOnly?: boolean
     isActive?: boolean
+    isDisabled?: boolean
+    isLoading?: boolean
     block?: boolean
 }

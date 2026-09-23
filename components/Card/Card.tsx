@@ -9,6 +9,7 @@ const Card: React.FC<ICardProps> = ({
     cardFooter,
     isPressable = false,
     isLoading = false,
+    childrenClassName,
     className,
     children,
     ...props
@@ -27,7 +28,7 @@ const Card: React.FC<ICardProps> = ({
                             {cardTitle}
                         </div>
                     )}
-                    <div className='text-(--core-grey-2)'>
+                    <div className={`text-(--core-grey-2) ${childrenClassName ?? ''}`}>
                         {children}
                     </div>
 

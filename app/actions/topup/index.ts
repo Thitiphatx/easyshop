@@ -1,14 +1,15 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
+import { Prisma, TopupStatus } from "@/app/generated/prisma/client";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { ITopDonate, ITopDonateFilter, ITopup, ITopupFilter } from "./interface";
 import { getSession } from "../session";
-import { getLastWeekRange } from "@/app/utils/utils";
+import { getDateRange, SummaryType } from "@/app/utils/utils";
 
 export async function getTopups(request: ITopupFilter): Promise<IActionResponse<IPagination<ITopup>>> {
     try {
-        const { page = 1, size = 10 } = request
+        const { page = 1, size = 10, search, status, sort, order } = request
         const session = await getSession()
 
         if (!session) {
@@ -18,19 +19,57 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             }
         }
 
-        let whereClause: any = undefined
+        const where: Prisma.TopupWhereInput = {}
+
         if (!session.isAdmin) {
-            whereClause = { userId: session.id }
+            where.userId = session.id
         } else if (request.playerName) {
-            whereClause = { user: { username: { equals: request.playerName } } }
+            where.user = { username: { equals: request.playerName } }
+        }
+
+        if (status) {
+            where.status = status as TopupStatus
+        }
+
+        if (search && search.trim()) {
+            const term = search.trim()
+            const numericVal = Number(term)
+            const isNumeric = !isNaN(numericVal) && Number.isInteger(numericVal)
+
+            where.OR = [
+                ...(isNumeric ? [{ id: numericVal }, { amount: numericVal }, { pointsAdded: numericVal }] : []),
+                { user: { username: { contains: term } } },
+                { channel: { contains: term } },
+                { reference: { contains: term } },
+            ]
+        }
+
+        const orderDirection: Prisma.SortOrder = order === 'asc' ? 'asc' : 'desc'
+
+        let orderBy: Prisma.TopupOrderByWithRelationInput = { createdAt: orderDirection }
+
+        if (sort === 'id') {
+            orderBy = { id: orderDirection }
+        } else if (sort === 'username') {
+            orderBy = { user: { username: orderDirection } }
+        } else if (sort === 'channel') {
+            orderBy = { channel: orderDirection }
+        } else if (sort === 'amount') {
+            orderBy = { amount: orderDirection }
+        } else if (sort === 'pointsAdded') {
+            orderBy = { pointsAdded: orderDirection }
+        } else if (sort === 'status') {
+            orderBy = { status: orderDirection }
+        } else if (sort === 'createdAt') {
+            orderBy = { createdAt: orderDirection }
         }
 
         const [result, total] = await Promise.all([
             prisma.topup.findMany({
-                where: whereClause,
+                where,
                 skip: (page - 1) * size,
                 take: size,
-                orderBy: { createdAt: 'desc' },
+                orderBy,
                 select: {
                     id: true,
                     amount: true,
@@ -46,7 +85,7 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
                     },
                 },
             }),
-            prisma.topup.count({ where: whereClause }),
+            prisma.topup.count({ where }),
         ])
 
         return {
@@ -61,13 +100,13 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
     }
 }
 
-export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> {
+export async function getTopupSummary(type: SummaryType = 'week'): Promise<IActionResponse<ISummaryData>> {
     try {
-        const { startOfWeek, endOfWeek } = getLastWeekRange()
+        const { start, end, labels, buckets, getBucket } = getDateRange(type)
 
         const topups = await prisma.topup.findMany({
             where: {
-                createdAt: { gte: startOfWeek, lte: endOfWeek },
+                createdAt: { gte: start, lte: end },
             },
             select: {
                 amount: true,
@@ -75,12 +114,10 @@ export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> 
             },
         })
 
-        const dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        const sums = Array(7).fill(0)
+        const sums = Array(buckets).fill(0)
 
         for (const topup of topups) {
-            const jsDay = topup.createdAt.getDay()
-            const idx = jsDay === 0 ? 6 : jsDay - 1
+            const idx = getBucket(topup.createdAt)
             sums[idx] += Number(topup.amount)
         }
 
@@ -88,7 +125,7 @@ export async function getTopupSummary(): Promise<IActionResponse<ISummaryData>> 
 
         return {
             success: true,
-            data: { data: sums, label: dayLabels, total }
+            data: { data: sums, label: labels, total }
         }
     } catch {
         return {
@@ -128,7 +165,8 @@ export async function getTopDonate(request: ITopDonateFilter): Promise<IActionRe
 
         return {
             success: true,
-            data: res.map((item) => ({
+            data: res.map((item, index) => ({
+                rank: index + 1,
                 username: item.user.username,
                 amount: item.amount,
             })),

@@ -41,7 +41,7 @@ function Table<T extends Record<string, any>>({
                         {loading ? (
                             <tr>
                                 <td colSpan={columns.length} className="px-8 py-12 text-center">
-                                    <Loading size="md" />
+                                    <Loading />
                                 </td>
                             </tr>
                         ) : data.length === 0 ? (

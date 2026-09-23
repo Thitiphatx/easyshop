@@ -5,5 +5,6 @@ export interface ICardProps extends HTMLAttributes<HTMLDivElement> {
     cardFooter?: React.ReactNode
     isPressable?: boolean
     isLoading?: boolean
+    childrenClassName?: string
     onClick?: () => Promise<any> | any
 }

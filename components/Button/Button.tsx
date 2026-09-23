@@ -2,6 +2,7 @@
 import React from 'react'
 import { IButtonProps } from './interface'
 import clsx from 'clsx'
+import { Reload } from 'pixelarticons/react'
 
 type ColorTokens = {
   base: string
@@ -51,49 +52,49 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     retroBorder: "border-(--dungeons-red-2)",
   },
   Gold: {
-    base: "bg-(--core-gold-5)",
-    hover: "hover:bg-(--core-gold-4)",
-    active: "active:bg-(--core-gold-6)",
-    borderTop: "border-t-(--core-gold-3)",
-    borderBottom: "border-b-(--core-gold-6)",
-    text: "text-(--core-gold-3)",
-    textActive: "text-(--core-gold-3)",
-    subtleHover: "hover:bg-(--core-gold-1)",
-    subtleActive: "active:bg-(--core-gold-2)",
-    ghostHover: "hover:text-(--core-gold-3)",
-    retroBase: "bg-amber-400",
-    retroShadow: "bg-amber-800",
-    retroBorder: "border-amber-300",
+    base: "bg-(--marketplace-gold-5)",
+    hover: "hover:bg-(--marketplace-gold-4)",
+    active: "active:bg-(--marketplace-gold-6)",
+    borderTop: "border-t-(--marketplace-gold-3)",
+    borderBottom: "border-b-(--marketplace-gold-6)",
+    text: "text-(--marketplace-gold-3)",
+    textActive: "text-(--marketplace-gold-3)",
+    subtleHover: "hover:bg-(--marketplace-gold-1)",
+    subtleActive: "active:bg-(--marketplace-gold-2)",
+    ghostHover: "hover:text-(--marketplace-gold-3)",
+    retroBase: "bg-(--marketplace-gold-3)",
+    retroShadow: "bg-(--marketplace-gold-6)",
+    retroBorder: "border-(--marketplace-gold-2)",
   },
   Blue: {
-    base: "bg-(--core-blue-5)",
-    hover: "hover:bg-(--core-blue-4)",
-    active: "active:bg-(--core-blue-6)",
-    borderTop: "border-t-(--core-blue-3)",
-    borderBottom: "border-b-(--core-blue-6)",
-    text: "text-(--core-blue-3)",
-    textActive: "text-(--core-blue-3)",
-    subtleHover: "hover:bg-(--core-blue-1)",
-    subtleActive: "active:bg-(--core-blue-2)",
-    ghostHover: "hover:text-(--core-blue-3)",
-    retroBase: "bg-[#88CBEB]",
-    retroShadow: "bg-[#6B8EBF]",
-    retroBorder: "border-[#00A3E0]",
+    base: "bg-(--legends-light-blue-5)",
+    hover: "hover:bg-(--legends-light-blue-4)",
+    active: "active:bg-(--legends-light-blue-6)",
+    borderTop: "border-t-(--legends-light-blue-4)",
+    borderBottom: "border-b-(--legends-light-blue-6)",
+    text: "text-(--legends-light-blue-3)",
+    textActive: "text-(--legends-light-blue-3)",
+    subtleHover: "hover:bg-(--legends-light-blue-1)",
+    subtleActive: "active:bg-(--legends-light-blue-2)",
+    ghostHover: "hover:text-(--legends-light-blue-3)",
+    retroBase: "bg-(--legends-light-blue-3)",
+    retroShadow: "bg-(--legends-light-blue-6)",
+    retroBorder: "border-(--legends-light-blue-2)",
   },
   Purple: {
-    base: "bg-(--core-purple-5)",
-    hover: "hover:bg-(--core-purple-4)",
-    active: "active:bg-(--core-purple-6)",
-    borderTop: "border-t-(--core-purple-3)",
-    borderBottom: "border-b-(--core-purple-6)",
-    text: "text-(--core-purple-3)",
-    textActive: "text-(--core-purple-3)",
-    subtleHover: "hover:bg-(--core-purple-1)",
-    subtleActive: "active:bg-(--core-purple-2)",
-    ghostHover: "hover:text-(--core-purple-3)",
-    retroBase: "bg-purple-400",
-    retroShadow: "bg-purple-800",
-    retroBorder: "border-purple-300",
+    base: "bg-(--realms-deep-blue-3)",
+    hover: "hover:bg-(--realms-deep-blue-2)",
+    active: "active:bg-(--realms-deep-blue-4)",
+    borderTop: "border-t-(--realms-deep-blue-2)",
+    borderBottom: "border-b-(--realms-deep-blue-4)",
+    text: "text-(--realms-deep-blue-2)",
+    textActive: "text-(--realms-deep-blue-2)",
+    subtleHover: "hover:bg-(--realms-deep-blue-1)",
+    subtleActive: "active:bg-(--realms-deep-blue-2)",
+    ghostHover: "hover:text-(--realms-deep-blue-2)",
+    retroBase: "bg-(--realms-deep-blue-3)",
+    retroShadow: "bg-(--realms-deep-blue-6)",
+    retroBorder: "border-(--realms-deep-blue-2)",
   },
   Default: {
     base: "bg-(--core-grey-6)",
@@ -106,45 +107,53 @@ const colorTokens: Record<NonNullable<IButtonProps['color']>, ColorTokens> = {
     subtleHover: "hover:bg-(--core-grey-5)",
     subtleActive: "active:bg-(--core-grey-4)",
     ghostHover: "hover:text-(--core-off-white)",
-    retroBase: "bg-gray-300",
-    retroShadow: "bg-gray-600",
-    retroBorder: "border-gray-100",
+    retroBase: "bg-(--core-grey-2)",
+    retroShadow: "bg-(--core-grey-6)",
+    retroBorder: "border-(--core-grey-1)",
   },
 }
 
-const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorTokens, isActive?: boolean) => string> = {
+const outlineBorderColor: Record<NonNullable<IButtonProps['color']>, string> = {
+  Green: "border-(--core-green-3)",
+  Red: "border-(--dungeons-red-3)",
+  Gold: "border-(--marketplace-gold-3)",
+  Blue: "border-(--legends-light-blue-3)",
+  Purple: "border-(--realms-deep-blue-2)",
+  Default: "border-(--core-grey-5)",
+}
+
+const variantStyles: Record<NonNullable<IButtonProps['variant']>, (c: ColorTokens, color: NonNullable<IButtonProps['color']>, isActive?: boolean) => string> = {
   Solid: (c) => clsx(
     "ring-2 ring-(--core-off-black) border-t-8 border-b-8 py-1 text-(--core-white)",
     "disabled:text-(--core-grey-3)! disabled:bg-(--core-grey-1) disabled:border-t-(--core-grey-3) disabled:border-b-(--core-grey-3)",
     c.base, c.hover, c.active, c.borderTop, c.borderBottom
   ),
 
-  Outline: (c) => clsx(
-    "border-2 border-l-0 border-r-0 bg-transparent ring-2 ring-(--core-off-black) py-2",
-    c.text, c.subtleHover, c.subtleActive, c.borderTop, c.borderBottom
+  Outline: (c, color) => clsx(
+    "border-2 bg-transparent ring-2 ring-(--core-off-black) py-2",
+    "disabled:text-(--core-grey-3)! disabled:border-(--core-grey-3)",
+    c.text, c.subtleHover, c.subtleActive,
+    outlineBorderColor[color],
   ),
 
   Link: (c) => clsx(
     "border-transparent bg-transparent underline-offset-4 hover:underline py-1",
+    "disabled:no-underline disabled:text-(--core-grey-3)!",
     c.text
   ),
 
-  Ghost: (c, isActive) => clsx(
+  Ghost: (c, _color, isActive) => clsx(
     "font-bold text-sm border-transparent bg-transparent py-1",
+    "disabled:text-(--core-grey-3)!",
     isActive ? c.textActive : clsx("text-(--core-white)", c.ghostHover)
   ),
 
   Retro: (c) => clsx(
     "group rounded-none border-4 border-black p-0 drop-shadow-none transition-all active:translate-y-0",
+    "disabled:opacity-50 disabled:pointer-events-none",
     c.retroShadow
   ),
 }
-
-const IconSlot = ({ children, position }: { children: React.ReactNode; position: 'start' | 'end' }) => (
-  <div className={clsx("mx-4 absolute flex items-center", position === 'start' ? 'left-0' : 'right-0')}>
-    {children}
-  </div>
-)
 
 const Button: React.FC<IButtonProps> = ({
   variant = "Solid",
@@ -152,32 +161,47 @@ const Button: React.FC<IButtonProps> = ({
   icon,
   iconPosition = "start",
   isIconOnly = false,
-  block = false,
   isActive,
+  isDisabled = false,
+  isLoading = false,
+  block = false,
   children,
   className,
   ...props
 }) => {
   const c = colorTokens[color]
-  const variantClass = variantStyles[variant]?.(c, isActive)
+  const variantClass = variantStyles[variant]?.(c, color, isActive)
   const isRetro = variant === "Retro"
+  const disabled = isDisabled || isLoading
 
   const content = isIconOnly ? (
-    <div className="flex items-center justify-center">{icon}</div>
+    <div className="flex items-center justify-center">
+      {isLoading ? <Reload /> : icon}
+    </div>
   ) : (
     <>
-      {icon && <IconSlot position={iconPosition}>{icon}</IconSlot>}
+      {(isLoading ? iconPosition === 'start' : icon && iconPosition === 'start') && (
+        <span className="shrink-0 inline-flex items-center">
+          {isLoading && iconPosition === 'start' ? <Reload /> : icon}
+        </span>
+      )}
       {children}
+      {(isLoading ? iconPosition === 'end' : icon && iconPosition === 'end') && (
+        <span className="shrink-0 inline-flex items-center ml-auto">
+          {isLoading && iconPosition === 'end' ? <Reload /> : icon}
+        </span>
+      )}
     </>
   )
 
   return (
     <button
+      disabled={disabled}
       className={clsx(
-        'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer',
-        !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-12 gap-2'),
+        'relative flex items-center justify-center font-bold text-xl drop-shadow-md transition-colors disabled:cursor-not-allowed cursor-pointer gap-2.5',
+        !isRetro && (isIconOnly ? 'px-3 aspect-square' : 'px-6'),
         variantClass,
-        block && 'w-full px-0!',
+        block && 'w-full',
         className
       )}
       {...props}
@@ -185,10 +209,10 @@ const Button: React.FC<IButtonProps> = ({
       {isRetro ? (
         <span
           className={clsx(
-            'flex w-full h-full items-center justify-center -translate-y-1 border-2 transition-transform group-active:translate-y-0 text-(--core-rich-black)',
+            'flex w-full h-full items-center justify-center -translate-y-1 border-2 transition-transform group-active:translate-y-0 text-(--core-rich-black) gap-2.5',
             c.retroBorder,
             c.retroBase,
-            isIconOnly ? 'p-2 aspect-square' : 'px-12 py-2 gap-2'
+            isIconOnly ? 'p-2 aspect-square' : 'px-6 py-2'
           )}
         >
           {content}

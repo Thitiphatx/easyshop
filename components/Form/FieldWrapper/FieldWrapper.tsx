@@ -32,14 +32,14 @@ export function FieldWrapper({
         <div className={`relative mb-3 hover:z-30 focus-within:z-30 ${className ?? ''}`}>
             <label
                 htmlFor={htmlFor}
-                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-row items-center gap-4' : 'flex-col'
+                className={`text-(--core-white) drop-shadow-xl flex ${layout === 'horizontal' ? 'flex-col sm:flex-row sm:items-center has-[textarea]:sm:items-start has-[textarea]:[&>span:first-child]:sm:pt-3 gap-1.5 sm:gap-4' : 'flex-col'
                     }`}
             >
-                <span className={`flex items-center gap-1 shrink-0 ${layout === 'horizontal' ? '' : 'mb-2'}`}>
+                <span className={`flex items-center gap-1 shrink-0 ${layout === 'horizontal' ? 'mb-1 sm:mb-0' : 'mb-2'}`}>
                     {label}
                     {required && <span className="text-(--default-warning)">*</span>}
                 </span>
-                <span className={layout === 'horizontal' ? 'flex-1' : ''}>
+                <span className={layout === 'horizontal' ? 'w-full sm:flex-1' : ''}>
                     {tooltip ? <Tooltip content={tooltip} position='bottom' mode='focus'>
                         {children}
                     </Tooltip> : children}

@@ -1,6 +1,6 @@
-import type { ButtonHTMLAttributes } from 'react'
+import { IButtonProps } from '@/components/Button/interface'
 
 export interface IResetButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'disabled' | 'onClick'> {
+  extends Omit<IButtonProps, 'type' | 'disabled'> {
   children: React.ReactNode
 }
