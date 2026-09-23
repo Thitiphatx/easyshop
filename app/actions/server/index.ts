@@ -20,7 +20,8 @@ export async function createServer(values: ServerFormValues): Promise<IActionRes
             success: true,
             data: serverRes
         }
-    } catch {
+    } catch (e: any) {
+        console.log(e)
         return {
             success: false,
             error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
@@ -28,18 +29,21 @@ export async function createServer(values: ServerFormValues): Promise<IActionRes
     }
 }
 
-export async function updateServer(values: Server): Promise<IActionResponse<undefined>> {
+export async function updateServer(values: Server): Promise<IActionResponse<Server>> {
     const session = await getSession()
     if (!session?.isAdmin) {
         return { success: false, error: "ไม่มีสิทธิ์เข้าถึง" }
     }
+
     try {
-        await prisma.server.update({
-            where: { id: values.id },
-            data: values,
+        const { id, ...data } = values
+        const serverRes = await prisma.server.update({
+            where: { id },
+            data,
         })
-        return { success: true }
-    } catch {
+        return { success: true, data: serverRes }
+    } catch (e) {
+        console.log(e)
         return { success: false, error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้" }
     }
 }

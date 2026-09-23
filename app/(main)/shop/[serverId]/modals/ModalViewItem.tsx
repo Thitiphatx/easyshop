@@ -7,7 +7,6 @@ import Badge from '@/components/Badge'
 import { Box, Money, ShoppingBag } from 'pixelarticons/react'
 import { useAuth } from '@/app/contexts/authContext'
 import { useParams } from 'next/navigation'
-import { sendItem } from '@/app/actions/rcon'
 import Swal from '@/lib/Swal'
 import { buyItem } from '@/app/actions/shop'
 
@@ -16,7 +15,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
     setIsOpen,
     itemInfo
 }) => {
-    const { session, openAuth } = useAuth()
+    const { session, setSession, openAuth } = useAuth()
     const params = useParams()
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -42,33 +41,26 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
         }
 
         setIsLoading(true)
-        try {
-            const res = await buyItem({
-                itemId: itemInfo.id,
-                playerName: session.username
-            })
+        const res = await buyItem({
+            itemId: itemInfo.id,
+            playerName: session.username
+        })
 
-            if (res.success) {
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'ซื้อสินค้าสำเร็จ!',
-                    text: `ส่ง ${itemInfo.name} ไปยัง ${session.username} เรียบร้อยแล้ว`,
-                })
-                setIsOpen(false)
-            } else {
-                await Swal.fire({
-                    icon: 'error',
-                    title: res.error || 'เกิดข้อผิดพลาดในการสั่งซื้อสินค้า',
-                })
-            }
-        } catch (err) {
+        if (res.success) {
+            setSession((prev) => prev ? { ...prev, point: prev.point - itemInfo.price } : null)
+            await Swal.fire({
+                icon: 'success',
+                title: 'ซื้อสินค้าสำเร็จ!',
+                text: `ส่ง ${itemInfo.name} ไปยัง ${session.username} เรียบร้อยแล้ว`,
+            })
+            setIsOpen(false)
+        } else {
             await Swal.fire({
                 icon: 'error',
-                title: 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
+                title: res.error || 'เกิดข้อผิดพลาดในการสั่งซื้อสินค้า',
             })
-        } finally {
-            setIsLoading(false)
         }
+        setIsLoading(false)
     }
 
     return (
@@ -81,7 +73,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                 {/* Product Image */}
                 <div className="relative w-full h-64 overflow-hidden rounded-lg border-2 border-(--core-grey-5) bg-(--core-grey-6) flex items-center justify-center">
                     <img
-                        src={itemInfo.imageUrl ?? '/images/others/emerald.webp'}
+                        src={itemInfo.imageUrl || '/images/others/emerald.webp'}
                         alt={itemInfo.name}
                         className="w-full h-full object-cover object-center"
                     />
@@ -97,7 +89,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                     <div className="flex items-center gap-2">
                         <Money className="text-(--marketplace-gold-4)" width={28} height={28} />
                         <span className="text-(--marketplace-gold-2) font-bold text-2xl">
-                            {itemInfo.price.toLocaleString()}
+                            {itemInfo.price === 0 ? 'FREE' : itemInfo.price.toLocaleString()}
                         </span>
                     </div>
                 </div>

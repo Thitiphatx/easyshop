@@ -157,6 +157,7 @@ export async function completeSetup(payload: ISetupPayload): Promise<IActionResp
             success: true,
         }
     } catch (err: any) {
+        console.log(err)
         return {
             success: false,
             error: err?.message || 'ไม่สามารถบันทึกข้อมูลการตั้งค่าได้',

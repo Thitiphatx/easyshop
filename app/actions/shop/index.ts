@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { IActionResponse } from "../interface";
 import { IBuyItemRequest } from "./interface";
 
-export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse<void>> {
+export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse<undefined>> {
     const product = await prisma.item.findFirst({
         where: { id: request.itemId }
     })
@@ -29,7 +29,7 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
     }
 
     try {
-        await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx) => {
             // deduct player point
             await tx.authMe.update({
                 where: { id: user.id },
@@ -59,15 +59,16 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
             })
 
             if (!rconRes.success) {
-                throw new Error(rconRes.error ?? "ส่งไอเทมไม่สำเร็จ")
+                throw new Error(rconRes.error || "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้")
             }
+
+            return rconRes
         })
 
-        return { success: true }
-    } catch {
+    } catch (e: any) {
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: e?.message || "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

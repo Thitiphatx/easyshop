@@ -54,9 +54,14 @@ export async function testConnection(serverId: number): Promise<IActionResponse<
     }
 }
 
+function escapeRegex(text: string) {
+    return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 export async function sendItem(request: ISendItemRequest): Promise<IActionResponse<undefined>> {
     const product = await prisma.item.findUnique({
-        where: { id: request.itemId }
+        where: { id: request.itemId },
+        include: { server: true }
     })
 
     if (!product) {
@@ -71,10 +76,10 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
         select: { isLogged: true }
     })
 
-    if (!player || player.isLogged !== 1) {
+    if (player && player.isLogged !== 1) {
         return {
             success: false,
-            error: "ผู้เล่นไม่ได้อยู่ในเซิร์ฟเวอร์ กรุณาเข้าเกมก่อนทำรายการ"
+            error: "ผู้เล่นยังไม่ได้เข้าสู่ระบบ กรุณาอยู่ในเซิร์ฟเวอร์ก่อนทำรายการ"
         }
     }
 
@@ -82,21 +87,45 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
     if (!rconRes.success || !rconRes.data) {
         return {
             success: false,
-            error: rconRes.error || "เซิร์ฟเวอร์ออฟไลน์อยู่"
+            error: rconRes.error || `เซิร์ฟเวอร์ "${product.server?.name || product.serverId}" ออฟไลน์อยู่`
         }
     }
 
     const rcon = rconRes.data
 
     try {
-        const command = product.command
-            .replace("%player%", request.playerName)
-            .replace("%quantity%", product.amount?.toString() || "1")
+        // ตรวจสอบว่าผู้เล่นออนไลน์อยู่ในเซิร์ฟเวอร์นี้จริงๆ ผ่านคำสั่ง list
+        const listResponse = await rcon.send("list")
+        const cleanListResponse = listResponse.replace(/[§&][0-9a-fk-or]/gi, '')
+        const playerPattern = new RegExp(`(^|[^a-zA-Z0-9_])${escapeRegex(request.playerName)}([^a-zA-Z0-9_]|$)`, 'i')
 
-        const broastcast = `${request.playerName} ได้ซื้อ ${product.name} ในราคา ${product.price} พอยท์`
+        if (!playerPattern.test(cleanListResponse)) {
+            return {
+                success: false,
+                error: `ผู้เล่น "${request.playerName}" ไม่ได้ออนไลน์อยู่ในเซิร์ฟเวอร์ "${product.server?.name || 'นี้'}" กรุณาเข้าเซิร์ฟเวอร์ก่อนทำรายการ`
+            }
+        }
 
-        await rcon.send(command)
-        await rcon.send(`bc ${broastcast}`)
+        // รองรับคำสั่งหลายบรรทัดหรือคั่นด้วย semicolon (;)
+        const rawCommands = product.command
+            .split(/\r?\n|;/)
+            .map(cmd => cmd.trim())
+            .filter(Boolean)
+
+        for (const rawCmd of rawCommands) {
+            const command = rawCmd
+                .replace(/%player%/gi, request.playerName)
+                .replace(/%quantity%/gi, product.amount?.toString() || "1")
+
+            await rcon.send(command)
+        }
+
+        try {
+            const broadcast = `${request.playerName} ได้ซื้อ ${product.name} ในราคา ${product.price} พอยท์`
+            await rcon.send(`bc ${broadcast}`)
+        } catch {
+            // ไม่ให้ broadcast ขัดจังหวะการส่งของ
+        }
 
         return {
             success: true
