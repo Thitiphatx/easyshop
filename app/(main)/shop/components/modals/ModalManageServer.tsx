@@ -21,8 +21,8 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
         rconPort: isEdit && serverInfo ? serverInfo.rconPort : '',
         rconPassword: isEdit && serverInfo ? serverInfo.rconPassword : '',
         name: isEdit && serverInfo ? serverInfo.name : '',
-        subtitle: isEdit && serverInfo ? serverInfo.subtitle : '',
-        imageUrl: (isEdit && serverInfo ? serverInfo.imageUrl : '') as string,
+        subtitle: (isEdit && serverInfo && serverInfo.subtitle) ? serverInfo.subtitle : undefined,
+        imageUrl: (isEdit && serverInfo && serverInfo.imageUrl) ? serverInfo.imageUrl : undefined,
     }), [isEdit, serverInfo])
 
     const form = useAppForm({
@@ -32,20 +32,30 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
         },
         onSubmit: async ({ value }: { value: ServerFormValues }) => {
             if (isEdit && serverInfo) {
+                console.log({ ...serverInfo, ...value, id: Number(serverInfo.id) })
                 const res = await updateServer({ ...serverInfo, ...value, id: Number(serverInfo.id) })
+                if (!res.success) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: res.error,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "อัพเดทข้อมูลเซิร์ฟเวอร์สำเร็จ",
+                    });
+                }
             } else {
                 const res = await createServer(value)
                 if (!res.success || !res.data) {
                     Swal.fire({
                         icon: 'error',
                         title: res.error,
-                        theme: 'dark',
                     });
                 } else {
                     Swal.fire({
                         icon: 'success',
-                        title: "สำเร็จ",
-                        theme: 'dark',
+                        title: "เพิ่มเซิร์ฟเวอร์สำเร็จ",
                     });
                 }
             }
@@ -66,12 +76,9 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
             setIsOpen={setIsOpen}
             modalTitle={
                 isEdit && serverInfo ?
-                    <div className='flex gap-4'>
-                        <h1>
-                            แก้ไขเซิร์ฟเวอร์
-                        </h1>
-                    </div>
-                    : 'Add New Server'}
+                    'Update Server'
+                    : 'Add New Server'
+            }
 
 
         >
@@ -88,11 +95,11 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                         />
                         <form.AppField
                             name="name"
-                            children={(field) => <field.TextField label="Server Name" placeholder='กรอกชื่อเซิร์ฟเวอร์ที่ใช้แสดง' required />}
+                            children={(field) => <field.TextField label="ชื่อ" placeholder='กรอกชื่อเซิร์ฟเวอร์ที่ใช้แสดง' required />}
                         />
                         <form.AppField
                             name="subtitle"
-                            children={(field) => <field.TextField label="Sub Name" placeholder='กรอกรายละเอียดสั้นๆ (เวอร์ชั่น, แนว)' nullable />}
+                            children={(field) => <field.TextField label="คำอธิบายสั้นๆ" placeholder='กรอกคำอธิบายสั้นๆ (เวอร์ชั่น, แนว)' nullable />}
                         />
                     </div>
                 </div>

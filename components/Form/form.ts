@@ -3,7 +3,7 @@ import { fieldContext, formContext } from './context'
 import { TextField } from './TextField/TextField'
 import { TextareaField } from './TextareaField/TextareaField'
 import { SelectField } from './SelectField/SelectField'
-import { CheckboxField } from './CheckboxField/CheckboxField'
+import { CheckboxField } from './CheckboxField/CheckBoxField'
 import { SubmitButton } from './SubmitButton/SubmitButton'
 import { ResetButton } from './ResetButton/ResetButton'
 import { FileField } from './FileField/FileField'
@@ -29,4 +29,4 @@ export const { useAppForm, withForm } = createFormHook({
 export type AppFormApi<TFormData = any> = AppFieldExtendedReactFormApi<
   TFormData,
   any, any, any, any, any, any, any, any, any, any, any, any, any
->
+>

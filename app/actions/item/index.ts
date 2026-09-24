@@ -13,12 +13,11 @@ export async function createItem(values: ItemFormValues, serverId: number): Prom
         return { success: false, error: "ไม่มีสิทธิ์เข้าถึง" }
     }
     try {
-        const { price, amount, imageUrl, ...rest } = values
+        const { price, imageUrl, ...rest } = values
         const res = await prisma.item.create({
             data: {
                 serverId,
                 price: Number(price),
-                amount: Number(amount),
                 imageUrl: imageUrl || null,
                 isAvailable: true,
                 ...rest
@@ -37,23 +36,50 @@ export async function createItem(values: ItemFormValues, serverId: number): Prom
     }
 }
 
-export async function updateItem(item: IItem, values: ItemFormValues): Promise<IActionResponse<undefined>> {
+export async function updateItem(values: Item): Promise<IActionResponse<Item>> {
     const session = await getSession()
     if (!session?.isAdmin) {
         return { success: false, error: "ไม่มีสิทธิ์เข้าถึง" }
     }
     try {
-        const { price, amount, imageUrl, ...rest } = values
-        await prisma.item.update({
-            where: { id: item.id },
+        const { id, createdAt, lastUpdatedAt, ...data } = values
+        const itemRes = await prisma.item.update({
+            where: { id: Number(id) },
             data: {
-                price: Number(price),
-                amount: Number(amount),
-                imageUrl: imageUrl || null,
-                ...rest
+                ...data,
+                ...(data.price !== undefined && { price: Number(data.price) }),
+                imageUrl: data.imageUrl || null,
             },
         })
-        return { success: true }
+        return { success: true, data: itemRes }
+    } catch (e) {
+        console.log(e)
+        return {
+            success: false,
+            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+        }
+    }
+}
+
+export async function getItemById(id: number): Promise<IActionResponse<Item>> {
+    const session = await getSession()
+    if (!session?.isAdmin) {
+        return { success: false, error: "ไม่มีสิทธิ์เข้าถึง" }
+    }
+    try {
+        const res = await prisma.item.findUnique({
+            where: { id }
+        })
+        if (!res) {
+            return {
+                success: false,
+                error: "ไม่พบสินค้าในระบบ"
+            }
+        }
+        return {
+            success: true,
+            data: res
+        }
     } catch (e) {
         console.log(e)
         return {

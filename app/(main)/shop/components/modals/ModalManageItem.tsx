@@ -20,7 +20,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
     const defaultValues = useMemo<ItemFormValues>(() => ({
         name: isEdit && itemInfo ? itemInfo.name : '',
         description: isEdit && itemInfo ? itemInfo.description : '',
-        imageUrl: isEdit && itemInfo ? itemInfo.imageUrl : null,
+        imageUrl: (isEdit && itemInfo) && itemInfo.imageUrl ? itemInfo.imageUrl : undefined,
         command: isEdit && itemInfo ? itemInfo.command : '',
         price: isEdit && itemInfo ? String(itemInfo.price) : '0',
         amount: isEdit && itemInfo?.amount != null ? String(itemInfo.amount) : '1',
@@ -34,18 +34,37 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
         },
         onSubmit: async ({ value }: { value: ItemFormValues }) => {
             if (isEdit && itemInfo) {
-                const res = await updateItem(itemInfo, value)
+                console.log({ ...itemInfo, ...value, id: Number(itemInfo.id) })
+                const res = await updateItem({
+                    ...itemInfo,
+                    ...value,
+                    id: Number(itemInfo.id),
+                    price: Number(value.price),
+                    imageUrl: value.imageUrl || null
+                })
                 if (!res.success) {
-                    Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
+                    Swal.fire({
+                        icon: 'error',
+                        title: res.error,
+                    })
                 } else {
-                    Swal.fire({ icon: 'success', title: 'แก้ไขไอเท็มเรียบร้อยแล้ว', theme: 'dark' })
+                    Swal.fire({
+                        icon: 'success',
+                        title: "แก้ไขไอเท็มเรียบร้อยแล้ว",
+                    })
                 }
             } else {
                 const res = await createItem(value, serverId)
                 if (!res.success || !res.data) {
-                    Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
+                    Swal.fire({
+                        icon: 'error',
+                        title: res.error,
+                    })
                 } else {
-                    Swal.fire({ icon: 'success', title: 'สร้างไอเท็มใหม่เรียบร้อยแล้ว', theme: 'dark' })
+                    Swal.fire({
+                        icon: 'success',
+                        title: "สร้างไอเท็มใหม่เรียบร้อยแล้ว",
+                    })
                 }
             }
             getItemList()
@@ -54,10 +73,8 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
     })
 
     useEffect(() => {
-        if (!isOpen) {
-            form.reset()
-        }
-    }, [isOpen])
+        form.reset()
+    }, [isOpen, itemInfo])
 
     return (
         <Modal
@@ -65,12 +82,8 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
             setIsOpen={setIsOpen}
             modalTitle={
                 isEdit && itemInfo ?
-                    <div className='flex gap-4'>
-                        <h1>
-                            แก้ไขไอเทม
-                        </h1>
-                    </div>
-                    : 'เพิ่มสินค้าใหม่'}
+                    'Update Item'
+                    : 'Add New Item'}
         >
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <div>
@@ -89,7 +102,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                         />
                         <form.AppField
                             name="description"
-                            children={(field) => <field.TextField label="Description" placeholder='กรอกรายละเอียดไอเท็ม' />}
+                            children={(field) => <field.TextareaField label="Description" placeholder='กรอกรายละเอียดไอเท็ม' />}
                         />
                         <form.AppField
                             name="category"
@@ -97,7 +110,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                         />
                         <form.AppField
                             name="price"
-                            children={(field) => <field.TextField label="Price" placeholder='กรอกราคา' type='number' min={1} required />}
+                            children={(field) => <field.TextField label="Price" placeholder='กรอกราคา' type='number' required />}
                         />
                     </div>
                 </div>
@@ -113,16 +126,11 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                                 <div>
                                     <p className='font-bold'>กรอกคำสั่งเสกไอเท็มบนเซิร์ฟเวอร์</p>
                                     <p><span className='text-(--core-green-6)'>%player%</span> - แทนชื่อของผู้เล่น</p>
-                                    <p><span className='text-(--core-green-6)'>%quantity%</span> - แทนจำนวนไอเท็ม</p>
                                     <p className='mt-2 font-bold'>ตัวอย่าง (ไม่ต้องมี /)</p>
-                                    <p className='text-(--core-green-6)'>give %player% diamond %quantity%</p>
+                                    <p className='text-(--core-green-6)'>give %player% diamond 1</p>
                                     <p className='text-(--core-green-6)'>lp user %player% parent addtemp vip 7d</p>
                                 </div>
                             } required />}
-                        />
-                        <form.AppField
-                            name="amount"
-                            children={(field) => <field.TextField label="Amount" placeholder='กรอกจำนวนครั้งการรันคำสั่ง' type='number' min={1} tooltip={"จำนวนตรงนี้จะไปแทน %quantity% ในคำสั่ง"} required />}
                         />
                     </div>
                 </div>

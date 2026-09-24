@@ -141,7 +141,7 @@ const ServerSection: React.FC = () => {
                                     icon={<Trash width={18} height={18} />}
                                     isIconOnly
                                 />
-                                <Image src={server.imageUrl ?? "/images/others/1789120901925-dp6id8hy8o5.png"} alt={server.name} width={200} height={200} className='w-36 h-36 sm:w-48 sm:h-48 object-contain object-center mx-auto' />
+                                <Image src={server.imageUrl || "/images/others/1789120901925-dp6id8hy8o5.png"} alt={server.name} width={200} height={200} className='w-36 h-36 sm:w-48 sm:h-48 object-contain object-center mx-auto' />
                                 <div className='flex-1 flex flex-col items-center justify-center mt-2'>
                                     <h2 className='font-extrabold text-base sm:text-lg'>
                                         {server.name}

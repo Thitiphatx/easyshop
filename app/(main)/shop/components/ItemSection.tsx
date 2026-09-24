@@ -1,6 +1,7 @@
 "use client"
-import { deleteItem, getAllItems } from '@/app/actions/item'
+import { deleteItem, getAllItems, getItemById } from '@/app/actions/item'
 import { IItem } from '@/app/actions/item/interface'
+import { Item } from '@/app/generated/prisma/client'
 import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
@@ -22,7 +23,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isOpenManageModal, setIsOpenManageModal] = useState<boolean>(false)
     const [isOpenViewModal, setIsOpenViewModal] = useState<boolean>(false)
-    const [editItemInfo, setEditItemInfo] = useState<IItem>()
+    const [editItemInfo, setEditItemInfo] = useState<Item>()
     const [viewItemInfo, setViewItemInfo] = useState<IItem>()
     const [itemList, setItemList] = useState<IItem[]>([])
     const router = useRouter()
@@ -33,8 +34,16 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
 
     const handleClickItem = useCallback(async (item: IItem) => {
         if (isEdit) {
-            // setEditItemInfo(item)
-            setIsOpenManageModal(true)
+            const res = await getItemById(item.id)
+            if (res.success && res.data) {
+                setEditItemInfo(res.data)
+                setIsOpenManageModal(true)
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: res.error,
+                });
+            }
         } else {
             setViewItemInfo(item)
             setIsOpenViewModal(true)
@@ -71,7 +80,6 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                 if (res.success) {
                     Swal.fire({
                         icon: 'success',
-                        theme: 'dark',
                         title: "ลบไอเท็มเรียบร้อย",
                     });
                     getItemList()
@@ -149,7 +157,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                                     icon={<Trash width={18} height={18} />}
                                     isIconOnly
                                 />
-                                <Image src={item.imageUrl ?? "/images/others/emerald.webp"} alt={item.name} width={200} height={200} className='w-full h-48 object-cover object-center mx-auto rounded-lg' />
+                                <Image src={item.imageUrl || "/images/others/emerald.webp"} alt={item.name} width={200} height={200} className='w-full h-48 object-cover object-center mx-auto rounded-lg' />
 
                                 <h2 className='font-bold text-lg line-clamp-1 my-2 text-(--core-white) group-hover:underline'>
                                     {item.name}
@@ -162,7 +170,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
 
                                 <div className='flex items-center gap-2 justify-end mt-auto pt-4'>
                                     <Money className='text-(--marketplace-gold-4)' width={32} height={32} />
-                                    <p className='text-(--marketplace-gold-2) font-bold text-xl'>{item.price.toLocaleString()}</p>
+                                    <p className='text-(--marketplace-gold-2) font-bold text-xl'>{item.price === 0 ? 'FREE' : item.price.toLocaleString()}</p>
                                 </div>
                             </Card>
                         ))}

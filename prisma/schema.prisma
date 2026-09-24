@@ -41,8 +41,8 @@ model Server {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(25)
   subtitle     String?       @db.VarChar(25)
-  imageUrl     String?
-  rconHost     String        @db.VarChar(100)
+  imageUrl     String?       @db.Text
+  rconHost     String        @db.VarChar(255)
   rconPort     String        @db.VarChar(5)
   rconPassword String        @db.VarChar(255)
   items        Item[]
@@ -54,15 +54,14 @@ model Server {
 model Item {
   id            Int           @id @default(autoincrement())
   serverId      Int
-  name          String        @db.VarChar(100)
-  imageUrl      String?       @db.VarChar(255)
-  command       String        @db.VarChar(255)
+  name          String        @db.VarChar(50)
+  description   String        @db.Text
+  imageUrl      String?       @db.Text
+  command       String        @db.Text
   price         Int           @default(0)
-  amount        Int?          @default(1)
   category      String        @db.VarChar(25)
   createdAt     DateTime      @default(now())
   lastUpdatedAt DateTime      @default(now()) @updatedAt
-  description   String        @db.VarChar(255)
   isAvailable   Boolean       @default(false)
   server        Server        @relation(fields: [serverId], references: [id], onDelete: Cascade)
   transactions  Transaction[]
@@ -73,7 +72,7 @@ model Item {
 
 model Transaction {
   id              Int      @id @default(autoincrement())
-  username        String   @unique(map: "username") @db.VarChar(255)
+  username        String   @db.VarChar(255)
   itemId          Int
   serverId        Int
   pricePaid       Int
