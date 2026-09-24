@@ -15,10 +15,10 @@ const TopupPage: React.FC = () => {
         {
             id: 'trueWallet',
             name: 'TrueWallet',
-            description: 'โอนผ่านทรูวอลเล็ต',
+            description: 'ซองของขวัญทรูวอลเล็ต',
             imageUrl: '/images/others/truewallet.png',
             url: '/topup/truewallet',
-            hidden: !setting?.enableTruewallet && !setting?.enableDirectTruewallet
+            hidden: !setting?.enableTruewallet
         },
         {
             id: 'bank',

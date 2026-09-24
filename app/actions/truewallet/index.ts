@@ -3,6 +3,7 @@
 import { TmnVoucherClient } from "@prakrit_m/tmn-voucher";
 import { IActionResponse } from "../interface";
 import { getTmnErrorMessage } from "./utils";
+import { prisma } from "@/lib/prisma";
 
 function createCookieJarFetch() {
     const cookieJar = new Map<string, string>();
@@ -69,10 +70,23 @@ function createClient() {
     });
 }
 
-const phone = process.env.TRUEWALLET_PHONE as string
-
 export async function redeem(voucherCode: string): Promise<IActionResponse<number>> {
     try {
+
+        const setting = await prisma.setting.findFirst({
+            where: { id: 1 },
+            select: { truewalletPhoneNumber: true }
+        })
+
+        const phone = setting?.truewalletPhoneNumber
+
+        if (!phone) {
+            return {
+                success: false,
+                error: "กรุณาตั้งค่าเบอร์โทรศัพท์ TrueWallet"
+            }
+        }
+
         const client = createClient();
         const res = await client.redeemVoucher(phone, voucherCode);
         if (!res.success) {

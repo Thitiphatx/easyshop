@@ -5,7 +5,7 @@ export const PromotionSchema = z.object({
 })
 
 export const TrueWalletSchema = z.object({
-    enableDirectTruewallet: z.boolean(),
+    enableTruewallet: z.boolean(),
     truewalletPhoneNumber: z.string().refine((value) => /^[0-9]{10}$/.test(value), "กรุณาระบุเบอร์โทรศัพท์ TrueMoney Wallet ที่ถูกต้อง"),
 })
 

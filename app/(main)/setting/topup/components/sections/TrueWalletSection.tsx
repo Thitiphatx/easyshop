@@ -10,10 +10,9 @@ import { TrueWalletFormValues, TrueWalletSchema } from '../../schema'
 
 const TrueWalletSection: React.FC = () => {
     const { isLoading, fetchSetting, setting } = useSetting()
-
     const form = useAppForm({
         defaultValues: {
-            enableDirectTruewallet: setting?.enableDirectTruewallet ?? false,
+            enableTruewallet: setting?.enableTruewallet ?? false,
             truewalletPhoneNumber: setting?.truewalletPhoneNumber ?? '',
         } as TrueWalletFormValues,
         validators: {
@@ -36,7 +35,7 @@ const TrueWalletSection: React.FC = () => {
             } else {
                 Swal.fire({ icon: 'success', title: 'อัปเดตการตั้งค่า True Wallet เรียบร้อยแล้ว' })
                 if (!value.truewalletPhoneNumber?.trim()) {
-                    form.setFieldValue('enableDirectTruewallet', false)
+                    form.setFieldValue('enableTruewallet', false)
                     form.setFieldValue('truewalletPhoneNumber', '')
                 }
             }
@@ -51,7 +50,7 @@ const TrueWalletSection: React.FC = () => {
                     <h1>True Wallet</h1>
                     <div>
                         <form.AppField
-                            name="enableDirectTruewallet"
+                            name="enableTruewallet"
                             children={(field) => <field.CheckboxField variant='switch' label="" disabled={!setting?.truewalletPhoneNumber} />}
                         />
                     </div>

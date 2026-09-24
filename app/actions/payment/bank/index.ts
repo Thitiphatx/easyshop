@@ -1,9 +1,10 @@
 "use server"
-import { EASYSLIP_ERROR } from "@/app/utils/formatter";
 import { ApiResponse } from "../../interface";
 import { easyslip } from "../easyslip";
 import type { VerifyBankData } from "../interface";
-import { BankAccount, IListBankAccountsRequest, ListBankAccountsResponse } from "../types/bank-accounts";
+import { IBank, IListBankAccountsRequest, ListBankAccountsResponse } from "../types/bank-accounts";
+import { getBankNameByCode } from "../utils/bank-codes";
+import { getErrorByCode } from "../utils/errors";
 
 export async function verifyBank(base64: string): Promise<ApiResponse<VerifyBankData>> {
     try {
@@ -13,11 +14,13 @@ export async function verifyBank(base64: string): Promise<ApiResponse<VerifyBank
         return data
     } catch (error: any) {
         if (error.response) {
+            const errorCode = error.response.data.error.code as string
+            const errorMessage = getErrorByCode(errorCode.toUpperCase())
             return {
                 success: false,
                 error: {
                     code: error.response.data.error.code,
-                    message: EASYSLIP_ERROR[(error.response.data.error.code as string).toUpperCase()]?.client || error.response.data.error.message
+                    message: errorMessage.client
                 }
             }
         }
@@ -31,12 +34,34 @@ export async function verifyBank(base64: string): Promise<ApiResponse<VerifyBank
     }
 }
 
-export async function getBankAccounts(request?: IListBankAccountsRequest): Promise<ApiResponse<ListBankAccountsResponse>> {
+export async function getBankInfo(request?: IListBankAccountsRequest): Promise<ApiResponse<IBank>> {
     try {
         const { data } = await easyslip.get<ApiResponse<ListBankAccountsResponse>>('/bank-accounts', {
             params: request,
         })
-        return data
+        if (data.success) {
+            const first = data.data.items.find(item => item.bankCode !== 'TRUEMONEYWALLET') ?? null
+            if (!first) {
+                return {
+                    success: false,
+                    error: {
+                        code: 'NOT_FOUND',
+                        message: 'ไม่พบข้อมูลธนาคาร'
+                    }
+                }
+            }
+            return {
+                success: true,
+                data: {
+                    ...first,
+                    bankNameTh: getBankNameByCode(first.bankCode).nameTh,
+                }
+            }
+        }
+        return {
+            success: false,
+            error: data.error
+        }
     } catch (error) {
         return {
             success: false,
@@ -46,13 +71,4 @@ export async function getBankAccounts(request?: IListBankAccountsRequest): Promi
             }
         }
     }
-}
-
-export async function getFirstBank(): Promise<BankAccount | null> {
-    const res = await getBankAccounts()
-    if (res.success) {
-        const first = res.data.items.find(item => item.bankCode !== 'TRUEMONEYWALLET') ?? null
-        return first
-    }
-    return null
 }

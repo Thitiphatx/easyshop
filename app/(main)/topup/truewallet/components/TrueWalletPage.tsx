@@ -7,8 +7,12 @@ import { extractVoucherCode } from '@prakrit_m/tmn-voucher'
 import Image from "next/image"
 import React from 'react'
 import { TrueWalletSchema } from '../schema'
+import { useSetting } from '@/app/contexts/settingContext'
+import ClosedTopupCard from '../../components/ClosedTopupCard'
 
 const TrueWalletPage: React.FC = () => {
+    const { setting } = useSetting()
+
     const form = useAppForm({
         defaultValues: { giftUrl: '', agree: false },
         validators: {
@@ -17,6 +21,10 @@ const TrueWalletPage: React.FC = () => {
         onSubmit: async ({ value }) => {
             const voucherCode = extractVoucherCode(value.giftUrl);
             if (!voucherCode) {
+                Swal.fire({
+                    icon: "error",
+                    text: "ไม่พบรหัสในซองของขวัญ"
+                })
                 return;
             }
             const res = await redeem(voucherCode)
@@ -42,21 +50,25 @@ const TrueWalletPage: React.FC = () => {
                     <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>TrueWallet</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>กรอกลิงก์ซองของขวัญ</h2>
                 </span>
-                <Card className='mt-8 sm:mt-12 w-full max-w-2xl'>
-                    <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
-                        <form.AppField
-                            name="giftUrl"
-                            children={(field) => <field.TextField label="ลิงค์ซองของขวัญ" placeholder='https://gift.truemoney.com/campaign/?v=xxxxxxxxxxxxxxxxx' required />}
-                        />
-                        <form.AppField
-                            name="agree"
-                            children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
-                        />
-                        <form.AppForm>
-                            <form.SubmitButton block>ยืนยัน</form.SubmitButton>
-                        </form.AppForm>
-                    </form>
-                </Card>
+                {setting?.enableTruewallet ? (
+                    <Card className='mt-8 sm:mt-12 w-full max-w-2xl'>
+                        <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+                            <form.AppField
+                                name="giftUrl"
+                                children={(field) => <field.TextField label="ลิงค์ซองของขวัญ" placeholder='https://gift.truemoney.com/campaign/?v=xxxxxxxxxxxxxxxxx' required />}
+                            />
+                            <form.AppField
+                                name="agree"
+                                children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
+                            />
+                            <form.AppForm>
+                                <form.SubmitButton block>ยืนยัน</form.SubmitButton>
+                            </form.AppForm>
+                        </form>
+                    </Card>
+                ) : (
+                    <ClosedTopupCard />
+                )}
             </div>
 
             {/* Tutorial Section */}
