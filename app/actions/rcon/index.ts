@@ -60,14 +60,14 @@ function escapeRegex(text: string) {
 
 export async function sendItem(request: ISendItemRequest): Promise<IActionResponse<undefined>> {
     const product = await prisma.item.findUnique({
-        where: { id: request.itemId },
+        where: { id: request.itemId, isAvailable: true },
         include: { server: true }
     })
 
     if (!product) {
         return {
             success: false,
-            error: "ไม่พบสินค้าในระบบ"
+            error: "สินค้านี้หมดอายุการเปิดขายแล้ว"
         }
     }
 
@@ -115,7 +115,6 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
         for (const rawCmd of rawCommands) {
             const command = rawCmd
                 .replace(/%player%/gi, request.playerName)
-                .replace(/%quantity%/gi, product.amount?.toString() || "1")
 
             await rcon.send(command)
         }

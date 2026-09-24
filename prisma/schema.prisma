@@ -59,7 +59,6 @@ model Item {
   imageUrl      String?       @db.Text
   command       String        @db.Text
   price         Int           @default(0)
-  amount        Int           @default(1)
   category      String        @db.VarChar(25)
   createdAt     DateTime      @default(now())
   lastUpdatedAt DateTime      @default(now()) @updatedAt

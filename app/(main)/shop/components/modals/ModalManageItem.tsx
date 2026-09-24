@@ -40,7 +40,6 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                     ...value,
                     id: Number(itemInfo.id),
                     price: Number(value.price),
-                    amount: Number(value.amount),
                     imageUrl: value.imageUrl || null
                 })
                 if (!res.success) {
@@ -127,16 +126,11 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                                 <div>
                                     <p className='font-bold'>กรอกคำสั่งเสกไอเท็มบนเซิร์ฟเวอร์</p>
                                     <p><span className='text-(--core-green-6)'>%player%</span> - แทนชื่อของผู้เล่น</p>
-                                    <p><span className='text-(--core-green-6)'>%quantity%</span> - แทนจำนวนไอเท็ม</p>
                                     <p className='mt-2 font-bold'>ตัวอย่าง (ไม่ต้องมี /)</p>
-                                    <p className='text-(--core-green-6)'>give %player% diamond %quantity%</p>
+                                    <p className='text-(--core-green-6)'>give %player% diamond 1</p>
                                     <p className='text-(--core-green-6)'>lp user %player% parent addtemp vip 7d</p>
                                 </div>
                             } required />}
-                        />
-                        <form.AppField
-                            name="amount"
-                            children={(field) => <field.TextField label="Amount" placeholder='กรอกจำนวนครั้งการรันคำสั่ง' type='number' min={1} tooltip={"จำนวนตรงนี้จะไปแทน %quantity% ในคำสั่ง"} required />}
                         />
                     </div>
                 </div>

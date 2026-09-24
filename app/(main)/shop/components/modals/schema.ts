@@ -61,12 +61,6 @@ export const ItemSchema = z.object({
             const num = Number(value)
             return num <= 1000000
         }, "ราคาไม่เกิน 1,000,000"),
-    amount: z
-        .string()
-        .refine((value) => {
-            const num = Number(value)
-            return num >= 1 && Number.isInteger(num)
-        }, "ต้องเรียกคำสั่งอย่างน้อย 1 ครั้ง"),
     category: z
         .string()
         .trim()

@@ -13,12 +13,11 @@ export async function createItem(values: ItemFormValues, serverId: number): Prom
         return { success: false, error: "ไม่มีสิทธิ์เข้าถึง" }
     }
     try {
-        const { price, amount, imageUrl, ...rest } = values
+        const { price, imageUrl, ...rest } = values
         const res = await prisma.item.create({
             data: {
                 serverId,
                 price: Number(price),
-                amount: Number(amount),
                 imageUrl: imageUrl || null,
                 isAvailable: true,
                 ...rest
@@ -49,7 +48,6 @@ export async function updateItem(values: Item): Promise<IActionResponse<Item>> {
             data: {
                 ...data,
                 ...(data.price !== undefined && { price: Number(data.price) }),
-                ...(data.amount !== undefined && { amount: Number(data.amount) }),
                 imageUrl: data.imageUrl || null,
             },
         })
