@@ -89,15 +89,15 @@ model Transaction {
 }
 
 model Topup {
-  id          Int         @id @default(autoincrement())
-  userId      Int         @db.UnsignedMediumInt
+  id          Int          @id @default(autoincrement())
+  userId      Int          @db.UnsignedMediumInt
   amount      Float
   pointsAdded Int
-  channel     String      @db.VarChar(50)
-  status      TopupStatus @default(SUCCESS)
-  reference   String?     @db.VarChar(255)
-  createdAt   DateTime    @default(now())
-  user        AuthMe      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel     TopupChannel
+  status      TopupStatus  @default(SUCCESS)
+  reference   String?      @db.VarChar(255)
+  createdAt   DateTime     @default(now())
+  user        AuthMe       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("topup")
@@ -141,6 +141,11 @@ enum TopupStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum TopupChannel {
+  TRUEWALLET
+  BANK
 }
 
 model Setting {

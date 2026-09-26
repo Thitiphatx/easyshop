@@ -1,8 +1,13 @@
-"use server"
+import type { Metadata } from 'next'
 import React from 'react'
 import BankPage from './components/BankPage'
 
-const Bank: React.FC = async () => {
+export const metadata: Metadata = {
+    title: 'โดเนท - ธนาคาร',
+    description: 'โดเนทผ่านการโอนธนาคารและอัปโหลดสลิป',
+}
+
+const Bank: React.FC = () => {
     return <BankPage />
 }
 

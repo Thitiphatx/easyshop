@@ -1,7 +1,6 @@
 "use client"
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from './Button/Button'
-import Select from './Select/Select'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/contexts/authContext'
 import { useSetting } from '@/app/contexts/settingContext'
@@ -10,8 +9,6 @@ import AccountMenu from './Navbar/AccountMenu'
 import {
     Close,
     Menu,
-    ChevronDown,
-    ChevronRight,
     Crown,
     Wallet,
     User,
@@ -21,31 +18,13 @@ import {
     Logout
 } from 'pixelarticons/react'
 
+import { NAV_ITEMS } from '@/constants/navigation'
+
 const Navbar: React.FC = () => {
     const router = useRouter();
     const { session, openAuth, signOut } = useAuth()
     const { setting, mcStatus } = useSetting()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-    const [isMobileTopupOpen, setIsMobileTopupOpen] = useState(false)
-
-    const paths: Array<{ label: string; path: string; children?: any }> = useMemo(() => [
-        {
-            label: "Home",
-            path: "/"
-        },
-        {
-            label: "TopUp",
-            path: "/topup",
-        },
-        {
-            label: "Shop",
-            path: "/shop"
-        },
-        {
-            label: "Ranking",
-            path: "/ranking"
-        }
-    ], [router])
 
     const [isScrolled, setIsScrolled] = useState(false);
 
@@ -90,27 +69,16 @@ const Navbar: React.FC = () => {
                 {/* Center Section (Desktop Navigation) */}
                 <div className='hidden lg:flex justify-center w-full'>
                     <ul className='flex items-center justify-center h-full mx-auto'>
-                        {paths.map((path, index) => (
+                        {NAV_ITEMS.map((item, index) => (
                             <li key={index}>
-                                {path.children ? (
-                                    <Select
-                                        variant='Ghost'
-                                        items={path.children}
-                                        className='text-sm! p-4!'
-                                        color="Green"
-                                    >
-                                        {path.label.toUpperCase()}
-                                    </Select>
-                                ) : (
-                                    <Button
-                                        variant='Ghost'
-                                        color="Green"
-                                        className='text-sm! p-4!'
-                                        onClick={() => router.replace(path.path)}
-                                    >
-                                        {path.label.toUpperCase()}
-                                    </Button>
-                                )}
+                                <Button
+                                    variant='Ghost'
+                                    color="Green"
+                                    className='text-sm! p-4!'
+                                    onClick={() => router.replace(item.path)}
+                                >
+                                    {item.label.toUpperCase()}
+                                </Button>
                             </li>
                         ))}
                     </ul>
@@ -260,65 +228,18 @@ const Navbar: React.FC = () => {
                         </div>
 
                         {/* Navigation Items */}
-                        <Button
-                            variant="Ghost"
-                            color="Green"
-                            block
-                            className="text-left! justify-start! py-3! font-pixel text-sm!"
-                            onClick={() => handleMobileNavigate('/')}
-                        >
-                            HOME
-                        </Button>
-
-                        {/* TopUp with Submenu */}
-                        <div className="flex flex-col">
-                            <button
-                                type="button"
-                                onClick={() => setIsMobileTopupOpen((prev) => !prev)}
-                                className="w-full flex items-center justify-between p-3 font-pixel text-sm text-(--core-white) hover:text-(--core-green-3) hover:bg-(--core-grey-5) transition-colors cursor-pointer"
+                        {NAV_ITEMS.map((item) => (
+                            <Button
+                                key={item.path}
+                                variant="Ghost"
+                                color="Green"
+                                block
+                                className="text-left! justify-start! py-3! font-pixel text-sm!"
+                                onClick={() => handleMobileNavigate(item.path)}
                             >
-                                <span>TOPUP</span>
-                                {isMobileTopupOpen ? <ChevronDown className="size-5 text-(--core-green-3)" /> : <ChevronRight className="size-5" />}
-                            </button>
-                            {isMobileTopupOpen && (
-                                <div className="pl-4 flex flex-col gap-1.5 py-2 bg-(--core-off-black)/30 border-l-2 border-(--core-green-5) my-1">
-                                    <button
-                                        type="button"
-                                        onClick={() => handleMobileNavigate('/topup/truewallet')}
-                                        className="w-full text-left p-2 text-sm text-(--core-grey-2) hover:text-(--core-green-3) hover:bg-(--core-grey-5) cursor-pointer"
-                                    >
-                                        ▸ True Wallet
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => handleMobileNavigate('/topup/bank')}
-                                        className="w-full text-left p-2 text-sm text-(--core-grey-2) hover:text-(--core-green-3) hover:bg-(--core-grey-5) cursor-pointer"
-                                    >
-                                        ▸ ธนาคาร
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        <Button
-                            variant="Ghost"
-                            color="Green"
-                            block
-                            className="text-left! justify-start! py-3! font-pixel text-sm!"
-                            onClick={() => handleMobileNavigate('/shop')}
-                        >
-                            SHOP
-                        </Button>
-
-                        <Button
-                            variant="Ghost"
-                            color="Green"
-                            block
-                            className="text-left! justify-start! py-3! font-pixel text-sm!"
-                            onClick={() => handleMobileNavigate('/ranking')}
-                        >
-                            RANKING
-                        </Button>
+                                {item.label.toUpperCase()}
+                            </Button>
+                        ))}
                     </div>
                 </div>
             )}

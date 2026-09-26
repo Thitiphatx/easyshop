@@ -1,19 +1,22 @@
 "use client"
 
-import { getBankInfo, verifyBank } from '@/app/actions/payment/bank'
+import { getBankInfo, topupBank } from '@/app/actions/payment/bank'
 import { IBank } from '@/app/actions/payment/types/bank-accounts'
 import { useSetting } from '@/app/contexts/settingContext'
 import { fileToBase64 } from '@/app/utils/utils'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import Swal from '@/lib/Swal'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { BankSchema } from '../schema'
 import ClosedTopupCard from '../../components/ClosedTopupCard'
+import Select from '@/components/Select/Select'
+import { formatCurrency } from '@/app/utils/formatter'
 
 const BankPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [bankInfo, setBankInfo] = useState<IBank>()
+    const [devMode, setDevMode] = useState<string>("success")
     const { setting } = useSetting()
 
     const form = useAppForm({
@@ -25,10 +28,10 @@ const BankPage: React.FC = () => {
             if (!value.imageSlip) return;
             const base64 = await fileToBase64(value.imageSlip)
             if (!base64) return;
-            const res = await verifyBank(base64)
+            const res = await topupBank(base64, devMode)
             if (res.success) {
                 Swal.fire({
-                    text: `คุณได้รับพอยท์จำนวน ${res.data.amountInOrder} บาท`,
+                    text: `เติมพอยท์ ${formatCurrency(res.data.receivePoint)} รวมเป็น ${formatCurrency(res.data.totalPoint)} พอยท์`,
                     icon: "success",
                 })
             } else {
@@ -59,6 +62,10 @@ const BankPage: React.FC = () => {
 
         setIsLoading(false)
     }, [])
+
+    useEffect(() => {
+        fetchBankInfo()
+    }, [fetchBankInfo])
 
     return (
         <div className='flex-1 w-full'>
@@ -100,6 +107,10 @@ const BankPage: React.FC = () => {
                             )}
                         </div>
                         <Card className='col-span-1 lg:col-span-2'>
+                            <div>
+                                <p>Test Mode</p>
+                                <Select onChange={(e) => setDevMode(e.target.value)} options={[{ label: "Success", value: "success" }, { label: "Fail", value: "fail" }, { label: "Duplicate", value: "duplicate" }]}></Select>
+                            </div>
                             <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                                 <form.AppField
                                     name="imageSlip"
