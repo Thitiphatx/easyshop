@@ -17,24 +17,9 @@ export interface VerifyBankRequest {
 export interface VerifyBankData {
     remark?: string;
     isDuplicate: boolean;
-    matchedAccount: MatchedAccount | null;
     amountInOrder?: number;
-    amountInSlip: number;
     isAmountMatched?: boolean;
     rawSlip: RawSlip;
-}
-
-interface MatchedAccount {
-    bank: {
-        nameTh: string;
-        nameEn: string;
-        code: string;
-        shortCode: string;
-    };
-    nameTh: string;
-    nameEn: string;
-    type: 'PERSONAL' | 'JURISTIC';
-    bankNumber: string;
 }
 
 interface RawSlip {
@@ -44,9 +29,6 @@ interface RawSlip {
     countryCode: string;
     amount: Amount;
     fee: number;
-    ref1: string;
-    ref2: string;
-    ref3: string;
     sender: Party;
     receiver: Party & { merchantId?: string | null };
 }
@@ -80,5 +62,15 @@ interface Party {
         };
     };
 }
+export interface IBankCode {
+    nameTh: string;
+    nameEn: string;
+    shortCode: string
+}
 
-// --------------- TrueWallet --------------- //
+
+
+export interface ITopupResult {
+    receivePoint: number
+    totalPoint: number
+}

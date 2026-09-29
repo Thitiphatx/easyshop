@@ -8,6 +8,8 @@ import { useSetting } from '@/app/contexts/settingContext'
 import Button from '@/components/Button/Button'
 import Swal from '@/lib/Swal'
 
+import { NAV_ITEMS } from '@/constants/navigation'
+
 const Footer: React.FC = () => {
     const router = useRouter()
     const { setting, mcStatus } = useSetting()
@@ -24,14 +26,6 @@ const Footer: React.FC = () => {
             text: 'คัดลอก IP เรียบร้อยแล้ว'
         })
     }, [setting?.serverIp])
-
-    const navLinks = [
-        { label: 'HOME', path: '/' },
-        { label: 'SHOP', path: '/shop' },
-        { label: 'TOPUP (TRUEWALLET)', path: '/topup/truewallet' },
-        { label: 'TOPUP (BANK)', path: '/topup/bank' },
-        { label: 'RANKING', path: '/ranking' },
-    ]
 
     return (
         <footer className='w-full bg-(--vanilla-grey-6) text-(--core-white) border-t-4 border-(--core-grey-5) drop-shadow-[0_-4px_0px_rgba(0,0,0,0.25)] flex flex-col justify-between'>
@@ -84,7 +78,7 @@ const Footer: React.FC = () => {
                             NAVIGATION
                         </h3>
                         <ul className='flex flex-col gap-2'>
-                            {navLinks.map((item) => (
+                            {NAV_ITEMS.map((item) => (
                                 <li key={item.path}>
                                     <Link
                                         href={item.path}

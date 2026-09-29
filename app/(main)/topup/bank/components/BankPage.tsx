@@ -1,20 +1,29 @@
 "use client"
 
-import { verifyBank } from '@/app/actions/payment/bank'
-import { BANK_CODES } from '@/app/actions/payment/bank-codes'
-import { useAuth } from '@/app/contexts/authContext'
+import { getBankInfo, topupBank } from '@/app/actions/payment/bank'
+import { IBank } from '@/app/actions/payment/types/bank-accounts'
+import { useSetting } from '@/app/contexts/settingContext'
 import { fileToBase64 } from '@/app/utils/utils'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import Swal from '@/lib/Swal'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { IBankPageProps } from '../interface'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BankSchema } from '../schema'
+import ClosedTopupCard from '../../components/ClosedTopupCard'
+import Select from '@/components/Select/Select'
+import { formatCurrency } from '@/app/utils/formatter'
+import { useAuth } from '@/app/contexts/authContext'
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 
-const BankPage: React.FC<IBankPageProps> = ({
-    bankInfo
-}) => {
+const BankPage: React.FC = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [turnstileToken, setTurnstileToken] = useState<string>("")
+    const [bankInfo, setBankInfo] = useState<IBank>()
+    const [devMode, setDevMode] = useState<string>("success")
+    const turnstileRef = useRef<TurnstileInstance>(null)
+    const { setting } = useSetting()
+    const { fetchSession } = useAuth()
+
     const form = useAppForm({
         defaultValues: { imageSlip: null as File | null, agree: false as boolean },
         validators: {
@@ -24,10 +33,10 @@ const BankPage: React.FC<IBankPageProps> = ({
             if (!value.imageSlip) return;
             const base64 = await fileToBase64(value.imageSlip)
             if (!base64) return;
-            const res = await verifyBank(base64)
+            const res = await topupBank(base64, devMode, turnstileToken)
             if (res.success) {
                 Swal.fire({
-                    text: `คุณได้รับพอยท์จำนวน ${res.data.amountInOrder} บาท`,
+                    text: `ได้รับ ${formatCurrency(res.data.receivePoint)} พ้อยท์รวม ${formatCurrency(res.data.totalPoint)} พ้อยท์`,
                     icon: "success",
                 })
             } else {
@@ -36,8 +45,41 @@ const BankPage: React.FC<IBankPageProps> = ({
                     icon: "error"
                 })
             }
+            handleReset()
         },
     })
+
+    const isEnable = useMemo(() => setting?.enableBank && bankInfo, [setting, bankInfo])
+
+    const fetchBankInfo = useCallback(async () => {
+        setIsLoading(true)
+        const res = await getBankInfo()
+
+        if (res.success) {
+            if (res.data) {
+                setBankInfo(res.data)
+            }
+        } else {
+            Swal.fire({
+                text: res.error.message,
+                icon: "error",
+            })
+        }
+
+        setIsLoading(false)
+    }, [])
+
+    const handleReset = useCallback(() => {
+        fetchSession()
+        form.reset()
+        turnstileRef.current?.reset()
+        setTurnstileToken('')
+    }, [])
+
+    useEffect(() => {
+
+        fetchBankInfo()
+    }, [fetchBankInfo])
 
     return (
         <div className='flex-1 w-full'>
@@ -47,43 +89,66 @@ const BankPage: React.FC<IBankPageProps> = ({
                     <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>Bank</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>อัปโหลดสลิปโอนเงิน</h2>
                 </span>
-                <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-8 sm:mt-12'>
-                    <div className='flex flex-col gap-2'>
-                        <Card>
-                            <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
-                                <b className='text-(--core-green-2)'>ธนาคาร</b>
-                                <p className='text-(--core-white)'>{BANK_CODES[bankInfo.bankCode].nameTh}</p>
+                {isEnable ? (
+                    <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-8 sm:mt-12'>
+                        <div className='flex flex-col gap-2'>
+                            {bankInfo ? (
+                                <>
+                                    <Card>
+                                        <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
+                                            <b className='text-(--core-green-2)'>ธนาคาร</b>
+                                            <p className='text-(--core-white)'>{bankInfo.bankNameTh}</p>
+                                        </div>
+                                    </Card>
+                                    <Card>
+                                        <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
+                                            <b className='text-(--core-green-2)'>ชื่อบัญชี</b>
+                                            <p className='text-(--core-white)'>{bankInfo.nameTh}</p>
+                                        </div>
+                                    </Card>
+                                    <Card>
+                                        <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
+                                            <b className='text-(--core-green-2)'>เลขบัญชี</b>
+                                            <p className='text-(--core-white)'>{bankInfo.bankNumber}</p>
+                                        </div>
+                                    </Card>
+                                </>
+                            ) : (
+                                <Card>
+                                    <h1 className='text-red-500 font-bold'>ไม่พบข้อมูลบัญชีธนาคาร</h1>
+                                    <p>กรุณาติดต่อแอดมิน</p>
+                                </Card>
+                            )}
+                        </div>
+                        <Card className='col-span-1 lg:col-span-2'>
+                            <div>
+                                <p>Test Mode</p>
+                                <Select onChange={(e) => setDevMode(e.target.value)} options={[{ label: "Success", value: "success" }, { label: "Fail", value: "fail" }, { label: "Duplicate", value: "duplicate" }]}></Select>
                             </div>
-                        </Card>
-                        <Card>
-                            <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
-                                <b className='text-(--core-green-2)'>ชื่อบัญชี</b>
-                                <p className='text-(--core-white)'>{bankInfo.nameTh}</p>
-                            </div>
-                        </Card>
-                        <Card>
-                            <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
-                                <b className='text-(--core-green-2)'>เลขบัญชี</b>
-                                <p className='text-(--core-white)'>{bankInfo.bankNumber}</p>
-                            </div>
+                            <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+                                <form.AppField
+                                    name="imageSlip"
+                                    children={(field) => <field.FileField label="ภาพสลิปโอนเงิน" required />}
+                                />
+                                <form.AppField
+                                    name="agree"
+                                    children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
+                                />
+                                <Turnstile
+                                    ref={turnstileRef}
+                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE!}
+                                    onSuccess={(token) => setTurnstileToken(token)}
+                                    onExpire={() => setTurnstileToken('')}
+                                />
+                                <form.AppForm>
+                                    <form.SubmitButton block>ยืนยัน</form.SubmitButton>
+                                </form.AppForm>
+                            </form>
                         </Card>
                     </div>
-                    <Card className='col-span-1 lg:col-span-2'>
-                        <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
-                            <form.AppField
-                                name="imageSlip"
-                                children={(field) => <field.FileField label="ภาพสลิปโอนเงิน" required />}
-                            />
-                            <form.AppField
-                                name="agree"
-                                children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
-                            />
-                            <form.AppForm>
-                                <form.SubmitButton block>ยืนยัน</form.SubmitButton>
-                            </form.AppForm>
-                        </form>
-                    </Card>
-                </div>
+                ) : (
+                    <ClosedTopupCard />
+                )}
             </div>
             <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/60 z-0' />
             <div className='fixed top-0 left-0 w-full h-full bg-[url(/images/others/wallpaper_minecraft_update_aquatic_1920x1080.png)] bg-cover bg-center -z-10' />

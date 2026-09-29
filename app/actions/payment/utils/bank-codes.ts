@@ -1,7 +1,9 @@
 // Static bank code map from EasySlip
 // Reference: https://document.easyslip.com/en/reference/bank-codes
 
-export const BANK_CODES: Record<string, { nameTh: string; nameEn: string; shortCode: string }> = {
+import { IBankCode } from "../interface"
+
+export const BANK_CODES: Record<string, IBankCode> = {
     '002': { nameTh: 'ธนาคารกรุงเทพ', nameEn: 'Bangkok Bank', shortCode: 'BBL' },
     '004': { nameTh: 'ธนาคารกสิกรไทย', nameEn: 'Kasikorn Bank', shortCode: 'KBANK' },
     '006': { nameTh: 'ธนาคารกรุงไทย', nameEn: 'Krungthai Bank', shortCode: 'KTB' },
@@ -31,6 +33,6 @@ export const BANK_CODES: Record<string, { nameTh: string; nameEn: string; shortC
     'TRUEWALLET': { nameTh: 'ทรูมันนี่ วอลเล็ท', nameEn: 'TrueMoney Wallet', shortCode: 'TRUEWALLET' },
 }
 
-export function getBankNameByCode(bankCode: string): { nameTh: string; nameEn: string; shortCode: string } | null {
-    return BANK_CODES[bankCode] ?? null
+export function getBankNameByCode(bankCode: string): IBankCode {
+    return BANK_CODES[bankCode] ?? { nameTh: bankCode, nameEn: bankCode, shortCode: bankCode }
 }

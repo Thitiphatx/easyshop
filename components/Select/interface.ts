@@ -1,13 +1,12 @@
-import { IButtonProps } from "../Button/interface";
+import type { SelectHTMLAttributes } from 'react'
 
-export interface ISelectItem {
-    label: string,
-    onClick?: () => Promise<void> | void;
-    className?: string
-    isAdmin?: boolean
-    hidden?: boolean
+export interface ISelectOption {
+    label: string
+    value: string | number
 }
 
-export interface ISelectProps extends IButtonProps {
-    items?: ISelectItem[]
+export interface ISelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    options?: ISelectOption[]
+    placeholder?: string
+    isError?: boolean
 }

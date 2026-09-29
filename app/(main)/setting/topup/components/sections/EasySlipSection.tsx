@@ -12,12 +12,16 @@ import { EasyslipFormValues, EasyslipSchema } from '../../schema'
 const EasySlipSection: React.FC = () => {
     const { isLoading, fetchSetting, setting } = useSetting()
 
+    console.log(setting)
+
+    const defaultValues = React.useMemo<EasyslipFormValues>(() => ({
+        enableTruewallet: setting?.enableTruewallet ?? false,
+        enableBank: setting?.enableBank ?? false,
+        easyslipApiKey: (setting as Setting)?.easyslipApiKey ?? '',
+    }), [setting])
+
     const form = useAppForm({
-        defaultValues: {
-            enableTruewallet: setting?.enableTruewallet ?? false,
-            enableBank: setting?.enableBank ?? false,
-            easyslipApiKey: (setting as Setting)?.easyslipApiKey ?? '',
-        } as EasyslipFormValues,
+        defaultValues,
         validators: {
             onSubmit: EasyslipSchema,
         },
@@ -46,6 +50,10 @@ const EasySlipSection: React.FC = () => {
             fetchSetting()
         },
     })
+
+    React.useEffect(() => {
+        form.reset()
+    }, [setting])
 
     return (
         <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>

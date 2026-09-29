@@ -1,15 +1,17 @@
 'use client'
 
+import Select from '@/components/Select/Select'
 import { useFieldContext } from '../context'
 import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import type { ISelectFieldProps } from './interface'
 
-export function SelectField({ label, options, required, placeholder, layout, className, ...selectProps }: ISelectFieldProps) {
+export function SelectField({ label, options, required, placeholder, layout, ...selectProps }: ISelectFieldProps) {
     const field = useFieldContext<string | number>()
+    const isError = field.state.meta.isTouched && field.state.meta.errors.length > 0
 
     return (
         <FieldWrapper label={label} required={required} layout={layout}>
-            <select
+            <Select
                 value={field.state.value}
                 onChange={(e) => {
                     const val = e.target.value
@@ -18,16 +20,11 @@ export function SelectField({ label, options, required, placeholder, layout, cla
                     )
                 }}
                 onBlur={field.handleBlur}
-                className={`p-3 focus:ring-2 ring-(--core-grey-1) border-2 border-(--core-grey-4) bg-(--core-off-black) text-(--core-grey-2) text-lg outline-none w-full ${className ?? ''}`}
+                options={options}
+                placeholder={placeholder}
+                isError={isError}
                 {...selectProps}
-            >
-                {placeholder && <option value="">{placeholder}</option>}
-                {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                    </option>
-                ))}
-            </select>
+            />
         </FieldWrapper>
     )
 }

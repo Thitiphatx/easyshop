@@ -70,3 +70,5 @@ export function useSetting() {
     if (!ctx) throw new Error('useSetting must be used within SettingProvider')
     return ctx
 }
+
+

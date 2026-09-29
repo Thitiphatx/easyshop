@@ -1,16 +1,14 @@
-"use server"
+import type { Metadata } from 'next'
 import React from 'react'
 import BankPage from './components/BankPage'
-import { getFirstBank, verifyBank } from '@/app/actions/payment/bank'
-import { ApiResponse } from '@/app/actions/interface'
 
-const Bank: React.FC = async () => {
-    const bankInfo = await getFirstBank()
+export const metadata: Metadata = {
+    title: 'โดเนท - ธนาคาร',
+    description: 'โดเนทผ่านการโอนธนาคารและอัปโหลดสลิป',
+}
 
-    if (!bankInfo) {
-        return <></>
-    }
-    return <BankPage bankInfo={bankInfo} />
+const Bank: React.FC = () => {
+    return <BankPage />
 }
 
 export default Bank

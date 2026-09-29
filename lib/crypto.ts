@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-const SECRET = process.env.ENCRYPTION_KEY || process.env.JWT_SECRET || 'easyshop-default-secret-key-32b'
+const SECRET = process.env.ENCRYPT_SECRET!!
 const ALGORITHM = 'aes-256-gcm'
 
 function getKey(): Buffer {
@@ -21,7 +21,7 @@ export function decrypt(encryptedText: string): string {
     if (!encryptedText) return ''
     try {
         const parts = encryptedText.split(':')
-        if (parts.length !== 3) return ''
+        if (parts.length !== 3) return encryptedText
         const [ivHex, authTagHex, encrypted] = parts
         const iv = Buffer.from(ivHex, 'hex')
         const authTag = Buffer.from(authTagHex, 'hex')

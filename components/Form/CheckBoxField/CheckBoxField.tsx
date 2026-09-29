@@ -7,14 +7,15 @@ import Checkbox from '@/components/Checkbox/Checkbox'
 import Tooltip from '@/components/Tooltip/index'
 import { InfoBox } from 'pixelarticons/react'
 import { ICheckboxFieldProps } from './interface'
+import clsx from 'clsx'
 
 export function CheckboxField({ label, className, labelClassName, variant, tooltip, disabled }: ICheckboxFieldProps) {
     const field = useFieldContext<boolean>()
     const id = useId()
 
     return (
-        <FieldWrapper htmlFor={id} layout="horizontal" className={className}>
-            <div className="flex items-center">
+        <FieldWrapper htmlFor={id} layout="horizontal" className={clsx("", className)}>
+            <div className="flex items-center justify-start">
                 <Checkbox
                     id={id}
                     variant={variant}
@@ -26,7 +27,7 @@ export function CheckboxField({ label, className, labelClassName, variant, toolt
                 <span className={`ml-2 text-shadow inline-flex items-center gap-1 transition-opacity ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${labelClassName ?? ''}`}>
                     {label}
                     {tooltip && (
-                        <Tooltip content={tooltip} position='bottom' mode='hover' className="!w-auto !justify-start">
+                        <Tooltip content={tooltip} position='bottom' mode='hover' className="w-auto! justify-start!">
                             <InfoBox className="w-4 h-4 opacity-50 cursor-help" />
                         </Tooltip>
                     )}

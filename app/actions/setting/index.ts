@@ -14,12 +14,11 @@ export async function getSetting(): Promise<IActionResponse<Setting | IClientSet
         let query: Prisma.SettingFindFirstArgs = {}
 
         const session = await getSession()
-        if (session && !session.isAdmin) {
+        if (!session?.isAdmin) {
             query = {
                 select: {
                     enableBank: true,
                     enableTruewallet: true,
-                    enableDirectTruewallet: true,
                     siteName: true,
                     siteDesc: true,
                     logo: true,
@@ -102,14 +101,14 @@ export async function updatePointMultiplier(values: PromotionFormValues): Promis
 
 export async function updateTrueWalletSetting(values: TrueWalletFormValues): Promise<IActionResponse<Setting>> {
     try {
-        const { enableDirectTruewallet, truewalletPhoneNumber } = values
+        const { enableTruewallet, truewalletPhoneNumber } = values
 
         const trimmedPhone = truewalletPhoneNumber ? truewalletPhoneNumber.trim() : ''
 
         const res = await prisma.setting.update({
             where: { id: 1 },
             data: {
-                enableDirectTruewallet: trimmedPhone ? enableDirectTruewallet : false,
+                enableTruewallet: trimmedPhone ? enableTruewallet : false,
                 truewalletPhoneNumber: trimmedPhone,
             },
         })

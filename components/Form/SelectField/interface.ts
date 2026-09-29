@@ -1,15 +1,11 @@
-import type { SelectHTMLAttributes } from 'react'
+import type { ISelectOption, ISelectProps } from '@/components/Select/interface'
 
-export interface ISelectOption {
-  label: string
-  value: string | number
-}
+export type { ISelectOption }
 
 export interface ISelectFieldProps
-  extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'value' | 'onChange' | 'onBlur'> {
+  extends Omit<ISelectProps, 'value' | 'onChange' | 'onBlur'> {
   label: string
   options: ISelectOption[]
   required?: boolean
-  placeholder?: string
   layout?: 'horizontal' | 'vertical'
 }

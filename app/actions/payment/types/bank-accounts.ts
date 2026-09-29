@@ -23,3 +23,7 @@ export interface BankAccount {
     createdAt: string;                   // ISO 8601
     updatedAt: string;                   // ISO 8601
 }
+
+export interface IBank extends BankAccount {
+    bankNameTh: string
+}

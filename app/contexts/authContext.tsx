@@ -2,13 +2,14 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import AuthModal from '@/components/Auth/AuthModal'
 import { ISessionPayload } from '@/app/actions/session/interface'
-import { deleteSession, getSession } from '../actions/session'
+import { deleteSession, getSession, refreshSession } from '../actions/session'
 import Swal from '@/lib/Swal'
 
 interface AuthContextValue {
     isOpen: boolean
     isLoading: boolean
     session: ISessionPayload | null
+    fetchSession: () => Promise<void>
     openAuth: () => void
     closeAuth: () => void
     signOut: () => Promise<void>
@@ -33,6 +34,7 @@ export function AuthProvider({ children, initialSession = null }: AuthProviderPr
 
     const fetchSession = useCallback(async () => {
         setIsLoading(true)
+        await refreshSession()
         const res = await getSession()
         setSession(res)
         setIsLoading(false)
@@ -64,7 +66,7 @@ export function AuthProvider({ children, initialSession = null }: AuthProviderPr
     }, [initialSession, fetchSession])
 
     return (
-        <AuthContext.Provider value={{ isOpen, isLoading, session, openAuth, closeAuth, signOut, setIsOpen, setSession }}>
+        <AuthContext.Provider value={{ isOpen, isLoading, session, fetchSession, openAuth, closeAuth, signOut, setIsOpen, setSession }}>
             {children}
             <AuthModal />
         </AuthContext.Provider>
