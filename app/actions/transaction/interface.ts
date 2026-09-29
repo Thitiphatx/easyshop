@@ -1,4 +1,4 @@
-import { PurchaseFilterFormValues } from "@/app/(main)/setting/purchase-history/schema";
+import { PurchaseFilterFormValues } from "@/app/(main)/webshop/purchase-history/schema";
 import { Prisma, Transaction } from "@/app/generated/prisma/client";
 
 export interface ITransactionFilter extends PurchaseFilterFormValues {

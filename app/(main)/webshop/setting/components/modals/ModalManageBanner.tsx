@@ -4,7 +4,7 @@ import Modal from '@/components/Modal/Modal'
 import { useAppForm } from '@/components/Form'
 import { createBanner } from '@/app/actions/banner'
 import Swal from '@/lib/Swal'
-import { IModalBannerProps } from '@/app/(main)/setting/dashboard/interface'
+import { IModalBannerProps } from '@/app/(main)/webshop/dashboard/interface'
 import { BannerFormValues, BannerSchema } from '../../schema'
 
 const ModalManageBanner: React.FC<IModalBannerProps> = ({ isOpen, setIsOpen, getBannerList }) => {

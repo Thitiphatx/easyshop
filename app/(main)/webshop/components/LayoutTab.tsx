@@ -11,12 +11,12 @@ const LayoutTab: React.FC = () => {
     const path = usePathname()
 
     const menu = useMemo(() => [
-        { label: 'Dashboard', href: '/setting/dashboard', icon: <Chart className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/dashboard' },
-        { label: 'Display', href: '/setting/display', icon: <Home className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/display' },
-        { label: 'Users', href: '/setting/users', icon: <User className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/users' },
-        { label: 'Images', href: '/setting/images', icon: <ImgIcon className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/images' },
-        { label: 'Purchases', href: '/setting/purchase-history', icon: <BulletlistSharp className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/purchase-history' },
-        { label: 'Topup', href: '/setting/topup', icon: <CreditCard className='size-5 sm:size-6 shrink-0' />, active: path === '/setting/topup' },
+        { label: 'Dashboard', href: '/webshop/dashboard', icon: <Chart className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/dashboard' },
+        { label: 'Setting', href: '/webshop/setting', icon: <Home className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/setting' },
+        { label: 'Users', href: '/webshop/users', icon: <User className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/users' },
+        { label: 'Images', href: '/webshop/images', icon: <ImgIcon className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/images' },
+        { label: 'Purchases', href: '/webshop/purchase-history', icon: <BulletlistSharp className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/purchase-history' },
+        { label: 'Topup', href: '/webshop/topup', icon: <CreditCard className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/topup' },
     ], [path])
 
     return (

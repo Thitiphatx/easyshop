@@ -3,7 +3,7 @@
 import { ISummaryData } from '@/app/actions/interface'
 import { getTransactionSummary } from '@/app/actions/transaction'
 import { formatCurrency } from '@/app/utils/formatter'
-import { IDashboardSectionProps } from '@/app/(main)/setting/dashboard/interface'
+import { IDashboardSectionProps } from '@/app/(main)/webshop/dashboard/interface'
 import Card from '@/components/Card/Card'
 import Loading from '@/components/Loading'
 import '@/lib/chart'

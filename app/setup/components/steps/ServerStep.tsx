@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useAppForm } from '@/components/Form'
-import { ServerFormValues, ServerSchema } from '@/app/(main)/setting/display/schema'
+import { ServerFormValues, ServerSchema } from '@/app/(main)/webshop/setting/schema'
 import { ISetupServer } from '@/app/actions/setup/interface'
 import Button from '@/components/Button/Button'
 import { ChevronLeft, ChevronRight, Server } from 'pixelarticons/react'

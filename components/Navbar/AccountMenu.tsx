@@ -196,7 +196,7 @@ export const AccountMenu: React.FC = () => {
                                 <div className="border-t border-(--core-grey-5) my-1.5" />
                                 <button
                                     type="button"
-                                    onClick={() => handleNavigate('/setting/dashboard')}
+                                    onClick={() => handleNavigate('/webshop/dashboard')}
                                     className="w-full flex items-center justify-between px-3 py-2 text-sm text-(--marketplace-gold-3) hover:text-(--marketplace-gold-2) hover:bg-(--marketplace-gold-6)/20 transition-colors cursor-pointer group text-left"
                                 >
                                     <div className="flex items-center gap-2.5">
