@@ -7,17 +7,22 @@ import { fileToBase64 } from '@/app/utils/utils'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import Swal from '@/lib/Swal'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BankSchema } from '../schema'
 import ClosedTopupCard from '../../components/ClosedTopupCard'
 import Select from '@/components/Select/Select'
 import { formatCurrency } from '@/app/utils/formatter'
+import { useAuth } from '@/app/contexts/authContext'
+import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 
 const BankPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [turnstileToken, setTurnstileToken] = useState<string>("")
     const [bankInfo, setBankInfo] = useState<IBank>()
     const [devMode, setDevMode] = useState<string>("success")
+    const turnstileRef = useRef<TurnstileInstance>(null)
     const { setting } = useSetting()
+    const { fetchSession } = useAuth()
 
     const form = useAppForm({
         defaultValues: { imageSlip: null as File | null, agree: false as boolean },
@@ -31,7 +36,7 @@ const BankPage: React.FC = () => {
             const res = await topupBank(base64, devMode)
             if (res.success) {
                 Swal.fire({
-                    text: `เติมพอยท์ ${formatCurrency(res.data.receivePoint)} รวมเป็น ${formatCurrency(res.data.totalPoint)} พอยท์`,
+                    text: `ได้รับ ${formatCurrency(res.data.receivePoint)} พ้อยท์รวม ${formatCurrency(res.data.totalPoint)} พ้อยท์`,
                     icon: "success",
                 })
             } else {
@@ -40,6 +45,7 @@ const BankPage: React.FC = () => {
                     icon: "error"
                 })
             }
+            handleReset()
         },
     })
 
@@ -63,7 +69,15 @@ const BankPage: React.FC = () => {
         setIsLoading(false)
     }, [])
 
+    const handleReset = useCallback(() => {
+        fetchSession()
+        form.reset()
+        turnstileRef.current?.reset()
+        setTurnstileToken('')
+    }, [])
+
     useEffect(() => {
+
         fetchBankInfo()
     }, [fetchBankInfo])
 
@@ -119,6 +133,12 @@ const BankPage: React.FC = () => {
                                 <form.AppField
                                     name="agree"
                                     children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
+                                />
+                                <Turnstile
+                                    ref={turnstileRef}
+                                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE!}
+                                    onSuccess={(token) => setTurnstileToken(token)}
+                                    onExpire={() => setTurnstileToken('')}
                                 />
                                 <form.AppForm>
                                     <form.SubmitButton block>ยืนยัน</form.SubmitButton>

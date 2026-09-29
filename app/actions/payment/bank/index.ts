@@ -1,7 +1,7 @@
 "use server"
 import { prisma } from "@/lib/prisma";
 import { ApiResponse } from "../../interface";
-import { easyslip } from "../easyslip";
+import { easyslip } from "../../../../lib/easyslip";
 import type { ITopupResult, VerifyBankData } from "../interface";
 import { IBank, IListBankAccountsRequest, ListBankAccountsResponse } from "../types/bank-accounts";
 import { getBankNameByCode } from "../utils/bank-codes";

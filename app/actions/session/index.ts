@@ -3,6 +3,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { ISessionPayload } from './interface';
 import { IActionResponse } from '../interface';
+import { prisma } from '@/lib/prisma';
 
 const SECRET_KEY = new TextEncoder().encode(
     process.env.JWT_SECRET || 'default_secret_key_change_me_later_123456'
@@ -43,6 +44,49 @@ export async function deleteSession(): Promise<IActionResponse<void>> {
     try {
         const cookieStore = await cookies();
         cookieStore.delete('session');
+        return {
+            success: true
+        }
+    } catch {
+        return {
+            success: false,
+            error: "เกิดข้อผิดพลาดขณะดำเนินการ"
+        }
+    }
+}
+
+export async function refreshSession(): Promise<IActionResponse<void>> {
+    try {
+        const session = await getSession();
+        if (!session) {
+            return {
+                success: false,
+                error: "ไม่พบ session ที่ใช้งานได้"
+            }
+        }
+
+        const user = await prisma.authMe.findFirst({
+            where: { id: session.id },
+            include: { playerPoints: true }
+        });
+
+        if (!user) {
+            return {
+                success: false,
+                error: "ไม่พบผู้ใช้งาน"
+            }
+        }
+
+        const sessionPayload: ISessionPayload = {
+            id: user.id,
+            username: user.username,
+            profileImageUrl: "",
+            isAdmin: Boolean(user.isAdmin),
+            point: user.playerPoints?.points ?? 0,
+        }
+
+        await createSession(sessionPayload);
+
         return {
             success: true
         }

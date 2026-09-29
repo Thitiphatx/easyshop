@@ -1,21 +1,21 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/contexts/authContext'
+import { formatCurrency } from '@/app/utils/formatter'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import {
     ChevronDown,
-    ChevronUp,
     ChevronRight,
-    User,
-    ShoppingBag,
+    ChevronUp,
     CreditCard,
-    Settings2,
+    Crown,
     Logout,
-    Wallet,
-    Crown
+    Settings2,
+    ShoppingBag,
+    Wallet
 } from 'pixelarticons/react'
-import Image from 'next/image'
+import React, { useEffect, useRef, useState } from 'react'
 
 export const AccountMenu: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -96,10 +96,6 @@ export const AccountMenu: React.FC = () => {
                     <span className="font-pixel text-xs font-bold text-(--core-white) truncate max-w-[110px]">
                         {session.username}
                     </span>
-                    <span className="font-pixel text-[10px] text-(--marketplace-gold-3) flex items-center gap-1">
-                        <Wallet className="size-3" />
-                        {(session.point ?? 0).toLocaleString()} P
-                    </span>
                 </div>
 
                 {/* Chevron */}
@@ -151,8 +147,7 @@ export const AccountMenu: React.FC = () => {
                                 พ้อยท์คงเหลือ
                             </div>
                             <div className="font-pixel text-base font-bold text-(--marketplace-gold-3) mt-0.5">
-                                {(session.point ?? 0).toLocaleString()}{' '}
-                                <span className="text-[10px] text-(--marketplace-gold-2)">PTS</span>
+                                {formatCurrency(session.point)}
                             </div>
                         </div>
                         <button

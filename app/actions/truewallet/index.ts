@@ -4,6 +4,7 @@ import { TmnVoucherClient } from "@prakrit_m/tmn-voucher";
 import { IActionResponse } from "../interface";
 import { getTmnErrorMessage } from "./utils";
 import { prisma } from "@/lib/prisma";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 function createCookieJarFetch() {
     const cookieJar = new Map<string, string>();
@@ -70,8 +71,16 @@ function createClient() {
     });
 }
 
-export async function redeem(voucherCode: string): Promise<IActionResponse<number>> {
+export async function redeem(voucherCode: string, turnstileToken: string): Promise<IActionResponse<number>> {
     try {
+
+        const turnstile = await verifyTurnstile(turnstileToken)
+        if (!turnstile) {
+            return {
+                success: false,
+                error: "ยืนยันตัวตนไม่สำเร็จ"
+            }
+        }
 
         const setting = await prisma.setting.findFirst({
             where: { id: 1 },

@@ -1,4 +1,3 @@
-"use server"
 import axios from 'axios'
 import { prisma } from '@/lib/prisma'
 import { decrypt } from '@/lib/crypto'

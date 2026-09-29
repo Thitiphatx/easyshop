@@ -1,5 +1,5 @@
 import { ApiResponse } from "../../interface";
-import { easyslip } from "../easyslip";
+import { easyslip } from "../../../../lib/easyslip";
 
 export interface TrueWalletVerifyOptions {
     checkDuplicate?: boolean;
