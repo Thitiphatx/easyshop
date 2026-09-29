@@ -1,7 +1,7 @@
 'use server'
 
-import { DisplayFormValues, ServerFormValues } from '@/app/(main)/setting/display/schema'
-import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, TrueWalletFormValues } from '@/app/(main)/setting/topup/schema'
+import { DisplayFormValues, ServerFormValues } from '@/app/(main)/webshop/setting/schema'
+import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, TrueWalletFormValues } from '@/app/(main)/webshop/topup/schema'
 import { Prisma, Setting } from '@/app/generated/prisma/client'
 import { decrypt, encrypt } from '@/lib/crypto'
 import { prisma } from '@/lib/prisma'

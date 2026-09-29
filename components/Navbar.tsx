@@ -175,7 +175,7 @@ const Navbar: React.FC = () => {
                                     {session.isAdmin && (
                                         <button
                                             type="button"
-                                            onClick={() => handleMobileNavigate('/setting/dashboard')}
+                                            onClick={() => handleMobileNavigate('/webshop/dashboard')}
                                             className="flex items-center gap-1.5 p-2 text-(--marketplace-gold-3) hover:text-(--marketplace-gold-2) hover:bg-(--core-grey-5) cursor-pointer"
                                         >
                                             <Settings2 className="size-3.5" />

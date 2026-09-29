@@ -1,5 +1,5 @@
 import { Prisma } from "@/app/generated/prisma/client";
-import { UserFilterFormValues } from "@/app/(main)/setting/users/schema";
+import { UserFilterFormValues } from "@/app/(main)/webshop/users/schema";
 
 
 export interface IUserFilter extends UserFilterFormValues {

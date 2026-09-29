@@ -1,5 +1,5 @@
 import { Prisma } from "@/app/generated/prisma/client";
-import { TopupFilterFormValues } from "@/app/(main)/setting/topup/schema";
+import { TopupFilterFormValues } from "@/app/(main)/webshop/topup/schema";
 
 export interface ITopupFilter extends TopupFilterFormValues {
     playerName?: string
