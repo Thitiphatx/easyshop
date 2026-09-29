@@ -68,10 +68,7 @@ export interface IBankCode {
     shortCode: string
 }
 
-export interface IEasySlipErrorMessage {
-    client: string  // ข้อความสำหรับผู้ใช้ทั่วไป
-    admin: string   // ข้อความทางเทคนิคสำหรับผู้ดูแลระบบ
-}
+
 
 export interface ITopupResult {
     receivePoint: number

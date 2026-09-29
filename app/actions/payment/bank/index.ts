@@ -1,22 +1,21 @@
 "use server"
-import { prisma } from "@/lib/prisma";
-import { ApiResponse } from "../../interface";
-import { easyslip } from "../../../../lib/easyslip";
-import type { ITopupResult, VerifyBankData } from "../interface";
-import { IBank, IListBankAccountsRequest, ListBankAccountsResponse } from "../types/bank-accounts";
-import { getBankNameByCode } from "../utils/bank-codes";
-import { getErrorByCode } from "../utils/errors";
-import { getSession } from "../../session";
 import { TopupChannel, TopupStatus } from "@/app/generated/prisma/enums";
+import { prisma } from "@/lib/prisma";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { ApiResponse } from "../../interface";
+import { getSession } from "../../session";
+import type { ITopupResult, VerifyBankData } from "../interface";
+import { IBank, IListBankAccountsRequest } from "../types/bank-accounts";
+import { getPaymentError } from "../utils/errors";
 
-async function devTopup(base64: string, devMode: string): Promise<ApiResponse<VerifyBankData>> {
+async function devTopup(devMode: string): Promise<ApiResponse<VerifyBankData>> {
 
     if (devMode == "fail") {
         return {
             success: false,
             error: {
                 code: 'SLIP_NOT_FOUND',
-                message: getErrorByCode('SLIP_NOT_FOUND').client
+                message: getPaymentError('SLIP_NOT_FOUND')
             }
         }
     }
@@ -77,14 +76,25 @@ async function devTopup(base64: string, devMode: string): Promise<ApiResponse<Ve
     }
 }
 
-export async function topupBank(base64: string, devMode: string): Promise<ApiResponse<ITopupResult>> {
+export async function topupBank(base64: string, devMode: string, turnstileToken: string): Promise<ApiResponse<ITopupResult>> {
     try {
+        const turnstile = await verifyTurnstile(turnstileToken)
+        if (!turnstile) {
+            return {
+                success: false,
+                error: {
+                    code: 'FORBIDDEN',
+                    message: getPaymentError('FORBIDDEN')
+                }
+            }
+        }
+
         // require easyslip api 
         // const { data } = await easyslip.post<ApiResponse<VerifyBankData>>('/verify/bank', {
         //     base64
         // })
 
-        const res = await devTopup(base64, devMode)
+        const res = await devTopup(devMode)
 
         if (!res.success) {
             return {
@@ -99,7 +109,7 @@ export async function topupBank(base64: string, devMode: string): Promise<ApiRes
                 success: false,
                 error: {
                     code: 'DUPLICATE_SLIP',
-                    message: getErrorByCode('DUPLICATE_SLIP').client
+                    message: getPaymentError('DUPLICATE_SLIP')
                 }
             }
         }

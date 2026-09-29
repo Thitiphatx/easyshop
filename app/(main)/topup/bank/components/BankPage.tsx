@@ -33,7 +33,7 @@ const BankPage: React.FC = () => {
             if (!value.imageSlip) return;
             const base64 = await fileToBase64(value.imageSlip)
             if (!base64) return;
-            const res = await topupBank(base64, devMode)
+            const res = await topupBank(base64, devMode, turnstileToken)
             if (res.success) {
                 Swal.fire({
                     text: `ได้รับ ${formatCurrency(res.data.receivePoint)} พ้อยท์รวม ${formatCurrency(res.data.totalPoint)} พ้อยท์`,

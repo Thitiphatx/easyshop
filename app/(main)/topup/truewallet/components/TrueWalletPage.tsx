@@ -1,5 +1,5 @@
 "use client"
-import { redeem } from '@/app/actions/truewallet'
+import { redeem } from '@/app/actions/payment/truewallet'
 import { useSetting } from '@/app/contexts/settingContext'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
@@ -35,12 +35,12 @@ const TrueWalletPage: React.FC = () => {
             const res = await redeem(voucherCode, turnstileToken)
             if (res.success) {
                 Swal.fire({
-                    text: `คุณได้รับพอยท์จำนวน ${res.data} บาท`,
+                    text: `คุณได้รับพอยท์จำนวน ${res.data.receivePoint} พอยท์`,
                     icon: "success",
                 })
             } else {
                 Swal.fire({
-                    text: res.error,
+                    text: res.error?.message,
                     icon: "error"
                 })
             }
