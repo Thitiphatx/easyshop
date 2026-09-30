@@ -6,18 +6,19 @@ import { useSetting } from '@/app/contexts/settingContext'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import Swal from '@/lib/Swal'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { EasyslipFormValues, EasyslipSchema } from '../../schema'
 
 const EasySlipSection: React.FC = () => {
     const { isLoading, fetchSetting, setting } = useSetting()
 
+    const defaultValues = React.useMemo<EasyslipFormValues>(() => ({
+        enableBank: setting?.enableBank ?? false,
+        easyslipApiKey: (setting as Setting)?.easyslipApiKey ?? '',
+    }), [setting])
+
     const form = useAppForm({
-        defaultValues: {
-            enableTruewallet: setting?.enableTruewallet ?? false,
-            enableBank: setting?.enableBank ?? false,
-            easyslipApiKey: (setting as Setting)?.easyslipApiKey ?? '',
-        } as EasyslipFormValues,
+        defaultValues,
         validators: {
             onSubmit: EasyslipSchema,
         },
@@ -38,7 +39,6 @@ const EasySlipSection: React.FC = () => {
             } else {
                 Swal.fire({ icon: 'success', title: 'บันทึกการตั้งค่าสำเร็จ' })
                 if (!value.easyslipApiKey?.trim()) {
-                    form.setFieldValue('enableTruewallet', false)
                     form.setFieldValue('enableBank', false)
                     form.setFieldValue('easyslipApiKey', '')
                 }
@@ -46,6 +46,10 @@ const EasySlipSection: React.FC = () => {
             fetchSetting()
         },
     })
+
+    useEffect(() => {
+        form.reset()
+    }, [setting])
 
     return (
         <Card className="p-6 md:p-8" isLoading={isLoading}>
@@ -61,14 +65,10 @@ const EasySlipSection: React.FC = () => {
 
                     {/* Right: form */}
                     <div className="flex-1 max-w-3xl">
-                        <div className="pb-5 mb-5 border-b border-(--core-grey-5) flex flex-wrap gap-x-8 gap-y-3">
-                            <form.AppField
-                                name="enableTruewallet"
-                                children={(field) => <field.CheckboxField variant='switch' label="TrueWallet" disabled={!(setting as Setting)?.easyslipApiKey} />}
-                            />
+                        <div className="pb-5 mb-5 border-b border-(--core-grey-5)">
                             <form.AppField
                                 name="enableBank"
-                                children={(field) => <field.CheckboxField variant='switch' label="Bank" disabled={!(setting as Setting)?.easyslipApiKey} />}
+                                children={(field) => <field.CheckboxField variant='switch' label="เปิดใช้งาน ธนาคาร" tooltip="" disabled={!(setting as Setting)?.easyslipApiKey} />}
                             />
                         </div>
                         <div className="space-y-4 [&_label>span:first-child]:sm:w-44 [&_label>span:first-child]:sm:shrink-0">

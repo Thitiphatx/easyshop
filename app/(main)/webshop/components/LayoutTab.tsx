@@ -3,7 +3,7 @@
 import Button from '@/components/Button/Button'
 import clsx from 'clsx'
 import { usePathname, useRouter } from 'next/navigation'
-import { BulletlistSharp, Chart, CreditCard, Home, Image as ImgIcon, Settings2, User } from 'pixelarticons/react'
+import { BulletlistSharp, Chart, CreditCard, Home, Image as ImgIcon, Settings2, SettingsCog, User } from 'pixelarticons/react'
 import React, { useMemo } from 'react'
 
 const LayoutTab: React.FC = () => {
@@ -12,11 +12,11 @@ const LayoutTab: React.FC = () => {
 
     const menu = useMemo(() => [
         { label: 'Dashboard', href: '/webshop/dashboard', icon: <Chart className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/dashboard' },
-        { label: 'Setting', href: '/webshop/setting', icon: <Home className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/setting' },
         { label: 'Users', href: '/webshop/users', icon: <User className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/users' },
         { label: 'Images', href: '/webshop/images', icon: <ImgIcon className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/images' },
         { label: 'Purchases', href: '/webshop/purchase-history', icon: <BulletlistSharp className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/purchase-history' },
         { label: 'Topup', href: '/webshop/topup', icon: <CreditCard className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/topup' },
+        { label: 'Setting', href: '/webshop/setting', icon: <SettingsCog className='size-5 sm:size-6 shrink-0' />, active: path === '/webshop/setting' },
     ], [path])
 
     return (

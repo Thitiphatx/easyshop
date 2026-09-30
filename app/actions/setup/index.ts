@@ -19,18 +19,18 @@ export async function checkSettingExists(): Promise<boolean> {
 
 export async function verifySetupKey(key: string): Promise<IActionResponse<boolean>> {
     try {
-        const serverKey = (process.env.EASYSHOP_KEY || '').trim()
+        const serverKey = (process.env.EASYSHOP_SETUP_KEY || '').trim()
         if (!serverKey) {
             return {
                 success: false,
-                error: 'ยังไม่ได้ตั้งค่า EASYSHOP_KEY ในระบบ (.env)',
+                error: 'ยังไม่ได้ตั้งค่า EASYSHOP_SETUP_KEY ในระบบ (.env)',
             }
         }
 
         if (key.trim() !== serverKey) {
             return {
                 success: false,
-                error: 'รหัสผ่าน EASYSHOP_KEY ไม่ถูกต้อง',
+                error: 'รหัสผ่าน EASYSHOP_SETUP_KEY ไม่ถูกต้อง',
             }
         }
 
@@ -83,11 +83,11 @@ export async function searchAuthMeUser(username: string): Promise<IActionRespons
 export async function completeSetup(payload: ISetupPayload): Promise<IActionResponse<void>> {
     try {
         // 1. Verify key directly
-        const serverKey = (process.env.EASYSHOP_KEY || '').trim()
+        const serverKey = (process.env.EASYSHOP_SETUP_KEY || '').trim()
         if (!serverKey || payload.setupKey.trim() !== serverKey) {
             return {
                 success: false,
-                error: 'รหัสผ่าน EASYSHOP_KEY ไม่ถูกต้อง กรุณากรอกรหัสผ่านใหม่',
+                error: 'รหัสผ่าน EASYSHOP_SETUP_KEY ไม่ถูกต้อง กรุณากรอกรหัสผ่านใหม่',
             }
         }
 
@@ -139,9 +139,8 @@ export async function completeSetup(payload: ISetupPayload): Promise<IActionResp
                     serverDesc: payload.server.serverDesc?.trim() || null,
                     serverIp: payload.server.serverIp.trim(),
                     serverImageUrl: payload.server.serverImageUrl?.trim() || null,
-                    enableDirectTruewallet: trimmedPhone ? payload.topup.enableDirectTruewallet : false,
+                    enableTruewallet: trimmedPhone ? payload.topup.enableTruewallet : false,
                     truewalletPhoneNumber: trimmedPhone,
-                    enableTruewallet: trimmedApiKey ? payload.topup.enableTruewallet : false,
                     enableBank: trimmedApiKey ? payload.topup.enableBank : false,
                     easyslipApiKey: encryptedApiKey,
                     pointMultiplier: 1,

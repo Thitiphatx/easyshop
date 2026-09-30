@@ -10,7 +10,6 @@ export const TrueWalletSchema = z.object({
 })
 
 export const EasyslipSchema = z.object({
-    enableTruewallet: z.boolean(),
     enableBank: z.boolean(),
     easyslipApiKey: z.string().nullable().optional(),
 })

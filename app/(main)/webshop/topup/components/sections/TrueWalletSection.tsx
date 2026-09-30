@@ -5,17 +5,19 @@ import { useSetting } from '@/app/contexts/settingContext'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
 import Swal from '@/lib/Swal'
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { TrueWalletFormValues, TrueWalletSchema } from '../../schema'
 
 const TrueWalletSection: React.FC = () => {
     const { isLoading, fetchSetting, setting } = useSetting()
 
+    const defaultValues = useMemo<TrueWalletFormValues>(() => ({
+        enableTruewallet: setting?.enableTruewallet ?? false,
+        truewalletPhoneNumber: setting?.truewalletPhoneNumber ?? '',
+    }), [setting])
+
     const form = useAppForm({
-        defaultValues: {
-            enableDirectTruewallet: setting?.enableTruewallet ?? false,
-            truewalletPhoneNumber: setting?.truewalletPhoneNumber ?? '',
-        } as TrueWalletFormValues,
+        defaultValues,
         validators: {
             onSubmit: TrueWalletSchema,
         },
@@ -36,13 +38,17 @@ const TrueWalletSection: React.FC = () => {
             } else {
                 Swal.fire({ icon: 'success', title: 'อัปเดตการตั้งค่า True Wallet เรียบร้อยแล้ว' })
                 if (!value.truewalletPhoneNumber?.trim()) {
-                    form.setFieldValue('enableDirectTruewallet', false)
+                    form.setFieldValue('enableTruewallet', false)
                     form.setFieldValue('truewalletPhoneNumber', '')
                 }
             }
             fetchSetting()
         },
     })
+
+    useEffect(() => {
+        form.reset()
+    }, [setting])
 
     return (
         <Card className="p-6 md:p-8" isLoading={isLoading}>
@@ -60,7 +66,7 @@ const TrueWalletSection: React.FC = () => {
                     <div className="flex-1 max-w-3xl">
                         <div className="pb-5 mb-5 border-b border-(--core-grey-5)">
                             <form.AppField
-                                name="enableDirectTruewallet"
+                                name="enableTruewallet"
                                 children={(field) => <field.CheckboxField variant='switch' label="เปิดใช้งาน True Wallet" disabled={!setting?.truewalletPhoneNumber} />}
                             />
                         </div>
