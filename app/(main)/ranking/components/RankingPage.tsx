@@ -8,15 +8,20 @@ import RankingCard from './RankingCard'
 import Loading from '@/components/Loading'
 import Card from '@/components/Card/Card'
 import Image from 'next/image'
+import Empty from '@/components/Empty'
 
 
 const RankGrid = ({ data, direction }: { data: ITopDonate[]; direction: 'left' | 'right' }) => (
     <div className='px-4 sm:px-8 lg:px-12 pt-8 pb-10'>
-        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 w-full pt-4'>
-            {data.map((rank) => (
-                <RankingCard key={rank.rank} topDonateInfo={rank} direction={direction} />
-            ))}
-        </div>
+        {data.length === 0 ? (
+            <Empty />
+        ) : (
+            <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 w-full pt-4'>
+                {data.map((rank) => (
+                    <RankingCard key={rank.rank} topDonateInfo={rank} direction={direction} />
+                ))}
+            </div>
+        )}
     </div>
 )
 

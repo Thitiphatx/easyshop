@@ -1,11 +1,8 @@
-import type { Metadata } from 'next'
+import { generatePageMetadata } from '@/lib/metadata'
 import React from 'react'
 import TopupPage from './components/TopupPage'
 
-export const metadata: Metadata = {
-    title: 'โดเนท',
-    description: 'เลือกช่องทางการโดเนท',
-}
+export const generateMetadata = () => generatePageMetadata('โดเนท')
 
 const Topup: React.FC = () => {
     return <TopupPage />

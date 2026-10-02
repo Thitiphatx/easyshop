@@ -1,11 +1,8 @@
-import type { Metadata } from 'next'
+import { generatePageMetadata } from '@/lib/metadata'
 import React from 'react'
 import TrueWalletPage from './components/TrueWalletPage'
 
-export const metadata: Metadata = {
-    title: 'โดเนท - TrueWallet',
-    description: 'โดเนทผ่านซองของขวัญ TrueWallet',
-}
+export const generateMetadata = () => generatePageMetadata('โดเนท - TrueWallet')
 
 const TrueWallet: React.FC = () => {
     return <TrueWalletPage />
