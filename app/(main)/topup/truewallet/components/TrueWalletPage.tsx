@@ -53,11 +53,10 @@ const TrueWalletPage: React.FC = () => {
         form.reset()
         turnstileRef.current?.reset()
         setTurnstileToken('')
-    }, [])
+    }, [fetchSession])
 
     return (
         <div className='flex-1 w-full'>
-            {/* Form Section */}
             <div className='relative max-w-4xl w-full px-4 py-12 sm:py-20 lg:py-24 mx-auto z-10 flex flex-col justify-center items-center'>
                 <span className='text-center text-(--core-white) drop-shadow-2xl flex flex-col items-center'>
                     <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>TrueWallet</h1>
@@ -90,7 +89,6 @@ const TrueWalletPage: React.FC = () => {
                 )}
             </div>
 
-            {/* Tutorial Section */}
             <div className='relative bg-(--core-off-black) w-full h-fit z-10 p-4 sm:p-8 lg:p-12'>
                 <h2 className='text-2xl sm:text-4xl lg:text-5xl font-bold text-(--core-white) text-center mb-6 sm:mb-8'>วิธีสร้างซองของขวัญ</h2>
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 max-w-7xl mx-auto'>

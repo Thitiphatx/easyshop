@@ -15,7 +15,7 @@ import {
     ShoppingBag,
     Wallet
 } from 'pixelarticons/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 export const AccountMenu: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -23,48 +23,46 @@ export const AccountMenu: React.FC = () => {
     const router = useRouter()
     const menuRef = useRef<HTMLDivElement>(null)
 
+    const handleNavigate = useCallback((path: string) => {
+        setIsOpen(false)
+        router.push(path)
+    }, [router])
+
+    const handleSignOut = useCallback(async () => {
+        setIsOpen(false)
+        await signOut()
+        router.refresh()
+    }, [signOut, router])
+
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            setIsOpen(false)
+        }
+    }, [])
+
+    const handleKeyDown = useCallback((event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+            setIsOpen(false)
+        }
+    }, [])
+
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsOpen(false)
-            }
-        }
-
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setIsOpen(false)
-            }
-        }
-
         if (isOpen) {
             document.addEventListener('mousedown', handleClickOutside)
             document.addEventListener('keydown', handleKeyDown)
         }
-
         return () => {
             document.removeEventListener('mousedown', handleClickOutside)
             document.removeEventListener('keydown', handleKeyDown)
         }
-    }, [isOpen])
+    }, [isOpen, handleClickOutside, handleKeyDown])
 
     if (!session) return null
-
-    const handleNavigate = (path: string) => {
-        setIsOpen(false)
-        router.push(path)
-    }
-
-    const handleSignOut = async () => {
-        setIsOpen(false)
-        await signOut()
-        router.refresh()
-    }
 
     const avatarUrl = session.profileImageUrl || `https://mc-heads.net/avatar/${session.username}/48`
 
     return (
         <div ref={menuRef} className="relative inline-block text-left select-none">
-            {/* Trigger Button */}
             <button
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
@@ -75,7 +73,6 @@ export const AccountMenu: React.FC = () => {
                 aria-expanded={isOpen}
                 aria-haspopup="true"
             >
-                {/* Avatar */}
                 <div className="relative shrink-0">
                     <img
                         src={avatarUrl}
@@ -91,14 +88,12 @@ export const AccountMenu: React.FC = () => {
                     )}
                 </div>
 
-                {/* User & Points info */}
                 <div className="flex flex-col items-start leading-tight">
                     <span className="font-pixel text-xs font-bold text-(--core-white) truncate max-w-[110px]">
                         {session.username}
                     </span>
                 </div>
 
-                {/* Chevron */}
                 <div className="text-(--core-grey-3) pl-0.5">
                     {isOpen ? (
                         <ChevronUp className="size-4 text-(--core-green-3)" />
@@ -108,10 +103,8 @@ export const AccountMenu: React.FC = () => {
                 </div>
             </button>
 
-            {/* Dropdown Menu */}
             {isOpen && (
                 <div className="absolute right-0 top-full mt-2 w-72 z-50 bg-(--core-grey-6) text-(--core-white) border-t-2 border-l-2 border-t-(--core-grey-5) border-l-(--core-grey-5) border-b-2 border-r-2 border-b-(--core-rich-black) border-r-(--core-rich-black) drop-shadow-[0_8px_0px_rgba(0,0,0,0.35)] animate-in fade-in-50 duration-100">
-                    {/* Header: Profile info */}
                     <div className="p-3 bg-(--core-off-black)/70 border-b-2 border-(--core-grey-5) flex items-center gap-3 cursor-pointer hover:bg-(--core-grey-5)" onClick={() => handleNavigate('/user/profile')}>
                         <Image
                             src={avatarUrl}
@@ -139,7 +132,6 @@ export const AccountMenu: React.FC = () => {
                         <ChevronRight className="size-3" />
                     </div>
 
-                    {/* Points Balance Card */}
                     <div className="m-2.5 p-2.5 bg-(--core-off-black) border-t border-l border-(--core-rich-black) border-b border-r flex items-center justify-between">
                         <div>
                             <div className="text-[11px] text-(--core-grey-3) flex items-center gap-1.5">
@@ -159,7 +151,6 @@ export const AccountMenu: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Navigation Items */}
                     <div className="p-1.5 space-y-0.5">
                         <button
                             type="button"
@@ -185,7 +176,6 @@ export const AccountMenu: React.FC = () => {
                             <ChevronRight className="size-3 text-(--core-grey-4) opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                         </button>
 
-                        {/* Admin section */}
                         {session.isAdmin && (
                             <>
                                 <div className="border-t border-(--core-grey-5) my-1.5" />
@@ -203,7 +193,6 @@ export const AccountMenu: React.FC = () => {
                             </>
                         )}
 
-                        {/* Divider & Sign out */}
                         <div className="border-t border-(--core-grey-5) my-1.5" />
                         <button
                             type="button"
