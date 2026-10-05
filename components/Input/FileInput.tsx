@@ -77,7 +77,7 @@ const FileInput: React.FC<IFileInputProps> = ({
                     ${fileName ? 'text-(--default-primary)' : 'text-(--core-grey-2)'}
                 `}>
                     {fileName ? (
-                        <Image />
+                        <Image alt="preview" />
                     ) : (
                         <Upload />
                     )}

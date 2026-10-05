@@ -1,9 +1,9 @@
 'use server'
 
-import { Rcon, RconOptions } from "rcon-client"
+import { prisma } from '@/lib/prisma'
+import { Rcon } from "rcon-client"
 import { IActionResponse } from "../interface"
 import { ISendCommandRequest, ISendItemRequest } from "./interface"
-import { prisma } from '@/lib/prisma'
 
 async function createConnection(serverId: number): Promise<IActionResponse<Rcon>> {
     try {
@@ -30,9 +30,10 @@ async function createConnection(serverId: number): Promise<IActionResponse<Rcon>
             data: rcon
         }
     } catch (err) {
+        console.log(err)
         return {
             success: false,
-            error: "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Rcon] ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -145,7 +146,7 @@ export async function sendCommand(request: ISendCommandRequest): Promise<IAction
     if (!rconRes.success || !rconRes.data) {
         return {
             success: false,
-            error: rconRes.error || "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"
+            error: rconRes.error || "[Rcon] ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 

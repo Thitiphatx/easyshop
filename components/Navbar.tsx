@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
                             alt="Logo"
                             className='h-10 sm:h-12 w-auto cursor-pointer'
                             loading='eager'
-                            src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg"
+                            src="/images/brand/logo-long.png"
                             width={260}
                             height={50}
                         />
@@ -115,10 +115,11 @@ const Navbar: React.FC = () => {
                             <div className="flex flex-col bg-(--core-off-black)/80 border-2 border-(--core-grey-5) p-3 mb-2">
                                 <div
                                     className="flex items-center gap-3 cursor-pointer pb-3 border-b border-(--core-grey-5)"
-                                    onClick={() => handleMobileNavigate('/user/profile')}
+                                    onClick={() => handleMobileNavigate('/user/purchase-history')}
                                 >
                                     <div className="relative shrink-0">
-                                        <img
+                                        <Image
+                                            unoptimized
                                             src={session.profileImageUrl || `https://mc-heads.net/avatar/${session.username}/48`}
                                             alt={session.username}
                                             width={40}
@@ -145,7 +146,7 @@ const Navbar: React.FC = () => {
                                 <div className="grid grid-cols-2 gap-1.5 pt-2 text-xs font-pixel">
                                     <button
                                         type="button"
-                                        onClick={() => handleMobileNavigate('/user/profile')}
+                                        onClick={() => handleMobileNavigate('/user/purchase-history')}
                                         className="flex items-center gap-1.5 p-2 text-(--core-grey-2) hover:text-(--core-white) hover:bg-(--core-grey-5) cursor-pointer"
                                     >
                                         <User className="size-3.5 text-(--core-green-3)" />

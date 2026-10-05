@@ -9,7 +9,7 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft, ChevronRight, Clipboard } from 'pixelarticons/react'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const HeroSection: React.FC = () => {
     const router = useRouter()
@@ -55,7 +55,6 @@ const HeroSection: React.FC = () => {
         })
     }, [setting?.serverIp])
 
-    // Auto slide timer
     useEffect(() => {
         if (banners.length <= 1 || isHovered) return
         const interval = setInterval(() => {
@@ -70,11 +69,10 @@ const HeroSection: React.FC = () => {
 
     return (
         <div
-            className="group/hero relative w-full overflow-hidden h-[450px] sm:h-[500px] lg:h-150 select-none"
+            className="group/hero relative w-full overflow-hidden h-112.5 sm:h-125 lg:h-150 select-none"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Carousel Sliding Track */}
             {banners.length > 0 ? (
                 <div
                     className="flex h-full w-full transition-transform duration-700 ease-out"
@@ -107,7 +105,6 @@ const HeroSection: React.FC = () => {
                 <div className="w-full h-full bg-(--core-grey-6)" />
             )}
 
-            {/* Navigation Arrows */}
             {banners.length > 1 && (
                 <>
                     <button
@@ -135,12 +132,11 @@ const HeroSection: React.FC = () => {
                 </>
             )}
 
-            {/* Info Card */}
             <Card
                 className="absolute bottom-3 sm:bottom-0 left-3 sm:left-8 lg:left-24 right-3 sm:right-auto z-10 flex flex-col gap-3 sm:gap-4! p-4 sm:p-6 max-w-full sm:max-w-sm h-auto sm:h-52"
                 cardTitle={
                     <h1 className="line-clamp-1 text-xl sm:text-2xl">
-                        {setting?.siteName ?? 'Easyshop'}
+                        {setting?.siteName || 'Easyshop'}
                     </h1>
                 }
                 cardFooter={
@@ -159,11 +155,10 @@ const HeroSection: React.FC = () => {
                 isLoading={isLoading}
             >
                 <p className="line-clamp-2 sm:line-clamp-3 text-xs sm:text-sm">
-                    {setting?.siteDesc ?? 'Welcome to our Minecraft Webshop'}
+                    {setting?.siteDesc || 'Welcome to our Easyshop Minecraft'}
                 </p>
             </Card>
 
-            {/* Banner Selector Thumbnails (Desktop) */}
             {banners.length > 1 && (
                 <div className="hidden lg:flex absolute bottom-0 right-24 z-10 items-center gap-3 pb-1">
                     {banners.map((banner, index) => (
@@ -197,7 +192,6 @@ const HeroSection: React.FC = () => {
                 </div>
             )}
 
-            {/* Mobile Indicators (Dots) */}
             {banners.length > 1 && (
                 <div className="lg:hidden absolute top-4 right-4 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-xs px-2.5 py-1.5 border border-white/20">
                     {banners.map((_, index) => (
@@ -208,11 +202,10 @@ const HeroSection: React.FC = () => {
                                 e.stopPropagation()
                                 setSelectedIndex(index)
                             }}
-                            className={`size-2 transition-all cursor-pointer ${
-                                index === selectedIndex
-                                    ? 'bg-(--core-green-3) scale-125'
-                                    : 'bg-white/40 hover:bg-white/70'
-                            }`}
+                            className={`size-2 transition-all cursor-pointer ${index === selectedIndex
+                                ? 'bg-(--core-green-3) scale-125'
+                                : 'bg-white/40 hover:bg-white/70'
+                                }`}
                             aria-label={`Slide ${index + 1}`}
                         />
                     ))}

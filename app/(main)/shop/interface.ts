@@ -1,7 +1,6 @@
 import { IModalCommonProps } from "@/app/interface"
-import { Item, Server } from "../../generated/prisma/client"
-import { ISessionPayload } from "../../actions/session/interface"
 import { IItem } from "../../actions/item/interface"
+import { Item, Server } from "../../generated/prisma/client"
 
 export interface IModalServerProps extends IModalCommonProps {
     isEdit?: boolean

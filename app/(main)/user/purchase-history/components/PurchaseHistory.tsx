@@ -38,12 +38,12 @@ const PurchaseHistory: React.FC = () => {
         {
             key: 'server',
             label: 'เซิร์ฟเวอร์',
-            render: (_value, row) => row.server.name,
+            render: (_value: any, row: ITransaction) => row.server.name,
         },
         {
             key: 'item',
             label: 'ไอเท็ม',
-            render: (_value, row) => row.item.name,
+            render: (_value: any, row: ITransaction) => row.item.name,
         },
         {
             key: 'pricePaid',

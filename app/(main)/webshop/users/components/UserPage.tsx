@@ -22,6 +22,49 @@ const UserPage: React.FC = () => {
     const [total, setTotal] = useState<number>(0)
     const [users, setUsers] = useState<IUser[]>([]);
 
+    const fetchUser = useCallback(async (filters?: UserFilterFormValues) => {
+        setIsLoading(true)
+        const res = await getUsers({ page, size, ...filters })
+        if (res.success && res.data) {
+            setUsers(res.data.data)
+            setTotal(res.data.total)
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: res.error,
+            })
+        }
+        setIsLoading(false)
+    }, [page, size])
+
+    const handleChangeWebRole = useCallback(async (user: IUser) => {
+        const res = await Swal.fire({
+            icon: 'question',
+            title: 'ต้องการเปลี่ยนสิทธิ์จัดการเว็บช็อป?',
+            text: `คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยน ${user.username} เป็น ${user.isAdmin ? 'Player' : 'Admin'}?`,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก',
+            showCancelButton: true,
+        })
+
+        if (res.isConfirmed) {
+            const res = await updateIsAdmin(user.id, !user.isAdmin)
+            if (res.success) {
+                Swal.fire({
+                    icon: 'success',
+                    text: `เปลี่ยนสิทธิ์ของ ${user.username} เรียบร้อย`,
+                })
+                fetchUser()
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: res.error,
+                })
+            }
+        }
+
+    }, [fetchUser])
+
     const columns: ITableColumn<IUser>[] = useMemo(() => [
         {
             key: 'id',
@@ -71,50 +114,7 @@ const UserPage: React.FC = () => {
                     <Button onClick={() => handleChangeWebRole(row)} block variant='Ghost' color={value == 1 ? 'Green' : 'Red'}>{value == 1 ? <Crown /> : <Laugh />}</Button>
                 </Tooltip>
         }
-    ], [])
-
-    const fetchUser = useCallback(async (filters?: UserFilterFormValues) => {
-        setIsLoading(true)
-        const res = await getUsers({ page, size, ...filters })
-        if (res.success && res.data) {
-            setUsers(res.data.data)
-            setTotal(res.data.total)
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: res.error,
-            })
-        }
-        setIsLoading(false)
-    }, [page, size])
-
-    const handleChangeWebRole = useCallback(async (user: IUser) => {
-        const res = await Swal.fire({
-            icon: 'question',
-            title: 'ต้องการเปลี่ยนสิทธิ์จัดการเว็บช็อป?',
-            text: `คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยน ${user.username} เป็น ${user.isAdmin ? 'Player' : 'Admin'}?`,
-            confirmButtonText: 'ยืนยัน',
-            cancelButtonText: 'ยกเลิก',
-            showCancelButton: true,
-        })
-
-        if (res.isConfirmed) {
-            const res = await updateIsAdmin(user.id, !user.isAdmin)
-            if (res.success) {
-                Swal.fire({
-                    icon: 'success',
-                    text: `เปลี่ยนสิทธิ์ของ ${user.username} เรียบร้อย`,
-                })
-                fetchUser()
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    text: res.error,
-                })
-            }
-        }
-
-    }, [])
+    ], [handleChangeWebRole])
 
     useEffect(() => {
         fetchUser()
@@ -135,6 +135,7 @@ const UserPage: React.FC = () => {
             <TableFilter hidden={!isShowFilter} fetchUser={fetchUser} />
             <Card className='h-full'>
                 <Table columns={columns} data={users}
+                    loading={isLoading}
                     emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
                     pagination={{ page, total, size, onChange: setPage }}>
 

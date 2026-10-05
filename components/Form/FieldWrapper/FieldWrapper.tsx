@@ -26,7 +26,7 @@ export function FieldWrapper({
         return 'ข้อมูลไม่ถูกต้อง'
     }, [])
 
-    const errorMessages = useMemo(() => errors.map(getErrorMessage), [errors])
+    const errorMessages = useMemo(() => errors.map(getErrorMessage), [errors, getErrorMessage])
 
     return (
         <div className={`relative mb-3 hover:z-30 focus-within:z-30 ${className ?? ''}`}>

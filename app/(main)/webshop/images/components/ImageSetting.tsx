@@ -248,7 +248,14 @@ const ImageSetting: React.FC = () => {
                         color="Green"
                         icon={<Upload />}
                         disabled={isUploading || !pendingFile}
-                        onClick={(e) => { e.stopPropagation(); pendingFile ? handleUpload() : fileRef.current?.click() }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            if (pendingFile) {
+                                handleUpload()
+                            } else {
+                                fileRef.current?.click()
+                            }
+                        }}
                     >
                         {isUploading ? 'Uploading…' : pendingFile ? 'Upload' : 'เลือกไฟล์'}
                     </Button>

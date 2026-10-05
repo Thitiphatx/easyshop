@@ -24,7 +24,7 @@ export async function createServer(values: ServerFormValues): Promise<IActionRes
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Server] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -44,7 +44,7 @@ export async function updateServer(values: Server): Promise<IActionResponse<Serv
         return { success: true, data: serverRes }
     } catch (e) {
         console.log(e)
-        return { success: false, error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้" }
+        return { success: false, error: "[Server] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้" }
     }
 }
 
@@ -60,10 +60,11 @@ export async function deleteServer(id: number): Promise<IActionResponse<undefine
         return {
             success: true
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Server] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -86,7 +87,7 @@ export async function getAllServers(): Promise<IActionResponse<IServer[]>> {
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Server] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -114,7 +115,7 @@ export async function getServerById(id: number): Promise<IActionResponse<Server>
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Server] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

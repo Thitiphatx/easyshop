@@ -30,7 +30,7 @@ const ModalManageBanner: React.FC<IModalBannerProps> = ({ isOpen, setIsOpen, get
 
     useEffect(() => {
         if (!isOpen) form.reset()
-    }, [isOpen])
+    }, [form, isOpen])
 
     return (
         <Modal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="เพิ่ม Banner">

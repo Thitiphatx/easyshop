@@ -1,9 +1,13 @@
 import crypto from 'crypto'
 
-const SECRET = process.env.ENCRYPT_SECRET!!
+const SECRET = process.env.ENCRYPT_SECRET
+
 const ALGORITHM = 'aes-256-gcm'
 
 function getKey(): Buffer {
+    if (!SECRET) {
+        throw new Error('ENCRYPT_SECRET environment variable is not defined')
+    }
     return crypto.createHash('sha256').update(SECRET).digest()
 }
 

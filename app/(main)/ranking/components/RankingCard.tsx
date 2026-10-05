@@ -5,6 +5,7 @@ import { Hash, Crown } from 'pixelarticons/react'
 import React from 'react'
 import { IRankingCardProps } from '../interface'
 import clsx from 'clsx'
+import Image from 'next/image'
 
 const RANK_CONFIG: Record<number, {
     border: string
@@ -59,7 +60,7 @@ const RankingCard: React.FC<IRankingCardProps> = ({
             cfg.border,
             cfg.glow,
         )}>
-            {/* Rank badge — Crown for top 3, number for the rest */}
+
             <span className={clsx(
                 'absolute -top-3 left-1/2 -translate-x-1/2',
                 'flex items-center gap-0.5 px-2 py-0.5 rounded-sm',
@@ -76,19 +77,18 @@ const RankingCard: React.FC<IRankingCardProps> = ({
                 )}
             </span>
 
-            {/* MC Avatar */}
             <div className='relative mt-1'>
-                <img
+                <Image
+                    unoptimized
                     loading='eager'
-                    src={`https://mc-heads.net/body/${topDonateInfo.username}/${direction}`}
+                    src={`https://mc-heads.net/body/${topDonateInfo.username}/${direction === "left" ? "left" : ""}`}
                     alt={`${topDonateInfo.username} avatar`}
-                    className='w-20 sm:w-24 h-auto drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]'
+                    className='w-20 sm:w-24 h-auto'
                     width={96}
                     height={200}
                 />
             </div>
 
-            {/* Username */}
             <h3 className={clsx(
                 'font-bold text-sm sm:text-base text-center leading-tight truncate max-w-full px-1',
                 cfg.rankText,
@@ -96,7 +96,6 @@ const RankingCard: React.FC<IRankingCardProps> = ({
                 {topDonateInfo.username}
             </h3>
 
-            {/* Amount */}
             <p className='text-(--vanilla-green-3) text-base sm:text-lg font-pixel'>
                 {formatCurrency(topDonateInfo.amount)}
             </p>

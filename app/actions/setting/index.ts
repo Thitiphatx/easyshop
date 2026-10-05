@@ -41,8 +41,9 @@ export async function getSetting(): Promise<IActionResponse<Setting | IClientSet
             res.easyslipApiKey = decrypt(res.easyslipApiKey)
         }
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -59,8 +60,9 @@ export async function updateDisplaySetting(values: DisplayFormValues): Promise<I
             },
         })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -78,8 +80,9 @@ export async function updateServerSetting(values: ServerFormValues): Promise<IAc
             },
         })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -94,8 +97,9 @@ export async function updatePointMultiplier(values: PromotionFormValues): Promis
             },
         })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -113,8 +117,9 @@ export async function updateTrueWalletSetting(values: TrueWalletFormValues): Pro
             },
         })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -130,14 +135,13 @@ export async function updateEasySlipApi(values: EasyslipFormValues): Promise<IAc
                 error: validatedFields.error.issues[0]?.message || 'ข้อมูลไม่ถูกต้อง',
             }
         }
-        const { enableTruewallet, enableBank, easyslipApiKey } = validatedFields.data
+        const { enableBank, easyslipApiKey } = validatedFields.data
 
         const trimmedApiKey = easyslipApiKey ? easyslipApiKey.trim() : ''
 
         const res = await prisma.setting.update({
             where: { id: 1 },
             data: {
-                enableTruewallet: trimmedApiKey ? enableTruewallet : false,
                 enableBank: trimmedApiKey ? enableBank : false,
                 easyslipApiKey: trimmedApiKey ? encrypt(trimmedApiKey) : null,
             },
@@ -146,7 +150,8 @@ export async function updateEasySlipApi(values: EasyslipFormValues): Promise<IAc
             res.easyslipApiKey = decrypt(res.easyslipApiKey)
         }
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }

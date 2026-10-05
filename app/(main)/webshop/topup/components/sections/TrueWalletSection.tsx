@@ -48,7 +48,7 @@ const TrueWalletSection: React.FC = () => {
 
     useEffect(() => {
         form.reset()
-    }, [setting])
+    }, [form, setting])
 
     return (
         <Card className="p-6 md:p-8" isLoading={isLoading}>

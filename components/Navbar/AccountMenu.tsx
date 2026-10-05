@@ -74,7 +74,7 @@ export const AccountMenu: React.FC = () => {
                 aria-haspopup="true"
             >
                 <div className="relative shrink-0">
-                    <img
+                    <Image
                         src={avatarUrl}
                         alt={session.username}
                         width={28}
@@ -105,7 +105,7 @@ export const AccountMenu: React.FC = () => {
 
             {isOpen && (
                 <div className="absolute right-0 top-full mt-2 w-72 z-50 bg-(--core-grey-6) text-(--core-white) border-t-2 border-l-2 border-t-(--core-grey-5) border-l-(--core-grey-5) border-b-2 border-r-2 border-b-(--core-rich-black) border-r-(--core-rich-black) drop-shadow-[0_8px_0px_rgba(0,0,0,0.35)] animate-in fade-in-50 duration-100">
-                    <div className="p-3 bg-(--core-off-black)/70 border-b-2 border-(--core-grey-5) flex items-center gap-3 cursor-pointer hover:bg-(--core-grey-5)" onClick={() => handleNavigate('/user/profile')}>
+                    <div className="p-3 bg-(--core-off-black)/70 border-b-2 border-(--core-grey-5) flex items-center gap-3 cursor-pointer hover:bg-(--core-grey-5)" onClick={() => handleNavigate('/user/purchase-history')}>
                         <Image
                             src={avatarUrl}
                             alt={session.username}

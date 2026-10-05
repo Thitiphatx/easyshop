@@ -1,15 +1,16 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ISetupAdmin, ISetupPayload, ISetupServer, ISetupTopup, ISetupWebshop } from '@/app/actions/setup/interface'
 import { completeSetup } from '@/app/actions/setup'
+import { ISetupPayload, ISetupServer, ISetupTopup, ISetupWebshop } from '@/app/actions/setup/interface'
+import Swal from '@/lib/Swal'
+import { redirect } from 'next/navigation'
+import React, { useState } from 'react'
 import Stepper from './Stepper'
+import AdminStep from './steps/AdminStep'
 import KeyGateStep from './steps/KeyGateStep'
-import WebshopStep from './steps/WebshopStep'
 import ServerStep from './steps/ServerStep'
 import TopupStep from './steps/TopupStep'
-import AdminStep from './steps/AdminStep'
-import Swal from '@/lib/Swal'
+import WebshopStep from './steps/WebshopStep'
 
 export const SetupPage: React.FC = () => {
     const [isVerified, setIsVerified] = useState(false)
@@ -104,7 +105,7 @@ export const SetupPage: React.FC = () => {
             theme: 'dark',
         })
 
-        window.location.href = '/'
+        redirect("/")
     }
 
     if (!isVerified) {

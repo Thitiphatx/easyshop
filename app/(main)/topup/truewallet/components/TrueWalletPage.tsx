@@ -53,7 +53,7 @@ const TrueWalletPage: React.FC = () => {
         form.reset()
         turnstileRef.current?.reset()
         setTurnstileToken('')
-    }, [fetchSession])
+    }, [fetchSession, form])
 
     return (
         <div className='flex-1 w-full'>

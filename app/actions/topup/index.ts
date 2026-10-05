@@ -96,10 +96,11 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             success: true,
             data: { data: result, total },
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -131,10 +132,11 @@ export async function getTopupSummary(type: SummaryType = 'week'): Promise<IActi
             success: true,
             data: { data: sums, label: labels, total }
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -181,7 +183,7 @@ export async function getTopDonate(request: ITopDonateFilter): Promise<IActionRe
         console.log((e))
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

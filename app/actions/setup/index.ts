@@ -12,7 +12,8 @@ export async function checkSettingExists(): Promise<boolean> {
             select: { id: true },
         })
         return Boolean(setting)
-    } catch {
+    } catch (e) {
+        console.log(e)
         return false
     }
 }
@@ -38,7 +39,8 @@ export async function verifySetupKey(key: string): Promise<IActionResponse<boole
             success: true,
             data: true,
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
             error: 'เกิดข้อผิดพลาดในการตรวจสอบรหัสผ่าน',
@@ -72,7 +74,8 @@ export async function searchAuthMeUser(username: string): Promise<IActionRespons
             success: true,
             data: user,
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
             error: 'ไม่สามารถค้นหาผู้ใช้งานได้',

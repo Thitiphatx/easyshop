@@ -46,10 +46,11 @@ export async function authenticate(request: IRequestAuthenticate): Promise<IActi
             success: true,
             data: sessionPayload
         };
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Auth] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

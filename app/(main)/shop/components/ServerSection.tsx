@@ -33,7 +33,7 @@ const ServerSection: React.FC = () => {
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: res.error,
+                    title: `[Server] ${res.error}`,
                 });
             }
         } else {
@@ -55,7 +55,7 @@ const ServerSection: React.FC = () => {
         } else {
             Swal.fire({
                 icon: 'error',
-                title: res.error,
+                title: `[Server] ${res.error}`,
             });
         }
         setIsLoading(false);
@@ -86,12 +86,12 @@ const ServerSection: React.FC = () => {
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: res.error,
+                        title: `[Server] ${res.error}`,
                     });
                 }
             }
         });
-    }, [])
+    }, [getServerList])
 
 
     useEffect(() => {

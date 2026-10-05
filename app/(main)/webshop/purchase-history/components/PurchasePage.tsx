@@ -17,7 +17,7 @@ const PurchasePage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
-    const [size, setSize] = useState<number>(10)
+    const [size] = useState<number>(10)
     const [total, setTotal] = useState<number>(0)
     const [transactions, setTransactions] = useState<ITransaction[]>([])
 

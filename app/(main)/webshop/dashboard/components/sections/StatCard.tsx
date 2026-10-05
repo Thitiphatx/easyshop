@@ -1,23 +1,14 @@
 "use client"
 
-import { ISummaryData } from '@/app/actions/interface'
 import { formatCurrency } from '@/app/utils/formatter'
 import Card from '@/components/Card/Card'
 import Loading from '@/components/Loading'
 import '@/lib/chart'
 import React, { useMemo } from 'react'
 import { Line } from 'react-chartjs-2'
+import { IStatCardProps } from '../../interface'
 
-interface IStatCardProps {
-    label: string
-    icon: string
-    data?: ISummaryData
-    isLoading: boolean
-    accentColor: string
-    accentBg: string
-}
-
-const StatCard: React.FC<IStatCardProps> = ({ label, icon, data, isLoading, accentColor, accentBg }) => {
+const StatCard: React.FC<IStatCardProps> = ({ label, data, isLoading, accentColor }) => {
     const trendData = useMemo(() => {
         if (!data?.data?.length) return null
         const arr = data.data
@@ -72,7 +63,7 @@ const StatCard: React.FC<IStatCardProps> = ({ label, icon, data, isLoading, acce
                                 </div>
                             )}
                         </div>
-                        <div className='w-28 h-12 flex-shrink-0'>
+                        <div className='w-28 h-12 shrink-0'>
                             <Line data={sparklineData} options={sparklineOptions} />
                         </div>
                     </div>

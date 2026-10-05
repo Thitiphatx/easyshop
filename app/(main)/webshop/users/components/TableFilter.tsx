@@ -4,7 +4,7 @@ import Card from '@/components/Card/Card'
 import { ISelectOption, useAppForm } from '@/components/Form'
 import React, { useMemo } from 'react'
 import { ITableUserFilterProps } from '../interface'
-import { UserFilterFormValues, UserFilterSchema } from '../schema'
+import { UserFilterSchema } from '../schema'
 
 const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => {
 

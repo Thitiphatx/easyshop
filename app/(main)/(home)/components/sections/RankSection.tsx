@@ -21,7 +21,7 @@ const RankSection: React.FC = () => {
         } else {
             Swal.fire({
                 icon: 'error',
-                text: `[Ranking] ${res.error}`
+                text: res.error
             })
         }
         setIsLoading(false)

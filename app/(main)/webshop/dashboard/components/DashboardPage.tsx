@@ -1,15 +1,15 @@
 "use client"
 
 import { ISummaryData } from '@/app/actions/interface'
-import { getUserSummary } from '@/app/actions/user'
 import { getTopupSummary } from '@/app/actions/topup'
 import { getTransactionSummary } from '@/app/actions/transaction'
+import { getUserSummary } from '@/app/actions/user'
+import { SummaryType } from '@/app/utils/interface'
 import Card from '@/components/Card/Card'
 import Swal from '@/lib/Swal'
 import React, { useCallback, useEffect, useState } from 'react'
 import StatCard from './sections/StatCard'
 import SummaryChart from './sections/SummaryChart'
-import { SummaryType } from '@/app/utils/interface'
 
 type TabType = 'now' | 'month'
 
@@ -53,11 +53,10 @@ const OverviewPage: React.FC = () => {
                         <button
                             key={t.value}
                             onClick={() => setTab(t.value)}
-                            className={`font-pixel text-sm px-4 py-2 transition-colors cursor-pointer border-2 ${
-                                tab === t.value
-                                    ? 'bg-(--dungeons-mulberry-4) border-(--dungeons-mulberry-2) text-(--core-white)'
-                                    : 'bg-transparent border-(--core-grey-5) text-(--core-grey-3) hover:border-(--core-grey-4) hover:text-(--core-grey-2)'
-                            }`}
+                            className={`font-pixel text-sm px-4 py-2 transition-colors cursor-pointer border-2 ${tab === t.value
+                                ? 'bg-(--dungeons-mulberry-4) border-(--dungeons-mulberry-2) text-(--core-white)'
+                                : 'bg-transparent border-(--core-grey-5) text-(--core-grey-3) hover:border-(--core-grey-4) hover:text-(--core-grey-2)'
+                                }`}
                         >
                             {t.label}
                         </button>
@@ -69,31 +68,24 @@ const OverviewPage: React.FC = () => {
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                 <StatCard
                     label='New Users'
-                    icon='USR'
                     data={users}
                     isLoading={isLoading}
                     accentColor='#6cc349'
-                    accentBg='rgba(82,165,53,0.15)'
                 />
                 <StatCard
                     label='Topups'
-                    icon='TOP'
                     data={topups}
                     isLoading={isLoading}
                     accentColor='#36e6ff'
-                    accentBg='rgba(54,230,255,0.12)'
                 />
                 <StatCard
                     label='Purchases'
-                    icon='PUR'
                     data={purchases}
                     isLoading={isLoading}
                     accentColor='#ffc42b'
-                    accentBg='rgba(255,196,43,0.12)'
                 />
             </div>
 
-            {/* Combined trend chart */}
             <SummaryChart
                 users={users}
                 topups={topups}
@@ -104,4 +96,4 @@ const OverviewPage: React.FC = () => {
     )
 }
 
-export default OverviewPage
+export default OverviewPage

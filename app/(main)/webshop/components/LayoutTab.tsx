@@ -3,7 +3,7 @@
 import Button from '@/components/Button/Button'
 import clsx from 'clsx'
 import { usePathname, useRouter } from 'next/navigation'
-import { BulletlistSharp, Chart, CreditCard, Home, Image as ImgIcon, Settings2, SettingsCog, User } from 'pixelarticons/react'
+import { BulletlistSharp, Chart, CreditCard, Image as ImgIcon, Settings2, SettingsCog, User } from 'pixelarticons/react'
 import React, { useMemo } from 'react'
 
 const LayoutTab: React.FC = () => {

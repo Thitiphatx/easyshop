@@ -36,6 +36,7 @@ export async function getSession(): Promise<ISessionPayload | null> {
         const { payload } = await jwtVerify(token, SECRET_KEY);
         return payload as unknown as ISessionPayload;
     } catch (error) {
+        console.log(error)
         return null;
     }
 }
@@ -47,10 +48,11 @@ export async function deleteSession(): Promise<IActionResponse<void>> {
         return {
             success: true
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "เกิดข้อผิดพลาดขณะดำเนินการ"
+            error: "[Session] เกิดข้อผิดพลาดขณะดำเนินการ"
         }
     }
 }
@@ -90,10 +92,11 @@ export async function refreshSession(): Promise<IActionResponse<void>> {
         return {
             success: true
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "เกิดข้อผิดพลาดขณะดำเนินการ"
+            error: "[Session] เกิดข้อผิดพลาดขณะดำเนินการ"
         }
     }
 }

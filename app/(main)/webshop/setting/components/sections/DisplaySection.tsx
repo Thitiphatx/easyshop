@@ -51,7 +51,7 @@ const DisplaySection: React.FC = () => {
                             name="logo"
                             children={(field) => (
                                 <field.ImageSelectField
-                                    label="Logo ร้านค้า (แนะนำขนาด 300x50)"
+                                    label="Logo ร้านค้า (แนะนำขนาด 250x60)"
                                     group="brand"
                                 />
                             )}

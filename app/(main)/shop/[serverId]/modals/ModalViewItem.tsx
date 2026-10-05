@@ -9,6 +9,7 @@ import { useAuth } from '@/app/contexts/authContext'
 import { useParams } from 'next/navigation'
 import Swal from '@/lib/Swal'
 import { buyItem } from '@/app/actions/shop'
+import Image from 'next/image'
 
 const ModalViewItem: React.FC<IModalViewItemProps> = ({
     isOpen,
@@ -72,7 +73,7 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
             <div className="flex flex-col gap-4 mt-4">
                 {/* Product Image */}
                 <div className="relative w-full h-64 overflow-hidden rounded-lg border-2 border-(--core-grey-5) bg-(--core-grey-6) flex items-center justify-center">
-                    <img
+                    <Image
                         src={itemInfo.imageUrl || '/images/others/emerald.webp'}
                         alt={itemInfo.name}
                         className="w-full h-full object-cover object-center"

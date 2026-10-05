@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/app/contexts/authContext";
 import { SettingProvider } from "@/app/contexts/settingContext";
+import GlobalLoader from "@/components/GlobalLoader";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { checkSettingExists } from "@/app/actions/setup";
@@ -21,15 +22,17 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     return (
         <SettingProvider>
             <AuthProvider>
-                <header className="sticky top-0 z-50 w-full">
-                    <nav>
-                        <Navbar />
-                    </nav>
-                </header>
-                <main className="flex-1 w-full min-h-[calc(100vh-5rem)] flex flex-col">
-                    {children}
-                </main>
-                <Footer />
+                <GlobalLoader>
+                    <header className="sticky top-0 z-50 w-full">
+                        <nav>
+                            <Navbar />
+                        </nav>
+                    </header>
+                    <main className="flex-1 w-full min-h-[calc(100vh-5rem)] flex flex-col">
+                        {children}
+                    </main>
+                    <Footer />
+                </GlobalLoader>
             </AuthProvider>
         </SettingProvider>
     );
