@@ -8,6 +8,7 @@ import { SubmitButton } from './SubmitButton/SubmitButton'
 import { ResetButton } from './ResetButton/ResetButton'
 import { FileField } from './FileField/FileField'
 import { ImageSelectField } from './ImageSelectField/ImageSelectField'
+import { DatePickerField } from './DatePickerField/DatePickerField'
 
 export const { useAppForm, withForm } = createFormHook({
   fieldContext,
@@ -19,6 +20,7 @@ export const { useAppForm, withForm } = createFormHook({
     SelectField,
     CheckboxField,
     ImageSelectField,
+    DatePickerField,
   },
   formComponents: {
     SubmitButton,

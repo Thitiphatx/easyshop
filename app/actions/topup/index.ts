@@ -9,7 +9,7 @@ import { getDateRange, SummaryType } from "@/app/utils/utils";
 
 export async function getTopups(request: ITopupFilter): Promise<IActionResponse<IPagination<ITopup>>> {
     try {
-        const { page = 1, size = 10, search, status, sort, order } = request
+        const { page = 1, size = 10, search, status, sort, order, dateFrom, dateTo } = request
         const session = await getSession()
 
         if (!session) {
@@ -25,6 +25,13 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             where.userId = session.id
         } else if (request.playerName) {
             where.user = { username: { equals: request.playerName } }
+        }
+
+        if (dateFrom || dateTo) {
+            where.createdAt = {
+                ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
+                ...(dateTo ? { lte: new Date(dateTo + 'T23:59:59.999Z') } : {}),
+            }
         }
 
         if (status) {

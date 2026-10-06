@@ -40,10 +40,12 @@ const TopupHistory: React.FC = () => {
             key: 'id',
             label: 'รายการที่',
             align: 'center',
+            width: 100
         },
         {
             key: 'createdAt',
             label: 'วันที่เติม',
+            width: 250,
             render: (value: Date) => new Date(value).toLocaleDateString('th-TH', {
                 year: 'numeric',
                 month: 'short',
@@ -125,7 +127,6 @@ const TopupHistory: React.FC = () => {
                 <Table
                     columns={columns}
                     data={topupHistory}
-                    loading={isLoading}
                     emptyText="ไม่มีประวัติการเติมเงิน"
                     pagination={{ page, total, size, onChange: setPage }}
                 />

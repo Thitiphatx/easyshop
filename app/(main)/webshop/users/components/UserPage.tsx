@@ -70,11 +70,13 @@ const UserPage: React.FC = () => {
             key: 'id',
             label: 'ID',
             align: 'center',
+            width: 100,
             render: (value: string, row: IUser) => <Tooltip content={row.uuid} position='top'>{value}</Tooltip>
         },
         {
             key: 'username',
             label: 'Username',
+            width: 250,
         },
         {
             key: 'lastlogin',
@@ -107,8 +109,9 @@ const UserPage: React.FC = () => {
         },
         {
             key: 'isAdmin',
-            label: 'Webshop Role',
+            label: 'Shop Role',
             align: 'center',
+            width: 150,
             render: (value: number, row: IUser) =>
                 <Tooltip content={value == 1 ? "เปลี่ยนเป็น Player" : "แต่งตั้งเป็น Admin"} position='top'>
                     <Button onClick={() => handleChangeWebRole(row)} block variant='Ghost' color={value == 1 ? 'Green' : 'Red'}>{value == 1 ? <Crown /> : <Laugh />}</Button>
@@ -135,7 +138,6 @@ const UserPage: React.FC = () => {
             <TableFilter hidden={!isShowFilter} fetchUser={fetchUser} />
             <Card className='h-full'>
                 <Table columns={columns} data={users}
-                    loading={isLoading}
                     emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
                     pagination={{ page, total, size, onChange: setPage }}>
 

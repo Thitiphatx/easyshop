@@ -26,14 +26,17 @@ const PurchasePage: React.FC = () => {
             key: 'id',
             label: 'ID',
             align: 'center',
+            width: 100,
         },
         {
             key: 'username',
             label: 'Username',
+            width: 250
         },
         {
             key: 'server',
             label: 'เซิร์ฟเวอร์',
+            width: 250,
             render: (_value, row: ITransaction) => row.server?.name ?? '-',
         },
         {
@@ -50,6 +53,7 @@ const PurchasePage: React.FC = () => {
         {
             key: 'createdAt',
             label: 'วันที่ซื้อ',
+            width: 250,
             render: (value: Date) => formatDateTime(new Date(value)),
         },
     ], [])
@@ -89,7 +93,6 @@ const PurchasePage: React.FC = () => {
             <Card className='h-full'>
                 <Table
                     columns={columns}
-                    loading={isLoading}
                     data={transactions}
                     emptyText="ไม่พบประวัติการซื้อไอเท็มในระบบ"
                     pagination={{ page, total, size, onChange: setPage }}

@@ -13,12 +13,16 @@ const TableFilter: React.FC<ITablePurchaseFilterProps> = ({ hidden, fetchPurchas
             search: '',
             sort: '',
             order: '',
+            dateFrom: '',
+            dateTo: '',
         },
         onSubmit: async ({ value }) => {
             const parsed = PurchaseFilterSchema.parse({
                 search: value.search?.trim() || undefined,
                 sort: value.sort || undefined,
                 order: value.order || undefined,
+                dateFrom: value.dateFrom || undefined,
+                dateTo: value.dateTo || undefined,
             })
             await fetchPurchase(parsed)
         },
@@ -49,8 +53,18 @@ const TableFilter: React.FC<ITablePurchaseFilterProps> = ({ hidden, fetchPurchas
             >
                 <form.AppField
                     name="search"
-                    children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, เซิร์ฟเวอร์, ไอเท็ม, ราคาที่จ่าย, วันที่ซื้อ" />}
+                    children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, เซิร์ฟเวอร์, ไอเท็ม, ราคาที่จ่าย" />}
                 />
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+                    <form.AppField
+                        name="dateFrom"
+                        children={(field) => <field.DatePickerField label="วันที่เริ่มต้น" />}
+                    />
+                    <form.AppField
+                        name="dateTo"
+                        children={(field) => <field.DatePickerField label="วันที่สิ้นสุด" />}
+                    />
+                </div>
                 <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
                     <form.AppField
                         name="sort"
