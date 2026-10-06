@@ -115,7 +115,7 @@ const BannerSection: React.FC<IBannerSectionProps> = ({
                         {isLoading ? (
                             <div className="flex justify-center py-8"><Loading /></div>
                         ) : (
-                            <Table columns={columns} data={banners} loading={false} />
+                            <Table columns={columns} data={banners} />
                         )}
                     </div>
                 </div>

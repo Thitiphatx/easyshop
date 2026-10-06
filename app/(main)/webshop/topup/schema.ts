@@ -18,7 +18,9 @@ export const TopupFilterSchema = z.object({
     search: z.string().optional(),
     status: z.enum(['SUCCESS', 'PENDING', 'FAILED']).optional(),
     sort: z.enum(['id', 'username', 'channel', 'amount', 'pointsAdded', 'status', 'createdAt']).optional(),
-    order: z.enum(['asc', 'desc']).optional()
+    order: z.enum(['asc', 'desc']).optional(),
+    dateFrom: z.string().optional(),
+    dateTo: z.string().optional(),
 })
 
 export type PromotionFormValues = z.infer<typeof PromotionSchema>

@@ -31,6 +31,7 @@ function Table<T extends Record<string, any>>({
                                         'px-4 py-3 font-bold text-sm uppercase tracking-wider text-(--core-grey-2)',
                                         alignClass[col.align ?? 'left']
                                     )}
+                                    style={{ width: typeof col.width === 'number' ? `${col.width}px` : col.width }}
                                 >
                                     {col.label}
                                 </th>
@@ -69,6 +70,7 @@ function Table<T extends Record<string, any>>({
                                                     'px-4 py-3 text-sm text-(--core-grey-2)',
                                                     alignClass[col.align ?? 'left']
                                                 )}
+                                                style={{ width: typeof col.width === 'number' ? `${col.width}px` : col.width }}
                                             >
                                                 {col.render
                                                     ? col.render(value, row, rowIndex)

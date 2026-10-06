@@ -115,7 +115,6 @@ const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className })
             <Card className='h-full'>
                 <Table
                     columns={columns}
-                    loading={isLoading}
                     data={topups}
                     emptyText="ไม่พบประวัติการเติมเงินในระบบ"
                     pagination={{ page, total, size, onChange: setPage }}

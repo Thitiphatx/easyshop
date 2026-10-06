@@ -25,10 +25,12 @@ const PurchaseHistory: React.FC = () => {
             key: 'id',
             label: 'รายการที่',
             align: 'center',
+            width: 100
         },
         {
             key: 'createdAt',
             label: 'วันที่ซื้อ',
+            width: 250,
             render: (value: Date) => new Date(value).toLocaleDateString('th-TH', {
                 year: 'numeric',
                 month: 'short',
@@ -38,6 +40,7 @@ const PurchaseHistory: React.FC = () => {
         {
             key: 'server',
             label: 'เซิร์ฟเวอร์',
+            width: 250,
             render: (_value: any, row: ITransaction) => row.server.name,
         },
         {
@@ -89,7 +92,6 @@ const PurchaseHistory: React.FC = () => {
                 <Table
                     columns={columns}
                     data={purchaseHistory}
-                    loading={isLoading}
                     emptyText="ไม่มีประวัติการซื้อ"
                     pagination={{ page, total, size, onChange: setPage }}
                 />

@@ -9,7 +9,7 @@ import { getDateRange, SummaryType } from "@/app/utils/utils";
 
 export async function getTransactions(request: ITransactionFilter): Promise<IActionResponse<IPagination<ITransaction>>> {
     try {
-        const { page = 1, size = 10, search, sort, order } = request
+        const { page = 1, size = 10, search, sort, order, dateFrom, dateTo } = request
         const session = await getSession()
 
         if (!session) {
@@ -23,6 +23,13 @@ export async function getTransactions(request: ITransactionFilter): Promise<IAct
 
         if (!session.isAdmin) {
             where.username = session.username;
+        }
+
+        if (dateFrom || dateTo) {
+            where.createdAt = {
+                ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
+                ...(dateTo ? { lte: new Date(dateTo + 'T23:59:59.999Z') } : {}),
+            }
         }
 
         if (search && search.trim()) {

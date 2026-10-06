@@ -5,6 +5,7 @@ export interface ITableColumn<T> {
     label: string
     render?: (value: any, row: T, index: number) => React.ReactNode
     align?: 'left' | 'center' | 'right'
+    width?: number | string
 }
 
 export interface ITableProps<T> {

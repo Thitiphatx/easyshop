@@ -14,6 +14,8 @@ const TableFilter: React.FC<ITableTopupFilterProps> = ({ hidden, fetchTopups }) 
             status: '',
             sort: '',
             order: '',
+            dateFrom: '',
+            dateTo: '',
         },
         onSubmit: async ({ value }) => {
             const parsed = TopupFilterSchema.parse({
@@ -21,6 +23,8 @@ const TableFilter: React.FC<ITableTopupFilterProps> = ({ hidden, fetchTopups }) 
                 status: value.status || undefined,
                 sort: value.sort || undefined,
                 order: value.order || undefined,
+                dateFrom: value.dateFrom || undefined,
+                dateTo: value.dateTo || undefined,
             })
             await fetchTopups(parsed)
         },
@@ -61,6 +65,16 @@ const TableFilter: React.FC<ITableTopupFilterProps> = ({ hidden, fetchTopups }) 
                     name="search"
                     children={(field) => <field.TextField label="ค้นหา" placeholder="ค้นหา ID, ช่องทาง, จำนวนเงิน, พอยท์, อ้างอิง" />}
                 />
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+                    <form.AppField
+                        name="dateFrom"
+                        children={(field) => <field.DatePickerField label="วันที่เริ่มต้น" />}
+                    />
+                    <form.AppField
+                        name="dateTo"
+                        children={(field) => <field.DatePickerField label="วันที่สิ้นสุด" />}
+                    />
+                </div>
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2'>
                     <form.AppField
                         name="status"
