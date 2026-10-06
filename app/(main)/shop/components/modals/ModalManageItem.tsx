@@ -1,7 +1,7 @@
 "use client"
 import { useAppForm } from '@/components/Form'
 import Modal from '@/components/Modal/Modal'
-import { Image } from 'pixelarticons/react'
+import { Image as ImageIcon, Terminal } from 'pixelarticons/react'
 import React, { useEffect, useMemo } from 'react'
 import Swal from '@/lib/Swal'
 import { IModalItemProps } from '../../interface'
@@ -23,7 +23,6 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
         imageUrl: (isEdit && itemInfo) && itemInfo.imageUrl ? itemInfo.imageUrl : undefined,
         command: isEdit && itemInfo ? itemInfo.command : '',
         price: isEdit && itemInfo ? String(itemInfo.price) : '0',
-        amount: isEdit && itemInfo?.amount != null ? String(itemInfo.amount) : '1',
         category: isEdit && itemInfo ? itemInfo.category : ''
     }), [isEdit, itemInfo])
 
@@ -74,7 +73,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
 
     useEffect(() => {
         form.reset()
-    }, [isOpen, itemInfo])
+    }, [form, isOpen, itemInfo])
 
     return (
         <Modal
@@ -88,7 +87,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <div>
                     <div className='flex items-center gap-2'>
-                        <Image className='text-(--core-green-3)' />
+                        <ImageIcon className='text-(--core-green-3)' />
                         <h5 className='font-bold'>ข้อมูลไอเท็ม</h5>
                     </div>
                     <div className='p-4'>
@@ -116,7 +115,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                 </div>
                 <div>
                     <div className='flex items-center gap-2'>
-                        <Image className='text-(--core-green-3)' />
+                        <Terminal className='text-(--core-green-3)' />
                         <h5 className='font-bold'>คำสั่ง</h5>
                     </div>
                     <div className='p-4'>

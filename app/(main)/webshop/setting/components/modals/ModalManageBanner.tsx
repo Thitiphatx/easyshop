@@ -1,0 +1,56 @@
+"use client"
+import React, { useEffect } from 'react'
+import Modal from '@/components/Modal/Modal'
+import { useAppForm } from '@/components/Form'
+import { createBanner } from '@/app/actions/banner'
+import Swal from '@/lib/Swal'
+import { IModalBannerProps } from '@/app/(main)/webshop/dashboard/interface'
+import { BannerFormValues, BannerSchema } from '../../schema'
+
+const ModalManageBanner: React.FC<IModalBannerProps> = ({ isOpen, setIsOpen, getBannerList }) => {
+    const form = useAppForm({
+        defaultValues: {
+            imageUrl: '',
+            link: '',
+        } as BannerFormValues,
+        validators: {
+            onSubmit: BannerSchema,
+        },
+        onSubmit: async ({ value }: { value: BannerFormValues }) => {
+            const res = await createBanner({ imageUrl: value.imageUrl, link: value.link || undefined })
+            if (!res.success) {
+                Swal.fire({ icon: 'error', title: res.error, theme: 'dark' })
+            } else {
+                Swal.fire({ icon: 'success', title: 'เพิ่ม Banner เรียบร้อยแล้ว', theme: 'dark' })
+                getBannerList()
+                setIsOpen(false)
+            }
+        },
+    })
+
+    useEffect(() => {
+        if (!isOpen) form.reset()
+    }, [form, isOpen])
+
+    return (
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="Add Banner">
+            <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
+                <form.AppField
+                    name="imageUrl"
+                    children={(field) => <field.ImageSelectField label="รูปภาพ Banner (ขนาดแนะนำ 1920x600 px)" group="banner" required />}
+                />
+                <form.AppField
+                    name="link"
+                    children={(field) => <field.TextField label="Link" placeholder='กรอก URL ที่ต้องการลิงค์เมื่อคลิกภาพ' />}
+                />
+                <div className='flex justify-center'>
+                    <form.AppForm>
+                        <form.SubmitButton block>เพิ่ม Banner</form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </form>
+        </Modal>
+    )
+}
+
+export default ModalManageBanner

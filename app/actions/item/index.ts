@@ -1,11 +1,11 @@
 'use server'
 
-import { Item } from '@/app/generated/prisma/client'
-import { IActionResponse } from '../interface'
-import { prisma } from '@/lib/prisma'
 import { ItemFormValues } from '@/app/(main)/shop/components/modals/schema'
-import { IItem, IItemFilter } from './interface'
+import { Item } from '@/app/generated/prisma/client'
+import { prisma } from '@/lib/prisma'
+import { IActionResponse } from '../interface'
 import { getSession } from '../session'
+import { IItem, IItemFilter } from './interface'
 
 export async function createItem(values: ItemFormValues, serverId: number): Promise<IActionResponse<Item>> {
     const session = await getSession()
@@ -14,6 +14,7 @@ export async function createItem(values: ItemFormValues, serverId: number): Prom
     }
     try {
         const { price, imageUrl, ...rest } = values
+
         const res = await prisma.item.create({
             data: {
                 serverId,
@@ -31,7 +32,7 @@ export async function createItem(values: ItemFormValues, serverId: number): Prom
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Item] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -56,7 +57,7 @@ export async function updateItem(values: Item): Promise<IActionResponse<Item>> {
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Item] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -84,7 +85,7 @@ export async function getItemById(id: number): Promise<IActionResponse<Item>> {
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Item] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -106,7 +107,7 @@ export async function deleteItem(id: number): Promise<IActionResponse<undefined>
         console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Item] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -124,7 +125,6 @@ export async function getAllItems(filter: IItemFilter): Promise<IActionResponse<
                 description: true,
                 imageUrl: true,
                 price: true,
-                amount: true,
                 category: true,
                 command: true,
                 createdAt: true,
@@ -135,10 +135,11 @@ export async function getAllItems(filter: IItemFilter): Promise<IActionResponse<
             success: true,
             data: res
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Item] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

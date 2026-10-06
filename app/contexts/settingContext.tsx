@@ -19,7 +19,7 @@ interface SettingContextValue {
 const SettingContext = createContext<SettingContextValue | null>(null)
 
 export function SettingProvider({ children }: { children: React.ReactNode }) {
-    const [isSettingLoading, setIsSettingLoading] = useState<boolean>(false)
+    const [isSettingLoading, setIsSettingLoading] = useState<boolean>(true)
     const [isMcStatusLoading, setIsMcStatusLoading] = useState<boolean>(false)
     const [setting, setSetting] = useState<Setting | IClientSetting>()
     const [mcStatus, setMcStatus] = useState<MCServerStatus>()
@@ -27,14 +27,12 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
     const isLoading = useMemo(() => isSettingLoading || isMcStatusLoading, [isSettingLoading, isMcStatusLoading])
 
     const fetchSetting = useCallback(async () => {
-        setIsSettingLoading(true)
         const res = await getSetting()
         if (res.success && res.data) setSetting(res.data)
         setIsSettingLoading(false)
     }, [])
 
     const fetchMcStatus = useCallback(async (serverIp: string) => {
-        setIsMcStatusLoading(true)
         try {
             const res = await fetch(`https://api.mcstatus.io/v2/status/java/${serverIp}`)
             if (!res.ok) return
@@ -45,8 +43,9 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
             })
         } catch {
             setMcStatus(undefined)
+        } finally {
+            setIsMcStatusLoading(false)
         }
-        setIsMcStatusLoading(false)
     }, [])
 
     useEffect(() => {

@@ -21,10 +21,6 @@ export function ImageSelectField({ label, required, group, layout, tooltip }: II
     const [isMounted, setIsMounted] = useState(false)
     const fileRef = useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        setIsMounted(true)
-    }, [])
-
     const openPicker = useCallback(async () => {
         setIsLoading(true)
         setIsOpen(true)
@@ -60,6 +56,10 @@ export function ImageSelectField({ label, required, group, layout, tooltip }: II
     )
 
     const selected = field.state.value
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [setIsMounted])
 
     return (
         <FieldWrapper label={label} required={required} layout={layout} tooltip={tooltip}>

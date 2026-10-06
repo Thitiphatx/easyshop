@@ -2,18 +2,18 @@
 
 import { getBankInfo, topupBank } from '@/app/actions/payment/bank'
 import { IBank } from '@/app/actions/payment/types/bank-accounts'
+import { useAuth } from '@/app/contexts/authContext'
 import { useSetting } from '@/app/contexts/settingContext'
+import { formatCurrency } from '@/app/utils/formatter'
 import { fileToBase64 } from '@/app/utils/utils'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
-import Swal from '@/lib/Swal'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BankSchema } from '../schema'
-import ClosedTopupCard from '../../components/ClosedTopupCard'
 import Select from '@/components/Select/Select'
-import { formatCurrency } from '@/app/utils/formatter'
-import { useAuth } from '@/app/contexts/authContext'
+import Swal from '@/lib/Swal'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import ClosedTopupCard from '../../components/ClosedTopupCard'
+import { BankSchema } from '../schema'
 
 const BankPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -74,10 +74,9 @@ const BankPage: React.FC = () => {
         form.reset()
         turnstileRef.current?.reset()
         setTurnstileToken('')
-    }, [])
+    }, [fetchSession, form])
 
     useEffect(() => {
-
         fetchBankInfo()
     }, [fetchBankInfo])
 
@@ -141,7 +140,7 @@ const BankPage: React.FC = () => {
                                     onExpire={() => setTurnstileToken('')}
                                 />
                                 <form.AppForm>
-                                    <form.SubmitButton block>ยืนยัน</form.SubmitButton>
+                                    <form.SubmitButton isLoading={isLoading} block>ยืนยัน</form.SubmitButton>
                                 </form.AppForm>
                             </form>
                         </Card>

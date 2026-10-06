@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma";
-import { Prisma, TopupStatus } from "@/app/generated/prisma/client";
+import { Prisma, TopupChannel, TopupStatus } from "@/app/generated/prisma/client";
 import { IActionResponse, IPagination, ISummaryData } from "../interface";
 import { ITopDonate, ITopDonateFilter, ITopup, ITopupFilter } from "./interface";
 import { getSession } from "../session";
@@ -36,10 +36,14 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             const numericVal = Number(term)
             const isNumeric = !isNaN(numericVal) && Number.isInteger(numericVal)
 
+            const matchedChannels = Object.values(TopupChannel).filter((c) =>
+                c.toLowerCase().includes(term.toLowerCase())
+            ) as TopupChannel[]
+
             where.OR = [
                 ...(isNumeric ? [{ id: numericVal }, { amount: numericVal }, { pointsAdded: numericVal }] : []),
                 { user: { username: { contains: term } } },
-                { channel: { contains: term } },
+                ...(matchedChannels.length > 0 ? [{ channel: { in: matchedChannels } }] : []),
                 { reference: { contains: term } },
             ]
         }
@@ -92,10 +96,11 @@ export async function getTopups(request: ITopupFilter): Promise<IActionResponse<
             success: true,
             data: { data: result, total },
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -127,10 +132,11 @@ export async function getTopupSummary(type: SummaryType = 'week'): Promise<IActi
             success: true,
             data: { data: sums, label: labels, total }
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -141,7 +147,9 @@ export async function getTopDonate(request: ITopDonateFilter): Promise<IActionRe
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
-        const res = await prisma.topup.findMany({
+        // Group by userId and sum amount
+        const grouped = await prisma.topup.groupBy({
+            by: ['userId'],
             where: {
                 status: 'SUCCESS',
                 createdAt: {
@@ -149,33 +157,33 @@ export async function getTopDonate(request: ITopDonateFilter): Promise<IActionRe
                     lte: request.type === 'month' ? endOfMonth : undefined,
                 }
             },
-            select: {
-                amount: true,
-                user: {
-                    select: {
-                        username: true,
-                    },
-                },
-            },
-            orderBy: {
-                amount: 'desc'
-            },
-            take: request.top ?? 10
+            _sum: { amount: true },
+            orderBy: { _sum: { amount: 'desc' } },
+            take: request.top ?? 10,
         })
 
-        return {
-            success: true,
-            data: res.map((item, index) => ({
+        // Fetch usernames for the grouped userIds
+        const userIds = grouped.map((g) => g.userId).filter((id): id is number => id !== null)
+        const users = await prisma.authMe.findMany({
+            where: { id: { in: userIds } },
+            select: { id: true, username: true },
+        })
+        const userMap = new Map(users.map((u) => [u.id, u.username]))
+
+        const data = grouped
+            .filter((g) => g.userId !== null && userMap.has(g.userId))
+            .map((g, index) => ({
                 rank: index + 1,
-                username: item.user.username,
-                amount: item.amount,
-            })),
-        }
-    } catch {
+                username: userMap.get(g.userId!)!,
+                amount: g._sum.amount ?? 0,
+            }))
+
+        return { success: true, data }
+    } catch (e) {
+        console.log((e))
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Topup] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
-
 }

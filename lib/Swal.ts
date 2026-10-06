@@ -1,5 +1,5 @@
-import Swal, { SweetAlertCustomClass, SweetAlertIcon, SweetAlertOptions, SweetAlertResult } from 'sweetalert2';
 import clsx from 'clsx';
+import Swal, { SweetAlertCustomClass, SweetAlertIcon, SweetAlertOptions } from 'sweetalert2';
 
 const toastDefaults: SweetAlertOptions = {
     toast: true,

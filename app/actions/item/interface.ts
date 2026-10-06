@@ -11,7 +11,6 @@ export type IItem = Prisma.ItemGetPayload<{
         description: true
         imageUrl: true
         price: true
-        amount: true
         category: true
         command: true
         createdAt: true

@@ -2,15 +2,16 @@
 
 import { prisma } from '@/lib/prisma'
 import { IActionResponse } from '../interface'
-import { BannerFormValues } from '@/app/(main)/setting/display/schema'
+import { BannerFormValues } from '@/app/(main)/webshop/setting/schema'
 import { Banner } from '@/app/generated/prisma/client'
 
 export async function getAllBanners(): Promise<IActionResponse<Banner[]>> {
     try {
         const res = await prisma.banner.findMany({ orderBy: { createdAt: 'desc' } })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Banner] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -23,8 +24,9 @@ export async function createBanner(values: BannerFormValues): Promise<IActionRes
             },
         })
         return { success: true, data: res }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Banner] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }
 
@@ -32,7 +34,8 @@ export async function deleteBanner(id: number): Promise<IActionResponse<undefine
     try {
         await prisma.banner.delete({ where: { id } })
         return { success: true }
-    } catch {
-        return { success: false, error: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Banner] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
     }
 }

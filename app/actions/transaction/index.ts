@@ -80,10 +80,11 @@ export async function getTransactions(request: ITransactionFilter): Promise<IAct
             success: true,
             data: { data: result, total },
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Transaction] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -115,10 +116,11 @@ export async function getTransactionSummary(type: SummaryType = 'week'): Promise
             success: true,
             data: { data: sums, label: labels, total }
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[Transaction] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

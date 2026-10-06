@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useAppForm } from '@/components/Form'
-import { DisplayFormValues, DisplaySchema } from '@/app/(main)/setting/display/schema'
+import { DisplayFormValues, DisplaySchema } from '@/app/(main)/webshop/setting/schema'
 import { ISetupWebshop } from '@/app/actions/setup/interface'
 import { ChevronRight, Store } from 'pixelarticons/react'
 

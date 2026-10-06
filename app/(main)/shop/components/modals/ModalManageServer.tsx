@@ -2,9 +2,9 @@
 import { createServer, updateServer } from '@/app/actions/server'
 import { useAppForm } from '@/components/Form'
 import Modal from '@/components/Modal/Modal'
-import { Image, Server } from 'pixelarticons/react'
-import React, { useEffect, useMemo } from 'react'
 import Swal from '@/lib/Swal'
+import { Image as ImageIcon, Server } from 'pixelarticons/react'
+import React, { useEffect, useMemo } from 'react'
 import { IModalServerProps } from '../../interface'
 import { ServerFormValues, ServerSchema } from './schema'
 
@@ -37,7 +37,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                 if (!res.success) {
                     Swal.fire({
                         icon: 'error',
-                        title: res.error,
+                        title: `[Server] ${res.error}`,
                     });
                 } else {
                     Swal.fire({
@@ -50,7 +50,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
                 if (!res.success || !res.data) {
                     Swal.fire({
                         icon: 'error',
-                        title: res.error,
+                        title: `[Server] ${res.error}`,
                     });
                 } else {
                     Swal.fire({
@@ -68,7 +68,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
         if (!isOpen) {
             form.reset()
         }
-    }, [isOpen])
+    }, [form, isOpen])
 
     return (
         <Modal
@@ -85,7 +85,7 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <div>
                     <div className='flex items-center gap-2'>
-                        <Image className='text-(--core-green-3)' />
+                        <ImageIcon className='text-(--core-green-3)' />
                         <h5 className='font-bold'>ข้อมูลเซิร์ฟเวอร์</h5>
                     </div>
                     <div className='p-4'>

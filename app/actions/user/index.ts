@@ -82,10 +82,11 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
                 total: total
             }
         };
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถดึงข้อมูลผู้เล่นได้"
+            error: "[User] ไม่สามารถดึงข้อมูลผู้เล่นได้"
         };
     }
 }
@@ -124,10 +125,11 @@ export async function getUserSummary(type: SummaryType = 'week'): Promise<IActio
             success: true,
             data: { data: sums, label: labels, total }
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[User] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }
@@ -149,10 +151,11 @@ export async function updateIsAdmin(id: number, isAdmin: boolean): Promise<IActi
         return {
             success: true
         }
-    } catch {
+    } catch (e) {
+        console.log(e)
         return {
             success: false,
-            error: "ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
+            error: "[User] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้"
         }
     }
 }

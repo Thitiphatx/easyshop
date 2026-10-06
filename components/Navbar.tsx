@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Button from './Button/Button'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/contexts/authContext'
@@ -21,26 +21,25 @@ import {
 import { NAV_ITEMS } from '@/constants/navigation'
 
 const Navbar: React.FC = () => {
-    const router = useRouter();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
     const { session, openAuth, signOut } = useAuth()
     const { setting, mcStatus } = useSetting()
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const router = useRouter()
 
-    const [isScrolled, setIsScrolled] = useState(false);
+    const handleMobileNavigate = useCallback((url: string) => {
+        setIsMobileMenuOpen(false)
+        router.replace(url)
+    }, [router])
+
+    const handleScroll = useCallback(() => {
+        setIsScrolled(window.scrollY > 10)
+    }, [])
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 10);
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const handleMobileNavigate = (url: string) => {
-        setIsMobileMenuOpen(false);
-        router.replace(url);
-    };
+        window.addEventListener("scroll", handleScroll, { passive: true })
+        return () => window.removeEventListener("scroll", handleScroll)
+    }, [handleScroll])
 
     return (
         <div className="relative w-full">
@@ -50,7 +49,6 @@ const Navbar: React.FC = () => {
                     : "bg-(--vanilla-grey-6) drop-shadow-none"
                     }`}
             >
-                {/* Left Section (Logo) */}
                 <div className='w-full' onClick={() => { setIsMobileMenuOpen(false); router.push("/"); }}>
                     {setting?.logo ? (
                         <Image alt="Logo" className='h-10 sm:h-12 w-auto cursor-pointer ' src={setting.logo} width={260} height={50} />
@@ -59,14 +57,13 @@ const Navbar: React.FC = () => {
                             alt="Logo"
                             className='h-10 sm:h-12 w-auto cursor-pointer'
                             loading='eager'
-                            src="https://www.minecraft.net/content/dam/minecraftnet/games/minecraft/logos/Global-Header_MCCB-Logo_300x51.svg"
+                            src="/images/brand/logo-long.png"
                             width={260}
                             height={50}
                         />
                     )}
                 </div>
 
-                {/* Center Section (Desktop Navigation) */}
                 <div className='hidden lg:flex justify-center w-full'>
                     <ul className='flex items-center justify-center h-full mx-auto'>
                         {NAV_ITEMS.map((item, index) => (
@@ -84,20 +81,22 @@ const Navbar: React.FC = () => {
                     </ul>
                 </div>
 
-                {/* Right Section */}
                 <div className='flex items-center justify-end gap-3 sm:gap-6 w-full'>
-                    {/* Players Online Badge */}
-                    <div className='hidden sm:flex gap-2 ring-(--core-green-5) ring-2 p-1.5 sm:p-2 bg-(--core-off-black)/40'>
-                        <span className='text-(--core-green-3) font-bold text-xs sm:text-sm'>{mcStatus?.playersOnline ?? 0}</span>
-                        <span className='text-(--core-white) font-bold text-xs sm:text-sm'>Online</span>
+                    <div className={`hidden sm:flex gap-2 ring-2 p-1.5 sm:p-2 bg-(--core-off-black)/40 ${mcStatus?.online ? 'ring-(--core-green-5)' : 'ring-red-500'}`}>
+                        {mcStatus?.online ? (
+                            <>
+                                <span className='text-(--core-green-3) font-bold text-xs sm:text-sm'>{mcStatus.playersOnline ?? 0}</span>
+                                <span className='text-(--core-white) font-bold text-xs sm:text-sm'>Online</span>
+                            </>
+                        ) : (
+                            <span className='text-red-400 font-bold text-xs sm:text-sm'>Offline</span>
+                        )}
                     </div>
 
-                    {/* Account button visible on desktop only */}
                     <div className="hidden lg:flex">
                         {session ? <AccountMenu /> : <Button onClick={openAuth} className="text-xs sm:text-sm! py-2! px-3 sm:px-4!">เข้าสู่ระบบ</Button>}
                     </div>
 
-                    {/* Mobile Hamburger Button */}
                     <button
                         type="button"
                         onClick={() => setIsMobileMenuOpen((prev) => !prev)}
@@ -109,20 +108,18 @@ const Navbar: React.FC = () => {
                 </div>
             </div>
 
-            {/* Mobile Navigation Drawer */}
             {isMobileMenuOpen && (
                 <div className="lg:hidden fixed inset-x-0 top-20 bg-(--vanilla-grey-6) border-b-4 border-(--core-green-5) drop-shadow-[0_8px_0px_rgba(0,0,0,0.5)] z-40 max-h-[calc(100vh-5rem)] overflow-y-auto animate-in slide-in-from-top-2 duration-150">
                     <div className="p-4 flex flex-col gap-2">
-                        {/* Account Section in Burger Menu */}
                         {session ? (
                             <div className="flex flex-col bg-(--core-off-black)/80 border-2 border-(--core-grey-5) p-3 mb-2">
-                                {/* Profile Bar */}
                                 <div
                                     className="flex items-center gap-3 cursor-pointer pb-3 border-b border-(--core-grey-5)"
-                                    onClick={() => handleMobileNavigate('/user/profile')}
+                                    onClick={() => handleMobileNavigate('/user/purchase-history')}
                                 >
                                     <div className="relative shrink-0">
-                                        <img
+                                        <Image
+                                            unoptimized
                                             src={session.profileImageUrl || `https://mc-heads.net/avatar/${session.username}/48`}
                                             alt={session.username}
                                             width={40}
@@ -146,11 +143,10 @@ const Navbar: React.FC = () => {
                                     </div>
                                 </div>
 
-                                {/* Profile Quick Links */}
                                 <div className="grid grid-cols-2 gap-1.5 pt-2 text-xs font-pixel">
                                     <button
                                         type="button"
-                                        onClick={() => handleMobileNavigate('/user/profile')}
+                                        onClick={() => handleMobileNavigate('/user/purchase-history')}
                                         className="flex items-center gap-1.5 p-2 text-(--core-grey-2) hover:text-(--core-white) hover:bg-(--core-grey-5) cursor-pointer"
                                     >
                                         <User className="size-3.5 text-(--core-green-3)" />
@@ -175,7 +171,7 @@ const Navbar: React.FC = () => {
                                     {session.isAdmin && (
                                         <button
                                             type="button"
-                                            onClick={() => handleMobileNavigate('/setting/dashboard')}
+                                            onClick={() => handleMobileNavigate('/webshop/dashboard')}
                                             className="flex items-center gap-1.5 p-2 text-(--marketplace-gold-3) hover:text-(--marketplace-gold-2) hover:bg-(--core-grey-5) cursor-pointer"
                                         >
                                             <Settings2 className="size-3.5" />
@@ -192,9 +188,9 @@ const Navbar: React.FC = () => {
                                         className="py-1.5! text-xs! font-pixel justify-center"
                                         icon={<Logout className="size-4" />}
                                         onClick={async () => {
-                                            setIsMobileMenuOpen(false);
-                                            await signOut();
-                                            router.refresh();
+                                            setIsMobileMenuOpen(false)
+                                            await signOut()
+                                            router.refresh()
                                         }}
                                     >
                                         ออกจากระบบ
@@ -208,8 +204,8 @@ const Navbar: React.FC = () => {
                                     block
                                     className="py-2.5! text-sm! font-pixel justify-center"
                                     onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        openAuth();
+                                        setIsMobileMenuOpen(false)
+                                        openAuth()
                                     }}
                                 >
                                     เข้าสู่ระบบ
@@ -217,17 +213,24 @@ const Navbar: React.FC = () => {
                             </div>
                         )}
 
-                        {/* Mobile Online status on xs */}
                         <div className="sm:hidden flex items-center justify-between p-2.5 bg-(--core-off-black)/60 border border-(--core-grey-5) mb-2">
                             <span className="font-pixel text-xs text-(--core-grey-2)">Server Status:</span>
                             <div className="flex items-center gap-1.5 font-pixel text-xs">
-                                <span className="inline-block size-2 rounded-full bg-(--core-green-3) animate-pulse" />
-                                <span className="text-(--core-green-3) font-bold">{mcStatus?.playersOnline ?? 0}</span>
-                                <span className="text-(--core-white)">Online</span>
+                                {mcStatus?.online ? (
+                                    <>
+                                        <span className="inline-block size-2 rounded-full bg-(--core-green-3) animate-pulse" />
+                                        <span className="text-(--core-green-3) font-bold">{mcStatus.playersOnline ?? 0}</span>
+                                        <span className="text-(--core-white)">Online</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="inline-block size-2 rounded-full bg-red-500" />
+                                        <span className="text-red-400 font-bold">Offline</span>
+                                    </>
+                                )}
                             </div>
                         </div>
 
-                        {/* Navigation Items */}
                         {NAV_ITEMS.map((item) => (
                             <Button
                                 key={item.path}

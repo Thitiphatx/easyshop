@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react'
 import { IInputProps } from './interface'
-import { Upload, Image, Close } from 'pixelarticons/react'
+import { Upload, Image as ImageIcon, Close } from 'pixelarticons/react'
 import Button from '../Button/Button'
 
 export interface IFileInputProps extends Omit<IInputProps, 'value' | 'onChange' | 'type'> {
@@ -77,7 +77,7 @@ const FileInput: React.FC<IFileInputProps> = ({
                     ${fileName ? 'text-(--default-primary)' : 'text-(--core-grey-2)'}
                 `}>
                     {fileName ? (
-                        <Image />
+                        <ImageIcon />
                     ) : (
                         <Upload />
                     )}

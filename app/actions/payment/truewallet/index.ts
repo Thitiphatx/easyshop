@@ -199,6 +199,7 @@ export async function checkStatus(): Promise<ApiResponse<undefined>> {
             data: undefined
         };
     } catch (error: any) {
+        console.log(error)
         return {
             success: false,
             error: {

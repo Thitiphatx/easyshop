@@ -40,7 +40,7 @@ const AuthModal: React.FC = () => {
         if (isOpen) {
             form.reset()
         }
-    }, [isOpen])
+    }, [form, isOpen])
 
     return (
         <Modal

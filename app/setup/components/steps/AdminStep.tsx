@@ -1,14 +1,13 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
 import { searchAuthMeUser } from '@/app/actions/setup'
 import { IAuthMeUserPreview } from '@/app/actions/setup/interface'
+import Badge from '@/components/Badge'
+import Button from '@/components/Button/Button'
 import Card from '@/components/Card/Card'
 import Input from '@/components/Input/Input'
-import Button from '@/components/Button/Button'
-import Badge from '@/components/Badge'
-import Loading from '@/components/Loading'
-import { ChevronLeft, Crown, Search, User, Check, InfoBox } from 'pixelarticons/react'
+import { Check, ChevronLeft, Crown, InfoBox, Search } from 'pixelarticons/react'
+import React, { useEffect, useState } from 'react'
 
 interface IAdminStepProps {
     onBack: () => void
@@ -22,19 +21,25 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
     const [foundUser, setFoundUser] = useState<IAuthMeUserPreview | null>(null)
     const [hasSearched, setHasSearched] = useState(false)
 
-    // Debounced real-time user lookup
-    useEffect(() => {
-        const trimmed = username.trim()
-        if (!trimmed) {
+    const handleUsernameChange = (val: string) => {
+        setUsername(val)
+        if (!val.trim()) {
             setFoundUser(null)
             setHasSearched(false)
             setIsSearching(false)
-            return
         }
+    }
 
-        setIsSearching(true)
+    // Debounced real-time user lookup
+    useEffect(() => {
+        const trimmed = username.trim()
+        if (!trimmed) return
+
+        let cancelled = false
         const timer = setTimeout(async () => {
+            setIsSearching(true)
             const res = await searchAuthMeUser(trimmed)
+            if (cancelled) return
             setIsSearching(false)
             setHasSearched(true)
             if (res.success && res.data) {
@@ -44,7 +49,10 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
             }
         }, 400)
 
-        return () => clearTimeout(timer)
+        return () => {
+            cancelled = true
+            clearTimeout(timer)
+        }
     }, [username])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +90,7 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
                                 <Input
                                     placeholder="พิมพ์ชื่อตัวละครในเกม เช่น Steve..."
                                     value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
+                                    onChange={(e) => handleUsernameChange(e.target.value)}
                                     className="w-full pl-11 text-base font-sans"
                                     autoFocus
                                 />

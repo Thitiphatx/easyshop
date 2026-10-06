@@ -14,12 +14,7 @@ const Tooltip: React.FC<ITooltipProps> = ({
 }) => {
     const [isVisible, setIsVisible] = useState(false)
     const [coords, setCoords] = useState<{ top: number; left: number } | null>(null)
-    const [mounted, setMounted] = useState(false)
     const triggerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        setMounted(true)
-    }, [])
 
     const updateCoords = useCallback(() => {
         if (!triggerRef.current) return
@@ -77,7 +72,7 @@ const Tooltip: React.FC<ITooltipProps> = ({
             onBlur={showFocus ? hide : undefined}
         >
             {children}
-            {mounted && isVisible && coords && createPortal(
+            {isVisible && coords && createPortal(
                 <div
                     role="tooltip"
                     style={{

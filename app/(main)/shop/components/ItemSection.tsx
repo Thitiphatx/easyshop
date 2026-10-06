@@ -1,6 +1,7 @@
 "use client"
 import { deleteItem, getAllItems, getItemById } from '@/app/actions/item'
 import { IItem } from '@/app/actions/item/interface'
+import { useAuth } from '@/app/contexts/authContext'
 import { Item } from '@/app/generated/prisma/client'
 import Badge from '@/components/Badge'
 import Button from '@/components/Button/Button'
@@ -8,15 +9,14 @@ import Card from '@/components/Card/Card'
 import Empty from '@/components/Empty'
 import Loading from '@/components/Loading'
 import Swal from '@/lib/Swal'
+import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Box, ChevronLeft, Close, Money, Pencil, PlusBox, Trash } from 'pixelarticons/react'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ModalViewItem from '../[serverId]/modals/ModalViewItem'
 import { IItemSectionProps } from '../interface'
 import ModalManageItem from './modals/ModalManageItem'
-import { useAuth } from '@/app/contexts/authContext'
-import Image from 'next/image'
 
 const ItemSection: React.FC<IItemSectionProps> = () => {
     const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -26,7 +26,6 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
     const [editItemInfo, setEditItemInfo] = useState<Item>()
     const [viewItemInfo, setViewItemInfo] = useState<IItem>()
     const [itemList, setItemList] = useState<IItem[]>([])
-    const router = useRouter()
     const pathname = usePathname()
     const { session } = useAuth()
 
@@ -48,7 +47,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
             setViewItemInfo(item)
             setIsOpenViewModal(true)
         }
-    }, [isEdit, router, pathname])
+    }, [isEdit])
 
     const handleClickCreateItem = useCallback(() => {
         setEditItemInfo(undefined)
@@ -60,7 +59,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
         const res = await getAllItems({ serverId })
         if (res.success && res.data) setItemList(res.data)
         setIsLoading(false)
-    }, [])
+    }, [serverId])
 
     const handleDeleteItem = useCallback(async (itemId: number) => {
         Swal.fire({
@@ -91,7 +90,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                 }
             }
         });
-    }, [])
+    }, [getItemList])
 
 
     useEffect(() => {
