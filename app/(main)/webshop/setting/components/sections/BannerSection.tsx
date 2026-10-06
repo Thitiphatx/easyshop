@@ -11,6 +11,7 @@ import Button from '@/components/Button/Button'
 import { Banner } from '@/app/generated/prisma/client'
 import { Plus, Trash } from 'pixelarticons/react'
 import { getTopupSummary } from '@/app/actions/topup'
+import Card from '@/components/Card/Card'
 import ModalManageBanner from '../modals/ModalManageBanner'
 import { IBannerSectionProps } from '../interface'
 import clsx from 'clsx'
@@ -89,33 +90,37 @@ const BannerSection: React.FC<IBannerSectionProps> = ({
     }, [fetchBanners])
 
     return (
-        <div className={clsx("flex flex-col md:flex-row gap-6 md:gap-10", className)} {...props}>
+        <>
             <ModalManageBanner isOpen={isModalOpen} setIsOpen={setIsModalOpen} getBannerList={fetchBanners} />
-            <div className="w-full md:w-60 lg:w-64 shrink-0 pb-4 md:pb-0 border-b md:border-b-0 md:border-r border-(--core-grey-5) md:pr-6">
-                <h2 className="font-pixel text-2xl md:text-3xl text-(--core-white)">Banners</h2>
-                <p className="text-sm text-(--core-grey-3) mt-1.5 leading-relaxed">
-                    จัดการรูปภาพแบนเนอร์ที่จะแสดงผลบนหน้าแรกของเว็บช็อป
-                </p>
-            </div>
-            <div className="flex-1">
-                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
-                    <span className="text-sm text-(--core-grey-3)">รูปภาพแบนเนอร์ทั้งหมด ({banners.length})</span>
-                    <Button
-                        variant="Retro"
-                        color="Green"
-                        onClick={() => setIsModalOpen(true)}
-                        icon={<Plus className="size-5" />}
-                    >
-                        เพิ่ม Banner
-                    </Button>
+            <Card className="p-6 md:p-8">
+                <div className={clsx("flex flex-col md:flex-row gap-6 md:gap-10", className)} {...props}>
+                    <div className="w-full md:w-60 lg:w-64 shrink-0 pb-4 md:pb-0 border-b md:border-b-0 md:border-r border-(--core-grey-5) md:pr-6">
+                        <h2 className="font-pixel text-2xl md:text-3xl text-(--core-white)">Banners</h2>
+                        <p className="text-sm text-(--core-grey-3) mt-1.5 leading-relaxed">
+                            จัดการรูปภาพแบนเนอร์ที่จะแสดงผลบนหน้าแรกของเว็บช็อป
+                        </p>
+                    </div>
+                    <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4">
+                            <span className="text-sm text-(--core-grey-3)">รูปภาพแบนเนอร์ทั้งหมด ({banners.length})</span>
+                            <Button
+                                variant="Retro"
+                                color="Green"
+                                onClick={() => setIsModalOpen(true)}
+                                icon={<Plus className="size-5" />}
+                            >
+                                เพิ่ม Banner
+                            </Button>
+                        </div>
+                        {isLoading ? (
+                            <div className="flex justify-center py-8"><Loading /></div>
+                        ) : (
+                            <Table columns={columns} data={banners} loading={false} />
+                        )}
+                    </div>
                 </div>
-                {isLoading ? (
-                    <div className="flex justify-center py-8"><Loading /></div>
-                ) : (
-                    <Table columns={columns} data={banners} loading={false} />
-                )}
-            </div>
-        </div>
+            </Card>
+        </>
     )
 }
 

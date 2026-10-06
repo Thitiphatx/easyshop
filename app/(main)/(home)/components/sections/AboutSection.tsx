@@ -22,7 +22,7 @@ const AboutSection: React.FC = () => {
                 <div className='text-center md:text-left'>
                     <h1 className='text-2xl sm:text-3xl font-bold font-pixel text-(--core-green-3) mb-2'>{setting?.serverName || "Easyshop Minecraft"}</h1>
                     <p className='text-base sm:text-lg text-(--core-grey-2) leading-relaxed'>
-                        {setting?.serverDesc || "Easyshop Minecraft บริการเว็บช็อปมายคราฟท์ สะดวกใช้งานง่าย UI สวยงาม"}
+                        {setting?.serverDesc}
                     </p>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 "use client"
 import { useAppForm } from '@/components/Form'
 import Modal from '@/components/Modal/Modal'
-import { Image as ImageIcon } from 'pixelarticons/react'
+import { Image as ImageIcon, Terminal } from 'pixelarticons/react'
 import React, { useEffect, useMemo } from 'react'
 import Swal from '@/lib/Swal'
 import { IModalItemProps } from '../../interface'
@@ -115,7 +115,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                 </div>
                 <div>
                     <div className='flex items-center gap-2'>
-                        <ImageIcon className='text-(--core-green-3)' />
+                        <Terminal className='text-(--core-green-3)' />
                         <h5 className='font-bold'>คำสั่ง</h5>
                     </div>
                     <div className='p-4'>

@@ -33,7 +33,7 @@ const ModalManageBanner: React.FC<IModalBannerProps> = ({ isOpen, setIsOpen, get
     }, [form, isOpen])
 
     return (
-        <Modal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="เพิ่ม Banner">
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen} modalTitle="Add Banner">
             <form className='mt-6' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                 <form.AppField
                     name="imageUrl"

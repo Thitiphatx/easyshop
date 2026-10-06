@@ -15,9 +15,7 @@ const DisplaySettingPage: React.FC = () => {
             <Card className="p-6 md:p-8">
                 <ServerSection />
             </Card>
-            <Card className="p-6 md:p-8">
-                <BannerSection />
-            </Card>
+            <BannerSection />
         </div>
     )
 }

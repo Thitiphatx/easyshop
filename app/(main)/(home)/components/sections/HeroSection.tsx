@@ -155,7 +155,7 @@ const HeroSection: React.FC = () => {
                 isLoading={isLoading}
             >
                 <p className="line-clamp-2 sm:line-clamp-3 text-xs sm:text-sm">
-                    {setting?.siteDesc || 'Welcome to our Easyshop Minecraft'}
+                    {setting?.siteDesc}
                 </p>
             </Card>
 

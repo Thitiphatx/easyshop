@@ -71,16 +71,16 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
             modalTitle={itemInfo.name}
         >
             <div className="flex flex-col gap-4 mt-4">
-                {/* Product Image */}
                 <div className="relative w-full h-64 overflow-hidden rounded-lg border-2 border-(--core-grey-5) bg-(--core-grey-6) flex items-center justify-center">
                     <Image
                         src={itemInfo.imageUrl || '/images/others/emerald.webp'}
                         alt={itemInfo.name}
                         className="w-full h-full object-cover object-center"
+                        width={400}
+                        height={400}
                     />
                 </div>
 
-                {/* Category & Price Info */}
                 <div className="flex items-center justify-between">
                     <Badge className="flex items-center gap-1">
                         <Box width={18} height={18} />
@@ -95,14 +95,12 @@ const ModalViewItem: React.FC<IModalViewItemProps> = ({
                     </div>
                 </div>
 
-                {/* Description */}
                 {itemInfo.description && (
                     <div className="bg-(--core-off-black) p-3 border border-(--core-grey-5) rounded text-(--core-grey-2) text-sm leading-relaxed whitespace-pre-wrap">
                         {itemInfo.description}
                     </div>
                 )}
 
-                {/* Buy Button */}
                 <div className="mt-2 flex justify-center">
                     <Button
                         color="Green"
