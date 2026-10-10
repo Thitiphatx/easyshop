@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "seed": "bun prisma/seed.ts"
+    "seed": "bun prisma/seed.ts",
+    "docker:build": "docker build --platform linux/amd64 -t easyshop:latest ."
   },
   "prisma": {
     "seed": "bun prisma/seed.ts"

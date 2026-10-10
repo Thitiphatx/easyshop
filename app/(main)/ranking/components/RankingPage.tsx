@@ -56,19 +56,20 @@ const RankingPage: React.FC = () => {
     return (
         <div className='flex-1 w-full'>
             {/* Hero */}
-            <div className='relative w-full mx-auto z-10 flex flex-col justify-center'>
-                <span className='text-center text-(--core-white) drop-shadow-lg flex flex-col justify-center items-center py-32'>
-                    <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold'>Ranking</h1>
+            <div className='relative max-w-4xl w-full px-4 py-12 sm:py-20 lg:py-24 mx-auto z-10'>
+                <span className='text-center text-(--core-white) drop-shadow-2xl flex flex-col items-center'>
+                    <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>Ranking</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>จัดอันดับเติมเงิน</h2>
                 </span>
+            </div>
 
-                {/* Content panels */}
-                <div className='w-full bg-(--core-off-black) pb-24 flex flex-col gap-0'>
-                    {isLoading ? (
-                        <div className='flex justify-center items-center py-32'>
-                            <Loading />
-                        </div>
-                    ) : (
+            {/* Content panels */}
+            <div className='relative bg-(--core-off-black) w-full min-h-screen z-10 pb-24 flex flex-col gap-0'>
+                {isLoading ? (
+                    <div className='flex justify-center items-center py-32'>
+                        <Loading />
+                    </div>
+                ) : (
                         <>
                             {/* Monthly */}
                             <section className='w-full border-b-2 border-b-(--marketplace-grey-5)'>
@@ -98,10 +99,9 @@ const RankingPage: React.FC = () => {
                         </>
                     )}
                 </div>
-            </div>
 
             {/* Background overlays */}
-            <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/40 z-0' />
+            <div className='fixed top-0 left-0 w-full h-full bg-(--core-off-black)/60 z-0' />
             <div className='fixed top-0 left-0 w-full h-full bg-[url(/images/others/wallpaper_minecraft_caves_cliffs_part2_1920x1080.png)] bg-cover bg-center -z-10' />
         </div>
     )
