@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⛏️ EasyShop - Minecraft Webshop
 
-## Getting Started
+**EasyShop** คือระบบร้านค้าเว็บช็อปสำหรับเซิร์ฟเวอร์ Minecraft ที่ออกแบบด้วยธีม Minecraft Pixel/Retro Style สวยงาม ทันสมัย รองรับการจัดการแบบเครือข่าย Multi-Network Server และเชื่อมต่อกับระบบฐานข้อมูลของเกมได้อย่างสมบูรณ์แบบ
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 📸 ภาพตัวอย่างระบบ (Previews)
+
+### 🏠 หน้าร้านค้าและหน้าแรก (Storefront)
+| หน้าแรก (Home) | หน้าร้านค้า (Shop) |
+| :---: | :---: |
+| ![Home](./previews/home.png) | ![Shop](./previews/shop.png) |
+
+### 💳 ระบบเติมเงิน (Topup)
+![Topup](./previews/truewallet.png)
+
+### 🛠️ ระบบหลังบ้านแอดมิน (Admin Backoffice)
+| แดชบอร์ดและสถิติ (Dashboard) | จัดการเซิร์ฟเวอร์และสินค้า (Servers & Items) |
+| :---: | :---: |
+| ![Backoffice Dashboard](./previews/backoffice-1.png) | ![Backoffice Settings](./previews/backoffice-2.png) |
+| **จัดการผู้เล่นและแต้ม (Users)** | **ประวัติและตั้งค่าระบบ (History & Settings)** |
+| ![Backoffice Users](./previews/backoffice-3.png) | ![Backoffice History](./previews/backoffice-4.png) |
+
+---
+
+## ✨ Features (คุณสมบัติเด่น)
+
+- 🎨 **Minecraft Style Design**: UI/UX ตกแต่งสไตล์ Minecraft พร้อมไอคอนแบบพิกเซล (Pixel Art Icons) และธีมสีที่เข้ากับบรรยากาศของเกมอย่างลงตัว
+- 🌐 **Multi-Network Server Support**: รองรับการจัดการหลายเซิร์ฟเวอร์ภายในเน็ตเวิร์กเดียว สั่งรันคำสั่ง RCON แยกตามแต่ละเซิร์ฟเวอร์เมื่อผู้เล่นซื้อสินค้า
+- 🔐 **AuthMe Integration**: ระบบล็อกอินเชื่อมต่อกับฐานข้อมูลของปลั๊กอิน `AuthMe` โดยตรง รองรับการตรวจสอบรหัสผ่านอย่างปลอดภัย
+- 💎 **PlayerPoints Integration**: ซิงค์แต้ม/พอยท์กับปลั๊กอิน `PlayerPoints` เพื่อใช้แต้มในการซื้อไอเทม
+- 💸 **Payment Gateways (ระบบเติมเงินอัตโนมัติ)**:
+  - **TrueMoney Wallet**: เติมเงินผ่านซองของขวัญ (Voucher) อัตโนมัติ ตรวจสอบยอดและเติมพอยท์ทันที
+  - **ธนาคาร (Bank Transfer)**: เติมเงินผ่านการสแกนสลิป ตรวจสอบความถูกต้องและสลิปซ้ำผ่าน API ของ **EasySlip**
+  - **Point Multiplier**: ระบบตั้งค่าตัวคูณแต้มตามช่วงเวลาโปรโมชั่น
+- 🏆 **Ranking Leaderboard**: แสดงอันดับยอดการเติมเงินของผู้เล่นแบบเรียลไทม์
+- ⚙️ **Admin Backoffice (ระบบจัดการหลังบ้าน)**:
+  - **Dashboard**: แสดงสรุปยอดขาย สถิติการเติมเงิน รายได้ และกราฟสรุปภาพรวม
+  - **Server Management**: เพิ่ม/แก้ไข/ลบเซิร์ฟเวอร์ พร้อมกำหนดการเชื่อมต่อ RCON (Host, Port, Password)
+  - **Item Management**: จัดการสินค้า หมวดหมู่ ราคา และคำสั่ง (Command) ที่จะรันในเซิร์ฟเวอร์
+  - **User Management**: ค้นหาผู้เล่น ปรับยอดแต้ม และกำหนดสิทธิ์แอดมิน
+  - **Transaction & Topup Logs**: ตรวจสอบประวัติการซื้อสินค้าและการเติมเงินย้อนหลัง
+  - **Image Manager & Banners**: จัดการรูปภาพในระบบและแบนเนอร์ประชาสัมพันธ์
+  - **System Settings**: ตั้งค่าชื่อเว็บ, คำอธิบาย, ข้อมูลเซิร์ฟเวอร์, API Key EasySlip และเบอร์ TrueWallet
+
+---
+
+## 🗃️ Database (โครงสร้างฐานข้อมูล)
+
+ระบบใช้ **Prisma ORM** เชื่อมต่อกับ **MySQL / MariaDB** โดยแชร์ข้อมูลร่วมกับปลั๊กอิน Minecraft:
+
+| Model / Table | หน้าที่และการทำงาน |
+| :--- | :--- |
+| `authme` | ตารางข้อมูลผู้เล่น เชื่อมโยงกับปลั๊กอิน **AuthMe** (username, password hash, email, isAdmin, uuid) |
+| `playerpoints_points` | ตารางเก็บแต้มพอยท์ของผู้เล่น เชื่อมโยงกับปลั๊กอิน **PlayerPoints** ผ่าน `uuid` |
+| `server` | รายการเซิร์ฟเวอร์ในเครือข่าย พร้อมข้อมูลการเชื่อมต่อ RCON (`rconHost`, `rconPort`, `rconPassword`) |
+| `item` | ข้อมูลสินค้าในร้านค้า (ชื่อ, คำอธิบาย, รูปภาพ, ราคา, หมวดหมู่, และคำสั่ง RCON `command`) |
+| `transaction` | ประวัติการซื้อสินค้า บันทึกผู้ซื้อ, สินค้า, เซิร์ฟเวอร์, ราคา และคำสั่งที่รัน |
+| `topup` | ประวัติการเติมเงิน บันทึกผู้ใช้, จำนวนเงิน, แต้มที่ได้, ช่องทาง (`TRUEWALLET` / `BANK`), และสถานะ |
+| `setting` | ตั้งค่าหลักของเว็บไซต์ (ชื่อเว็บ, ข้อมูลเซิร์ฟเวอร์, อัตราคูณแต้ม, EasySlip API Key, เบอร์ TrueWallet) |
+| `banner` | จัดการภาพแบนเนอร์ประชาสัมพันธ์และลิงก์ปลายทาง |
+
+---
+
+## 📁 Structure (โครงสร้างโปรเจกต์)
+
+```text
+easyshop/
+├── app/
+│   ├── (main)/
+│   │   ├── (home)/              # หน้าแรก (Home)
+│   │   ├── ranking/             # หน้าจัดอันดับยอดการเติมเงิน (Leaderboard)
+│   │   ├── shop/                # หน้าร้านค้า เลือกสินค้าตามเซิร์ฟเวอร์
+│   │   ├── topup/               # หน้าเติมเงิน TrueMoney Wallet & สแกนสลิป
+│   │   ├── user/                # หน้าข้อมูลส่วนตัวและประวัติของผู้เล่น
+│   │   └── webshop/             # ระบบหลังบ้านแอดมิน (Admin Backoffice)
+│   │       ├── dashboard/       # แดชบอร์ดสรุปสถิติและรายได้
+│   │       ├── images/          # จัดการไฟล์รูปภาพ
+│   │       ├── purchase-history/# ตรวจสอบประวัติการซื้อไอเทม
+│   │       ├── setting/         # ตั้งค่าเว็บไซต์และการเชื่อมต่อ
+│   │       ├── topup/           # ประวัติและสถานะการเติมเงิน
+│   │       └── users/           # จัดการผู้ใช้และแต้ม
+│   ├── actions/                 # Server Actions (Business Logic, Auth, RCON, Payment)
+│   ├── contexts/                # React Contexts (User, Theme, State)
+│   ├── setup/                   # หน้าติดตั้งระบบเริ่มต้น (Setup Wizard)
+│   └── globals.css              # สไตล์หลัก ธีม Minecraft และ Tailwind CSS
+├── components/                  # UI Components (Button, Modal, Card, Table, Navbar ฯลฯ)
+├── constants/                   # ค่าคงที่ต่างๆ
+├── lib/                         # ยูทิลิตี้ (Prisma Client, EasySlip, Crypto, Turnstile)
+├── previews/                    # ภาพตัวอย่างหน้าจอของระบบสำหรับ README
+├── prisma/
+│   ├── schema.prisma            # นิยามโครงสร้างฐานข้อมูล Prisma
+│   └── seed.ts                  # ข้อมูลเริ่มต้น (Seeding)
+├── docker-compose.yml           # คอนฟิก Docker สำหรับ MySQL Service
+├── Dockerfile                   # Dockerfile สำหรับ Build & Run Webshop
+├── package.json                 # การตั้งค่า Dependencies และ Scripts
+└── proxy.ts                     # Reverse proxy / Networking helper
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started (การเริ่มต้นใช้งาน)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ข้อกำหนดเบื้องต้น (Prerequisites)
+- [Node.js](https://nodejs.org/) (v20+) หรือ [Bun](https://bun.sh/) (แนะนำ)
+- [MySQL](https://www.mysql.com/) หรือ [MariaDB](https://mariadb.org/) (หรือรันผ่าน Docker)
+- เซิร์ฟเวอร์ Minecraft ที่เปิดใช้งาน **RCON**, ปลั๊กอิน **AuthMe** และ **PlayerPoints** (ใช้ฐานข้อมูล MySQL เดียวกัน)
 
-## Learn More
+### 1. ติดตั้ง Dependencies
+```bash
+bun install
+# หรือ
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. ตั้งค่า Environment Variables
+สร้างไฟล์ `.env` ที่ root directory:
+```env
+DATABASE_URL="mysql://user:password@localhost:3306/easyshop"
+JWT_SECRET="your-super-secret-jwt-key"
+NEXT_PUBLIC_TURNSTILE_SITE_KEY="your-turnstile-site-key"
+TURNSTILE_SECRET_KEY="your-turnstile-secret-key"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. เตรียมฐานข้อมูลและ Prisma
+```bash
+# สร้าง Prisma Client
+bunx prisma generate
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# พุชสคีมาไปยังฐานข้อมูล (กรณีเริ่มฐานข้อมูลใหม่)
+bunx prisma db push
+```
 
-## Deploy on Vercel
+### 4. รันระบบสำหรับการพัฒนา (Development)
+```bash
+bun run dev
+# หรือ
+npm run dev
+```
+เปิดบราวเซอร์ไปที่ [http://localhost:3000](http://localhost:3000)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. รันผ่าน Docker
+```bash
+# รันเฉพาะ MySQL Database
+docker compose up -d
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Build Image ของเว็บไซต์
+docker build -t easyshop:latest .
+```
