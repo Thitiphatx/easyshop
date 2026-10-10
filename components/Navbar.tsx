@@ -57,7 +57,7 @@ const Navbar: React.FC = () => {
                             alt="Logo"
                             className='h-10 sm:h-12 w-auto cursor-pointer'
                             loading='eager'
-                            src="/images/brand/logo-long.png"
+                            src="/images/others/logo-long.png"
                             width={260}
                             height={50}
                         />
