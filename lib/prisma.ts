@@ -1,18 +1,11 @@
 import { PrismaClient } from "../app/generated/prisma/client";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
 
 const prismaClientSingleton = () => {
-    const adapter = new PrismaMariaDb({
-        host: process.env.MYSQL_HOST,
-        port: 3306,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE,
-        allowPublicKeyRetrieval: true,
-        connectionLimit: 5,
-        connectTimeout: 30000,
-    });
+    const connectionString = `${process.env.DATABASE_URL}`
+
+    const adapter = new PrismaPg({ connectionString })
 
     return new PrismaClient({ adapter });
 };

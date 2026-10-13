@@ -1,17 +1,16 @@
 generator client {
   provider      = "prisma-client"
-  url           = ""
   output        = "../app/generated/prisma"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
-  provider     = "mysql"
+  provider     = "postgresql"
   relationMode = "prisma"
 }
 
 model AuthMe {
-  id           Int                 @id @default(autoincrement()) @db.UnsignedMediumInt
+  id           Int                 @id @default(autoincrement())
   username     String              @unique(map: "username") @db.VarChar(255)
   realname     String              @db.VarChar(255)
   password     String              @db.VarChar(255)
@@ -23,8 +22,8 @@ model AuthMe {
   world        String              @default("world") @db.VarChar(255)
   regdate      BigInt              @default(0)
   regip        String?             @db.VarChar(40)
-  yaw          Float?              @db.Float
-  pitch        Float?              @db.Float
+  yaw          Float?              @db.Real
+  pitch        Float?              @db.Real
   email        String?             @db.VarChar(255)
   isLogged     Int                 @default(0) @db.SmallInt
   hasSession   Int                 @default(0) @db.SmallInt
@@ -92,7 +91,7 @@ model Transaction {
 
 model Topup {
   id          Int          @id @default(autoincrement())
-  userId      Int          @db.UnsignedMediumInt
+  userId      Int
   amount      Float
   pointsAdded Int
   channel     TopupChannel
@@ -114,7 +113,7 @@ model playerpoints_migrations {
 
 model playerpoints_points {
   id      Int      @id @default(autoincrement())
-  uuid    String   @unique(map: "uuid") @db.VarChar(36)
+  uuid    String   @unique(map: "playerpoints_points_uuid_key") @db.VarChar(36)
   points  Int      @default(0)
   authMes AuthMe[]
 }
@@ -132,7 +131,7 @@ model playerpoints_transaction_log {
 }
 
 model playerpoints_username_cache {
-  uuid     String @unique(map: "uuid") @db.VarChar(36)
+  uuid     String @unique(map: "playerpoints_username_cache_uuid_key") @db.VarChar(36)
   username String @db.VarChar(30)
 
   @@index([username], map: "playerpoints_username_cache_username_index")
