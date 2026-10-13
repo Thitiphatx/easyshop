@@ -1,10 +1,7 @@
 import React from 'react'
 import { Store, Server, CreditCard, Crown, Check } from 'pixelarticons/react'
 import clsx from 'clsx'
-
-interface IStepperProps {
-    currentStep: number
-}
+import { IStepperProps } from './interface'
 
 const steps = [
     { number: 1, title: 'Webshop', icon: Store },

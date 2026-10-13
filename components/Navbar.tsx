@@ -120,6 +120,7 @@ const Navbar: React.FC = () => {
                                     <div className="relative shrink-0">
                                         <Image
                                             unoptimized
+                                            loading='eager'
                                             src={session.profileImageUrl || `https://mc-heads.net/avatar/${session.username}/48`}
                                             alt={session.username}
                                             width={40}

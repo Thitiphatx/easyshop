@@ -16,7 +16,7 @@ const GlobalLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const isLoading = isAuthLoading || isSettingLoading
     const [showLoader, setShowLoader] = useState(true)
     const [visible, setVisible] = useState(true)
-    const startTimeRef = React.useRef<number>(Date.now())
+    const startTimeRef = React.useRef<number | null>(null)
 
     useEffect(() => {
         let fadeTimer: NodeJS.Timeout
@@ -27,7 +27,7 @@ const GlobalLoader: React.FC<{ children: React.ReactNode }> = ({ children }) => 
             setVisible(true)
             setShowLoader(true)
         } else {
-            const elapsed = Date.now() - startTimeRef.current
+            const elapsed = startTimeRef.current !== null ? Date.now() - startTimeRef.current : MIN_LOADING_TIME_MS
             const remaining = Math.max(0, MIN_LOADING_TIME_MS - elapsed)
 
             fadeTimer = setTimeout(() => {

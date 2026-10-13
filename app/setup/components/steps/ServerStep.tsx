@@ -3,15 +3,9 @@
 import React from 'react'
 import { useAppForm } from '@/components/Form'
 import { ServerFormValues, ServerSchema } from '@/app/(main)/webshop/setting/schema'
-import { ISetupServer } from '@/app/actions/setup/interface'
 import Button from '@/components/Button/Button'
 import { ChevronLeft, ChevronRight, Server } from 'pixelarticons/react'
-
-interface IServerStepProps {
-    data: ISetupServer
-    onBack: () => void
-    onNext: (values: ISetupServer) => void
-}
+import { IServerStepProps } from '../interface'
 
 export const ServerStep: React.FC<IServerStepProps> = ({ data, onBack, onNext }) => {
     const form = useAppForm({

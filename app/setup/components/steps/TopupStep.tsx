@@ -1,19 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ISetupTopup } from '@/app/actions/setup/interface'
 import Card from '@/components/Card/Card'
 import Input from '@/components/Input/Input'
 import Button from '@/components/Button/Button'
 import Checkbox from '@/components/Checkbox/Checkbox'
 import Swal from '@/lib/Swal'
 import { ChevronLeft, ChevronRight, CreditCard, InfoBox } from 'pixelarticons/react'
-
-interface ITopupStepProps {
-    data: ISetupTopup
-    onBack: () => void
-    onNext: (values: ISetupTopup) => void
-}
+import { ITopupStepProps } from '../interface'
 
 export const TopupStep: React.FC<ITopupStepProps> = ({ data, onBack, onNext }) => {
     const [enableDirectTruewallet, setEnableDirectTruewallet] = useState(data.enableDirectTruewallet ?? false)

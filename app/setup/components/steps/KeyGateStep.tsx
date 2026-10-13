@@ -7,10 +7,7 @@ import Button from '@/components/Button/Button'
 import { verifySetupKey } from '@/app/actions/setup'
 import Swal from '@/lib/Swal'
 import { Lock, Shield } from 'pixelarticons/react'
-
-interface IKeyGateStepProps {
-    onVerified: (key: string) => void
-}
+import { IKeyGateStepProps } from '../interface'
 
 export const KeyGateStep: React.FC<IKeyGateStepProps> = ({ onVerified }) => {
     const [key, setKey] = useState('')

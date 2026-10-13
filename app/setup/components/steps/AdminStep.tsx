@@ -8,12 +8,8 @@ import Card from '@/components/Card/Card'
 import Input from '@/components/Input/Input'
 import { Check, ChevronLeft, Crown, InfoBox, Search } from 'pixelarticons/react'
 import React, { useEffect, useState } from 'react'
-
-interface IAdminStepProps {
-    onBack: () => void
-    onFinish: (adminUsername: string) => Promise<void>
-    isSubmitting: boolean
-}
+import { IAdminStepProps } from '../interface'
+import Image from 'next/image'
 
 export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmitting }) => {
     const [username, setUsername] = useState('')
@@ -30,7 +26,6 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
         }
     }
 
-    // Debounced real-time user lookup
     useEffect(() => {
         const trimmed = username.trim()
         if (!trimmed) return
@@ -105,7 +100,9 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
                             <div className="p-4 bg-(--core-off-black) border-2 border-(--core-green-4) flex flex-col sm:flex-row items-center gap-5 shadow-[0_4px_0_rgba(0,0,0,0.25)]">
                                 <div className="shrink-0 bg-(--core-grey-6) p-2 border border-(--core-grey-5)">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                                    <img
+                                    <Image
+                                        unoptimized
+                                        loading='eager'
                                         src={`https://mc-heads.net/body/${foundUser.username}/120`}
                                         alt={foundUser.username}
                                         className="h-28 w-auto object-contain"

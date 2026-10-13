@@ -3,13 +3,8 @@
 import React from 'react'
 import { useAppForm } from '@/components/Form'
 import { DisplayFormValues, DisplaySchema } from '@/app/(main)/webshop/setting/schema'
-import { ISetupWebshop } from '@/app/actions/setup/interface'
 import { ChevronRight, Store } from 'pixelarticons/react'
-
-interface IWebshopStepProps {
-    data: ISetupWebshop
-    onNext: (values: ISetupWebshop) => void
-}
+import { IWebshopStepProps } from '../interface'
 
 export const WebshopStep: React.FC<IWebshopStepProps> = ({ data, onNext }) => {
     const form = useAppForm({
