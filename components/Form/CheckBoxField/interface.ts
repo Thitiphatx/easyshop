@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export interface ICheckboxFieldProps {
+export interface ICheckBoxFieldProps {
   label: string
   className?: string
   labelClassName?: string
