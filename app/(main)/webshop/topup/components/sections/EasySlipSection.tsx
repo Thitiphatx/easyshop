@@ -68,7 +68,7 @@ const EasySlipSection: React.FC = () => {
                         <div className="pb-5 mb-5 border-b border-(--core-grey-5)">
                             <form.AppField
                                 name="enableBank"
-                                children={(field) => <field.CheckboxField variant='switch' label="เปิดใช้งาน ธนาคาร" tooltip="" disabled={!(setting as Setting)?.easyslipApiKey} />}
+                                children={(field) => <field.CheckBoxField variant='switch' label="เปิดใช้งาน ธนาคาร" tooltip="" disabled={!(setting as Setting)?.easyslipApiKey} />}
                             />
                         </div>
                         <div className="space-y-4 [&_label>span:first-child]:sm:w-44 [&_label>span:first-child]:sm:shrink-0">

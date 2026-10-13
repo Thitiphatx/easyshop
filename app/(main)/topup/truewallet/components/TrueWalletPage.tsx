@@ -71,7 +71,7 @@ const TrueWalletPage: React.FC = () => {
                             />
                             <form.AppField
                                 name="agree"
-                                children={(field) => <field.CheckboxField label="ยอมรับเงื่อนไข" />}
+                                children={(field) => <field.CheckBoxField label="ยอมรับเงื่อนไข" />}
                             />
                             <Turnstile
                                 ref={turnstileRef}

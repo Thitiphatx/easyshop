@@ -7,9 +7,9 @@ import Checkbox from '@/components/Checkbox/Checkbox'
 import Tooltip from '@/components/Tooltip/index'
 import { InfoBox } from 'pixelarticons/react'
 import clsx from 'clsx'
-import { ICheckboxFieldProps } from './interface'
+import { ICheckBoxFieldProps } from './interface'
 
-export function CheckBoxField({ label, className, labelClassName, variant, tooltip, disabled }: ICheckboxFieldProps) {
+export function CheckBoxField({ label, className, labelClassName, variant, tooltip, disabled }: ICheckBoxFieldProps) {
     const field = useFieldContext<boolean>()
     const id = useId()
 
