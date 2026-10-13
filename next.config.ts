@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         source: '/tmn-api/:path*',
         destination: 'https://gift.truemoney.com/:path*',
       },
+      {
+        source: '/images/:path*',
+        destination: '/api/images/:path*',
+      },
     ];
   },
 };
