@@ -39,10 +39,6 @@ const ImageSetting: React.FC = () => {
         setIsLoading(false)
     }, [])
 
-    useEffect(() => {
-        loadImages(activeGroup)
-    }, [activeGroup, loadImages])
-
     const handleGroupChange = (group: ImageGroup) => {
         setActiveGroup(group)
     }
@@ -148,6 +144,10 @@ const ImageSetting: React.FC = () => {
             }
         })
     }
+
+    useEffect(() => {
+        loadImages(activeGroup)
+    }, [activeGroup, loadImages])
 
     return (
         <div className="flex flex-col gap-4">

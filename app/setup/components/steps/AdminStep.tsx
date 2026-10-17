@@ -99,7 +99,6 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
                         {foundUser && (
                             <div className="p-4 bg-(--core-off-black) border-2 border-(--core-green-4) flex flex-col sm:flex-row items-center gap-5 shadow-[0_4px_0_rgba(0,0,0,0.25)]">
                                 <div className="shrink-0 bg-(--core-grey-6) p-2 border border-(--core-grey-5)">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <Image
                                         unoptimized
                                         loading='eager'

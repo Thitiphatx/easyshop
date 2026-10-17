@@ -25,7 +25,7 @@ const LayoutTab: React.FC = () => {
     return (
         <div className="bg-(--core-grey-6) border-b-2 lg:border-b-0 lg:border-r-2 border-(--core-grey-5)">
             <div className="w-full flex flex-row lg:flex-col justify-start lg:justify-center items-center gap-4 p-4 lg:p-8">
-                <Image unoptimized loading='lazy' src={`https://mc-heads.net/avatar/${session.username}/128`} alt="Skin Profile" className="size-12 sm:size-16 lg:size-32 shrink-0 rounded" width={128} height={128} />
+                <Image unoptimized loading='eager' src={`https://mc-heads.net/avatar/${session.username}/128`} alt="Skin Profile" className="size-12 sm:size-16 lg:size-32 shrink-0 rounded" width={128} height={128} />
                 <div className="flex flex-col items-start lg:items-center">
                     <h1 className="font-pixel text-base sm:text-xl font-bold">{session?.username}</h1>
                     <p className="text-(--marketplace-gold-3) font-bold text-xs sm:text-sm lg:text-base">{session?.point.toLocaleString()} พอยท์</p>
