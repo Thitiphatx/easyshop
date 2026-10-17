@@ -79,3 +79,7 @@ export function useAuth() {
     return ctx
 }
 
+export function useOptionalAuth() {
+    return useContext(AuthContext)
+}
+

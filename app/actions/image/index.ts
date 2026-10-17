@@ -33,7 +33,7 @@ export async function uploadImage(
         const pathname = `images/${group}/${fileName}`
 
         await put(pathname, file, {
-            access: 'public',
+            access: 'private',
             contentType: file.type,
         })
 
