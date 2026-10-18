@@ -32,7 +32,6 @@ const ModalManageServer: React.FC<IModalServerProps> = ({
         },
         onSubmit: async ({ value }: { value: ServerFormValues }) => {
             if (isEdit && serverInfo) {
-                console.log({ ...serverInfo, ...value, id: Number(serverInfo.id) })
                 const res = await updateServer({ ...serverInfo, ...value, id: Number(serverInfo.id) })
                 if (!res.success) {
                     Swal.fire({

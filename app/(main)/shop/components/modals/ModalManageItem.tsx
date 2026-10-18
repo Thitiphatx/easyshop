@@ -33,7 +33,6 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
         },
         onSubmit: async ({ value }: { value: ItemFormValues }) => {
             if (isEdit && itemInfo) {
-                console.log({ ...itemInfo, ...value, id: Number(itemInfo.id) })
                 const res = await updateItem({
                     ...itemInfo,
                     ...value,

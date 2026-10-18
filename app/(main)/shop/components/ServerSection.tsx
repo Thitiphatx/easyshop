@@ -51,7 +51,6 @@ const ServerSection: React.FC = () => {
         const res = await getAllServers();
         if (res.success && res.data) {
             setServerList(res.data)
-            console.log(res.data)
         } else {
             Swal.fire({
                 icon: 'error',
