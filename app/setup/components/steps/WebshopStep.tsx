@@ -19,7 +19,7 @@ export const WebshopStep: React.FC<IWebshopStepProps> = ({ data, onNext }) => {
         onSubmit: async ({ value }: { value: DisplayFormValues }) => {
             onNext({
                 siteName: value.siteName,
-                siteDesc: value.siteDesc,
+                siteDesc: value.siteDesc || undefined,
                 logo: value.logo,
             })
         },

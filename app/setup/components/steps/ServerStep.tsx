@@ -21,7 +21,7 @@ export const ServerStep: React.FC<IServerStepProps> = ({ data, onBack, onNext })
         onSubmit: async ({ value }: { value: ServerFormValues }) => {
             onNext({
                 serverName: value.serverName,
-                serverDesc: value.serverDesc,
+                serverDesc: value.serverDesc || undefined,
                 serverIp: value.ip,
                 serverImageUrl: value.serverImageUrl,
             })

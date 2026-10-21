@@ -56,7 +56,7 @@ model Item {
   id            Int           @id @default(autoincrement())
   serverId      Int
   name          String        @db.VarChar(50)
-  description   String        @db.Text
+  description   String?       @db.Text
   imageUrl      String?       @db.Text
   command       String        @db.Text
   price         Int           @default(0)
