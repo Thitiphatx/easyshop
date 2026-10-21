@@ -61,21 +61,22 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
         setIsLoading(false)
     }, [serverId])
 
-    const handleDeleteItem = useCallback(async (itemId: number) => {
+    const handleDeleteItem = useCallback(async (item: IItem) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "ลบไอเท็มนี้?",
+            text: item.name,
             icon: "warning",
             theme: 'dark',
             toast: false,
             showConfirmButton: true,
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "ลบ",
+            cancelButtonText: 'ยกเลิก'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await deleteItem(itemId);
+                const res = await deleteItem(item.id);
                 if (res.success) {
                     Swal.fire({
                         icon: 'success',
@@ -150,7 +151,7 @@ const ItemSection: React.FC<IItemSectionProps> = () => {
                                     className='absolute! top-1 right-1'
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDeleteItem(item.id);
+                                        handleDeleteItem(item);
                                     }}
                                     color="Red"
                                     icon={<Trash width={18} height={18} />}

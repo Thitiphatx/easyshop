@@ -65,7 +65,7 @@ export async function searchAuthMeUser(username: string): Promise<IActionRespons
                 username: true,
                 realname: true,
                 uuid: true,
-                isLogged: true,
+                islogged: true,
                 email: true,
             },
         })

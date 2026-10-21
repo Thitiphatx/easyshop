@@ -51,7 +51,6 @@ const ServerSection: React.FC = () => {
         const res = await getAllServers();
         if (res.success && res.data) {
             setServerList(res.data)
-            console.log(res.data)
         } else {
             Swal.fire({
                 icon: 'error',
@@ -61,21 +60,22 @@ const ServerSection: React.FC = () => {
         setIsLoading(false);
     }, [])
 
-    const handleDeleteServer = useCallback(async (serverId: number) => {
+    const handleDeleteServer = useCallback(async (server: IServer) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "ลบเซิร์ฟเวอร์นี้?",
+            text: server.name,
             icon: "warning",
             theme: 'dark',
             toast: false,
             showConfirmButton: true,
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "ลบ",
+            cancelButtonText: 'ยกเลิก'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const res = await deleteServer(serverId);
+                const res = await deleteServer(server.id);
                 if (res.success) {
                     Swal.fire({
                         icon: 'success',
@@ -135,7 +135,7 @@ const ServerSection: React.FC = () => {
                                     className='absolute! top-1 right-1'
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDeleteServer(server.id);
+                                        handleDeleteServer(server);
                                     }}
                                     color="Red"
                                     icon={<Trash width={18} height={18} />}

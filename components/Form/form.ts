@@ -3,12 +3,12 @@ import { fieldContext, formContext } from './context'
 import { TextField } from './TextField/TextField'
 import { TextareaField } from './TextareaField/TextareaField'
 import { SelectField } from './SelectField/SelectField'
-import { CheckboxField } from './CheckboxField/CheckBoxField'
 import { SubmitButton } from './SubmitButton/SubmitButton'
 import { ResetButton } from './ResetButton/ResetButton'
 import { FileField } from './FileField/FileField'
 import { ImageSelectField } from './ImageSelectField/ImageSelectField'
 import { DatePickerField } from './DatePickerField/DatePickerField'
+import { CheckBoxField } from './CheckBoxField/CheckBoxField'
 
 export const { useAppForm, withForm } = createFormHook({
   fieldContext,
@@ -18,7 +18,7 @@ export const { useAppForm, withForm } = createFormHook({
     TextareaField,
     FileField,
     SelectField,
-    CheckboxField,
+    CheckBoxField,
     ImageSelectField,
     DatePickerField,
   },

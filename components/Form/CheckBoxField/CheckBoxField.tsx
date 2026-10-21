@@ -6,10 +6,10 @@ import { FieldWrapper } from '../FieldWrapper/FieldWrapper'
 import Checkbox from '@/components/Checkbox/Checkbox'
 import Tooltip from '@/components/Tooltip/index'
 import { InfoBox } from 'pixelarticons/react'
-import { ICheckboxFieldProps } from './interface'
 import clsx from 'clsx'
+import { ICheckBoxFieldProps } from './interface'
 
-export function CheckboxField({ label, className, labelClassName, variant, tooltip, disabled }: ICheckboxFieldProps) {
+export function CheckBoxField({ label, className, labelClassName, variant, tooltip, disabled }: ICheckBoxFieldProps) {
     const field = useFieldContext<boolean>()
     const id = useId()
 

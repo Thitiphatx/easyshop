@@ -8,7 +8,7 @@ import { getDateRange, SummaryType } from "@/app/utils/utils";
 import { getSession } from "../session";
 
 export async function getUsers(request: IUserFilter): Promise<IActionResponse<IPagination<IUser>>> {
-    const { page = 1, size = 10, search, isLogged, isAdmin, sort, order } = request;
+    const { page = 1, size = 10, search, islogged, isAdmin, sort, order } = request;
 
     try {
         const where: Prisma.AuthMeWhereInput = {};
@@ -30,9 +30,9 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
             return undefined;
         };
 
-        const isLoggedBit = toBit(isLogged);
-        if (isLoggedBit !== undefined) {
-            where.isLogged = isLoggedBit;
+        const isloggedBit = toBit(islogged);
+        if (isloggedBit !== undefined) {
+            where.islogged = isloggedBit;
         }
 
         const isAdminBit = toBit(isAdmin);
@@ -62,7 +62,7 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
                     ip: true,
                     lastlogin: true,
                     email: true,
-                    isLogged: true,
+                    islogged: true,
                     isAdmin: true,
                     uuid: true,
                     points: true

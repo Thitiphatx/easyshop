@@ -14,7 +14,7 @@ export type IUser = Prisma.AuthMeGetPayload<{
         ip: true;
         lastlogin: true;
         email: true;
-        isLogged: true;
+        islogged: true;
         isAdmin: true;
         uuid: true;
         points: true

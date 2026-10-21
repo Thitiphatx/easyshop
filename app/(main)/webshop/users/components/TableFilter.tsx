@@ -11,7 +11,7 @@ const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => 
     const form = useAppForm({
         defaultValues: {
             search: '',
-            isLogged: '',
+            islogged: '',
             isAdmin: '',
             sort: '',
             order: '',
@@ -19,7 +19,7 @@ const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => 
         onSubmit: async ({ value }) => {
             const parsed = UserFilterSchema.parse({
                 search: value.search?.trim() || undefined,
-                isLogged: value.isLogged === 'true' ? true : value.isLogged === 'false' ? false : undefined,
+                islogged: value.islogged === 'true' ? true : value.islogged === 'false' ? false : undefined,
                 isAdmin: value.isAdmin === 'true' ? true : value.isAdmin === 'false' ? false : undefined,
                 sort: value.sort || undefined,
                 order: value.order || undefined,
@@ -43,7 +43,7 @@ const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => 
         { label: "มากไปน้อย", value: "desc" },
     ], [])
 
-    const isLoggedOptions: ISelectOption[] = useMemo(() => [
+    const isloggedOptions: ISelectOption[] = useMemo(() => [
         { label: "ไม่ได้เลือก", value: "" },
         { label: "ออนไลน์", value: "true" },
         { label: "ออฟไลน์", value: "false" },
@@ -69,8 +69,8 @@ const TableFilter: React.FC<ITableUserFilterProps> = ({ hidden, fetchUser }) => 
                 />
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2'>
                     <form.AppField
-                        name="isLogged"
-                        children={(field) => <field.SelectField label="อยู่ในเกม" options={isLoggedOptions} />}
+                        name="islogged"
+                        children={(field) => <field.SelectField label="อยู่ในเกม" options={isloggedOptions} />}
                     />
                     <form.AppField
                         name="isAdmin"
