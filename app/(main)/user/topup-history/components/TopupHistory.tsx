@@ -28,7 +28,7 @@ const statusLabelMap: Record<string, string> = {
 
 const TopupHistory: React.FC = () => {
     const { session, isLoading: isAuthLoading, openAuth } = useAuth()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [total, setTotal] = useState<number>(0)
@@ -127,6 +127,7 @@ const TopupHistory: React.FC = () => {
                 <Table
                     columns={columns}
                     data={topupHistory}
+                    loading={isLoading}
                     emptyText="ไม่มีประวัติการเติมเงิน"
                     pagination={{ page, total, size, onChange: setPage }}
                 />

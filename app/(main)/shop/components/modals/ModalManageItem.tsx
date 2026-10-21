@@ -19,7 +19,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
 
     const defaultValues = useMemo<ItemFormValues>(() => ({
         name: isEdit && itemInfo ? itemInfo.name : '',
-        description: isEdit && itemInfo ? itemInfo.description : '',
+        description: (isEdit && itemInfo && itemInfo.description) ? itemInfo.description : undefined,
         imageUrl: (isEdit && itemInfo) && itemInfo.imageUrl ? itemInfo.imageUrl : undefined,
         command: isEdit && itemInfo ? itemInfo.command : '',
         price: isEdit && itemInfo ? String(itemInfo.price) : '0',
@@ -100,7 +100,7 @@ const ModalManageItem: React.FC<IModalItemProps> = ({
                         />
                         <form.AppField
                             name="description"
-                            children={(field) => <field.TextareaField label="Description" placeholder='กรอกรายละเอียดไอเท็ม' />}
+                            children={(field) => <field.TextareaField label="Description" placeholder='กรอกรายละเอียดไอเท็ม' nullable />}
                         />
                         <form.AppField
                             name="category"

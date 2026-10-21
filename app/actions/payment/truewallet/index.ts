@@ -125,7 +125,7 @@ export async function redeem(voucherCode: string, turnstileToken: string): Promi
         }
 
         const amount = res.data.amount
-        const receivePoint = amount * setting.pointMultiplier
+        const receivePoint = Number(amount / 100 * setting.pointMultiplier) || 0
 
         const account = await prisma.$transaction(async (tx) => {
             const updatedAccount = await tx.authMe.update({

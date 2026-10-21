@@ -14,9 +14,10 @@ import { useAuth } from '@/app/contexts/authContext'
 
 const TrueWalletPage: React.FC = () => {
     const [turnstileToken, setTurnstileToken] = useState<string>("")
+    const [turnstilePublicSiteKey] = useState<string | undefined>(process.env.NEXT_PUBLIC_TURNSTILE_SITE)
+    const turnstileRef = useRef<TurnstileInstance>(null)
     const { setting } = useSetting()
     const { fetchSession } = useAuth()
-    const turnstileRef = useRef<TurnstileInstance>(null)
 
     const form = useAppForm({
         defaultValues: { giftUrl: '', agree: false },
@@ -62,7 +63,7 @@ const TrueWalletPage: React.FC = () => {
                     <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>TrueWallet</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>กรอกลิงก์ซองของขวัญ</h2>
                 </span>
-                {setting?.enableTruewallet ? (
+                {setting?.enableTruewallet && turnstilePublicSiteKey ? (
                     <Card className='mt-8 sm:mt-12 w-full max-w-2xl'>
                         <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                             <form.AppField
@@ -73,12 +74,14 @@ const TrueWalletPage: React.FC = () => {
                                 name="agree"
                                 children={(field) => <field.CheckBoxField label="ยอมรับเงื่อนไข" />}
                             />
-                            <Turnstile
-                                ref={turnstileRef}
-                                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE!}
-                                onSuccess={(token) => setTurnstileToken(token)}
-                                onExpire={() => setTurnstileToken('')}
-                            />
+                            {turnstilePublicSiteKey && (
+                                <Turnstile
+                                    ref={turnstileRef}
+                                    siteKey={turnstilePublicSiteKey}
+                                    onSuccess={(token) => setTurnstileToken(token)}
+                                    onExpire={() => setTurnstileToken('')}
+                                />
+                            )}
                             <form.AppForm>
                                 <form.SubmitButton block>ยืนยัน</form.SubmitButton>
                             </form.AppForm>

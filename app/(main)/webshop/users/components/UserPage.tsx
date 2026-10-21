@@ -15,7 +15,7 @@ import TableFilter from './TableFilter'
 import { UserFilterFormValues } from '../schema'
 
 const UserPage: React.FC = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [size] = useState<number>(10)
@@ -137,11 +137,13 @@ const UserPage: React.FC = () => {
             </Card>
             <TableFilter hidden={!isShowFilter} fetchUser={fetchUser} />
             <Card className='h-full'>
-                <Table columns={columns} data={users}
+                <Table
+                    columns={columns}
+                    data={users}
+                    loading={isLoading}
                     emptyText="ไม่พบรายชื่อผู้เล่นในระบบ"
-                    pagination={{ page, total, size, onChange: setPage }}>
-
-                </Table>
+                    pagination={{ page, total, size, onChange: setPage }}
+                />
             </Card>
         </div>
     )

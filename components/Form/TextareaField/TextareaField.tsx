@@ -9,6 +9,8 @@ export function TextareaField({ label, required, nullable, tooltip, layout, ...t
     const field = useFieldContext<string | null>()
     const isError = field.state.meta.isTouched && field.state.meta.errors.length > 0
 
+    const isNullable = nullable ?? !required
+
     return (
         <FieldWrapper label={label} required={required} tooltip={tooltip} layout={layout}>
             <div className='relative w-full'>
@@ -16,7 +18,7 @@ export function TextareaField({ label, required, nullable, tooltip, layout, ...t
                     {...textareaProps}
                     value={field.state.value ?? ''}
                     onChange={(e) => field.handleChange(
-                        nullable ? (e.target.value || null) : e.target.value
+                        isNullable ? (e.target.value || null) : e.target.value
                     )}
                     onBlur={field.handleBlur}
                     isError={isError}

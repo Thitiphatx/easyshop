@@ -13,7 +13,7 @@ import TableFilter from './TableFilter'
 import { PurchaseFilterFormValues } from '../schema'
 
 const PurchaseHistory: React.FC = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [total, setTotal] = useState<number>(0)
@@ -92,6 +92,7 @@ const PurchaseHistory: React.FC = () => {
                 <Table
                     columns={columns}
                     data={purchaseHistory}
+                    loading={isLoading}
                     emptyText="ไม่มีประวัติการซื้อ"
                     pagination={{ page, total, size, onChange: setPage }}
                 />

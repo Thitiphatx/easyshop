@@ -16,6 +16,8 @@ export function TextField({ label, required, nullable, tooltip, layout, type, ..
     const isPassword = type === 'password'
     const resolvedType = isPassword ? (showPassword ? 'text' : 'password') : type
 
+    const isNullable = nullable ?? !required
+
     return (
         <FieldWrapper label={label} required={required} tooltip={tooltip} layout={layout}>
             <div className='relative w-full'>
@@ -24,7 +26,7 @@ export function TextField({ label, required, nullable, tooltip, layout, type, ..
                     type={resolvedType}
                     value={field.state.value ?? ''}
                     onChange={(e) => field.handleChange(
-                        nullable ? (e.target.value || null) : e.target.value
+                        isNullable ? (e.target.value || null) : e.target.value
                     )}
                     onBlur={field.handleBlur}
                     isError={isError}

@@ -1,3 +1,4 @@
+import { phoneRegex } from "@/app/utils/regex"
 import z from "zod"
 
 export const PromotionSchema = z.object({
@@ -6,7 +7,14 @@ export const PromotionSchema = z.object({
 
 export const TrueWalletSchema = z.object({
     enableTruewallet: z.boolean(),
-    truewalletPhoneNumber: z.string().refine((value) => /^[0-9]{10}$/.test(value), "กรุณาระบุเบอร์โทรศัพท์ TrueMoney Wallet ที่ถูกต้อง"),
+    truewalletPhoneNumber:
+        z.string()
+            .refine((value) => {
+                if (!value) return true
+                return phoneRegex.test(value)
+            }, "กรุณาระบุเบอร์โทรศัพท์ TrueMoney Wallet ที่ถูกต้อง")
+            .nullable()
+            .optional(),
 })
 
 export const EasyslipSchema = z.object({

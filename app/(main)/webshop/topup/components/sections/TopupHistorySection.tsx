@@ -29,7 +29,7 @@ const statusLabelMap: Record<string, string> = {
 }
 
 const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className }) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isShowFilter, setShowFilter] = useState<boolean>(false)
     const [page, setPage] = useState<number>(1)
     const [size] = useState<number>(10)
@@ -116,6 +116,7 @@ const TopupHistorySection: React.FC<ITopupHistorySectionProps> = ({ className })
                 <Table
                     columns={columns}
                     data={topups}
+                    loading={isLoading}
                     emptyText="ไม่พบประวัติการเติมเงินในระบบ"
                     pagination={{ page, total, size, onChange: setPage }}
                 />

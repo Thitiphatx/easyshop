@@ -13,9 +13,11 @@ export const ServerSchema = z.object({
         .trim()
         .max(25, "คำอธิบายไม่เกิน 25 ตัวอักษร")
         .regex(CommonTextRegex, "ห้ามใช้ตัวอักษรพิเศษ")
+        .nullable()
         .optional(),
     imageUrl: z
         .string()
+        .nullable()
         .optional(),
     rconHost: z
         .string()
@@ -46,9 +48,12 @@ export const ItemSchema = z.object({
         .string()
         .trim()
         .max(200, "รายละเอียดไอเทมไม่เกิน 200 ตัวอักษร")
-        .regex(CommonTextRegex, "ห้ามใช้ตัวอักษรพิเศษ"),
+        .regex(CommonTextRegex, "ห้ามใช้ตัวอักษรพิเศษ")
+        .nullable()
+        .optional(),
     imageUrl: z
         .string()
+        .nullable()
         .optional(),
     command: z.string().min(1, "กรอกคำสั่งเสกไอเท็ม"),
     price: z

@@ -22,16 +22,18 @@ const TrueWalletSection: React.FC = () => {
             onSubmit: TrueWalletSchema,
         },
         onSubmit: async ({ value }: { value: TrueWalletFormValues }) => {
-            const confirm = await Swal.fire({
-                icon: 'warning',
-                title: 'ตรวจสอบเบอร์โทรศัพท์ให้ถูกต้อง',
-                text: 'หากกรอกผิดลูกค้าจะไม่สามารถเติมเงินได้',
-                showCancelButton: true,
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก',
-            })
-            if (!confirm.isConfirmed) return
+            if (value.truewalletPhoneNumber) {
 
+                const confirm = await Swal.fire({
+                    icon: 'warning',
+                    title: 'ตรวจสอบเบอร์โทรศัพท์ให้ถูกต้อง',
+                    text: 'หากกรอกผิดลูกค้าจะไม่สามารถเติมเงินได้',
+                    showCancelButton: true,
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก',
+                })
+                if (!confirm.isConfirmed) return
+            }
             const res = await updateTrueWalletSetting(value)
             if (!res.success) {
                 Swal.fire({ icon: 'error', title: res.error })
@@ -73,7 +75,7 @@ const TrueWalletSection: React.FC = () => {
                         <div className="space-y-4 [&_label>span:first-child]:sm:w-44 [&_label>span:first-child]:sm:shrink-0">
                             <form.AppField
                                 name="truewalletPhoneNumber"
-                                children={(field) => <field.TextField label="เบอร์โทรศัพท์" layout='horizontal' placeholder='กรอกเบอร์โทรศัพท์' required />}
+                                children={(field) => <field.TextField label="เบอร์โทรศัพท์" layout='horizontal' placeholder='กรอกเบอร์โทรศัพท์' />}
                             />
                         </div>
                         <div className="flex justify-end pt-5 mt-5 border-t border-(--core-grey-5)">

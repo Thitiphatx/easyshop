@@ -6,7 +6,6 @@ import { ITableColumn } from '@/components/Table/interface'
 import { getAllBanners, deleteBanner } from '@/app/actions/banner'
 import Swal from '@/lib/Swal'
 import Image from 'next/image'
-import Loading from '@/components/Loading'
 import Button from '@/components/Button/Button'
 import { Banner } from '@/app/generated/prisma/client'
 import { Plus, Trash } from 'pixelarticons/react'
@@ -112,11 +111,7 @@ const BannerSection: React.FC<IBannerSectionProps> = ({
                                 เพิ่ม Banner
                             </Button>
                         </div>
-                        {isLoading ? (
-                            <div className="flex justify-center py-8"><Loading /></div>
-                        ) : (
-                            <Table columns={columns} data={banners} />
-                        )}
+                        <Table columns={columns} data={banners} loading={isLoading} />
                     </div>
                 </div>
             </Card>
