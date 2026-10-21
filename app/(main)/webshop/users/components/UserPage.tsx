@@ -96,7 +96,7 @@ const UserPage: React.FC = () => {
             label: 'Email'
         },
         {
-            key: 'isLogged',
+            key: 'islogged',
             label: 'อยู่ในเกม',
             align: 'center',
             render: (value: number) => <Badge color={value == 1 ? 'Green' : 'Red'}>{value == 1 ? 'ออนไลน์' : 'ออฟไลน์'}</Badge>

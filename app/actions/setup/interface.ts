@@ -36,6 +36,6 @@ export interface IAuthMeUserPreview {
     username: string
     realname: string
     uuid: string
-    isLogged: number
+    islogged: number
     email?: string | null
 }
