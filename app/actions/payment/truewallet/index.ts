@@ -131,20 +131,12 @@ export async function redeem(voucherCode: string, turnstileToken: string): Promi
             const updatedAccount = await tx.authMe.update({
                 where: { username: session.username },
                 data: {
-                    playerPoints: {
-                        update: {
-                            points: {
-                                increment: receivePoint
-                            }
-                        }
+                    points: {
+                        increment: receivePoint
                     }
                 },
                 select: {
-                    playerPoints: {
-                        select: {
-                            points: true
-                        }
-                    }
+                    points: true
                 }
             })
 
@@ -166,7 +158,7 @@ export async function redeem(voucherCode: string, turnstileToken: string): Promi
             success: true,
             data: {
                 receivePoint: receivePoint,
-                totalPoint: account.playerPoints.points
+                totalPoint: account.points
             }
         };
     } catch (error: any) {

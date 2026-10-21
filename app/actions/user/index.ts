@@ -45,7 +45,7 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
 
         const orderBy: Prisma.AuthMeOrderByWithRelationInput =
             sortField === 'points'
-                ? { playerPoints: { points: orderDirection } }
+                ? { points: orderDirection }
                 : sortField && ['id', 'username', 'lastlogin', 'email'].includes(sortField)
                     ? { [sortField]: orderDirection }
                     : { id: 'desc' };
@@ -65,11 +65,7 @@ export async function getUsers(request: IUserFilter): Promise<IActionResponse<IP
                     isLogged: true,
                     isAdmin: true,
                     uuid: true,
-                    playerPoints: {
-                        select: {
-                            points: true
-                        }
-                    }
+                    points: true
                 }
             }),
             prisma.authMe.count({ where })

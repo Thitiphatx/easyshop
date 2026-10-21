@@ -16,14 +16,13 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
 
     const user = await prisma.authMe.findFirst({
         where: { username: request.playerName },
-        include: { playerPoints: true }
     })
 
     if (!user) {
         return { success: false, error: "ไม่พบผู้ใช้ในระบบ" }
     }
 
-    const userPoints = user.playerPoints?.points ?? 0;
+    const userPoints = user.points ?? 0;
     if (userPoints < product.price) {
         return { success: false, error: "พอยท์ไม่เพียงพอ" }
     }
@@ -34,9 +33,7 @@ export async function buyItem(request: IBuyItemRequest): Promise<IActionResponse
             await tx.authMe.update({
                 where: { id: user.id },
                 data: {
-                    playerPoints: {
-                        update: { points: userPoints - product.price }
-                    }
+                    points: userPoints - product.price
                 }
             })
 

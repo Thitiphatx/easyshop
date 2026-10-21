@@ -144,20 +144,12 @@ export async function topupBank(base64: string, devMode: string, turnstileToken:
             const updatedAccount = await tx.authMe.update({
                 where: { username: session.username },
                 data: {
-                    playerPoints: {
-                        update: {
-                            points: {
-                                increment: receivePoint
-                            }
-                        }
+                    points: {
+                        increment: receivePoint
                     }
                 },
                 select: {
-                    playerPoints: {
-                        select: {
-                            points: true
-                        }
-                    }
+                    points: true
                 }
             })
 
@@ -179,7 +171,7 @@ export async function topupBank(base64: string, devMode: string, turnstileToken:
             success: true,
             data: {
                 receivePoint: receivePoint,
-                totalPoint: account.playerPoints.points
+                totalPoint: account.points
             }
         }
 
