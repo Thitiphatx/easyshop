@@ -69,7 +69,6 @@ export async function refreshSession(): Promise<IActionResponse<void>> {
 
         const user = await prisma.authMe.findFirst({
             where: { id: session.id },
-            include: { playerPoints: true }
         });
 
         if (!user) {
@@ -84,7 +83,7 @@ export async function refreshSession(): Promise<IActionResponse<void>> {
             username: user.username,
             profileImageUrl: "",
             isAdmin: Boolean(user.isAdmin),
-            point: user.playerPoints?.points ?? 0,
+            point: user.points ?? 0,
         }
 
         await createSession(sessionPayload);

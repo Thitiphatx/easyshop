@@ -11,27 +11,27 @@ datasource db {
 }
 
 model AuthMe {
-  id           Int                 @id @default(autoincrement()) @db.UnsignedMediumInt
-  username     String              @unique(map: "username") @db.VarChar(255)
-  realname     String              @db.VarChar(255)
-  password     String              @db.VarChar(255)
-  ip           String?             @db.VarChar(40)
+  id           Int           @id @default(autoincrement()) @db.UnsignedMediumInt
+  username     String        @unique(map: "username") @db.VarChar(255)
+  realname     String        @db.VarChar(255)
+  password     String        @db.VarChar(255)
+  ip           String?       @db.VarChar(40)
   lastlogin    BigInt?
-  x            Float               @default(0)
-  y            Float               @default(0)
-  z            Float               @default(0)
-  world        String              @default("world") @db.VarChar(255)
-  regdate      BigInt              @default(0)
-  regip        String?             @db.VarChar(40)
-  yaw          Float?              @db.Float
-  pitch        Float?              @db.Float
-  email        String?             @db.VarChar(255)
-  isLogged     Int                 @default(0) @db.SmallInt
-  hasSession   Int                 @default(0) @db.SmallInt
-  totp         String?             @db.VarChar(32)
-  isAdmin      Int                 @default(0) @db.SmallInt
-  uuid         String              @db.VarChar(36)
-  playerPoints playerpoints_points @relation(fields: [uuid], references: [uuid])
+  x            Float         @default(0)
+  y            Float         @default(0)
+  z            Float         @default(0)
+  world        String        @default("world") @db.VarChar(255)
+  regdate      BigInt        @default(0)
+  regip        String?       @db.VarChar(40)
+  yaw          Float?        @db.Float
+  pitch        Float?        @db.Float
+  email        String?       @db.VarChar(255)
+  isLogged     Int           @default(0) @db.SmallInt
+  hasSession   Int           @default(0) @db.SmallInt
+  totp         String?       @db.VarChar(32)
+  isAdmin      Int           @default(0) @db.SmallInt
+  uuid         String        @db.VarChar(36)
+  points       Int           @default(0)
   topups       Topup[]
   transactions Transaction[]
 
@@ -103,40 +103,6 @@ model Topup {
 
   @@index([userId])
   @@map("topup")
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model playerpoints_migrations {
-  migration_version Int
-
-  @@ignore
-}
-
-model playerpoints_points {
-  id      Int      @id @default(autoincrement())
-  uuid    String   @unique(map: "uuid") @db.VarChar(36)
-  points  Int      @default(0)
-  authMes AuthMe[]
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model playerpoints_transaction_log {
-  transaction_type String    @db.VarChar(20)
-  description      String    @db.VarChar(100)
-  source           String?   @db.VarChar(36)
-  receiver         String    @db.VarChar(36)
-  amount           Int
-  timestamp        DateTime? @default(now()) @db.Timestamp(0)
-
-  @@ignore
-}
-
-model playerpoints_username_cache {
-  uuid     String @unique(map: "uuid") @db.VarChar(36)
-  username String @db.VarChar(30)
-
-  @@index([username], map: "playerpoints_username_cache_username_index")
-  @@index([uuid], map: "playerpoints_username_cache_uuid_index")
 }
 
 enum TopupStatus {

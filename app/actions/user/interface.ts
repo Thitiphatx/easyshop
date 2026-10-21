@@ -17,10 +17,6 @@ export type IUser = Prisma.AuthMeGetPayload<{
         isLogged: true;
         isAdmin: true;
         uuid: true;
-        playerPoints: {
-            select: {
-                points: true
-            }
-        }
+        points: true
     };
 }>;

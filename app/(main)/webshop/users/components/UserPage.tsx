@@ -105,7 +105,7 @@ const UserPage: React.FC = () => {
             key: 'points',
             label: 'Points',
             align: 'right',
-            render: (_value: any, row: IUser) => formatCurrency(row.playerPoints.points)
+            render: (_value: any, row: IUser) => formatCurrency(row.points)
         },
         {
             key: 'isAdmin',
