@@ -74,10 +74,10 @@ export async function sendItem(request: ISendItemRequest): Promise<IActionRespon
 
     const player = await prisma.authMe.findFirst({
         where: { username: request.playerName },
-        select: { isLogged: true }
+        select: { islogged: true }
     })
 
-    if (player && player.isLogged !== 1) {
+    if (player && player.islogged !== 1) {
         return {
             success: false,
             error: "ผู้เล่นยังไม่ได้เข้าสู่ระบบ กรุณาอยู่ในเซิร์ฟเวอร์ก่อนทำรายการ"
