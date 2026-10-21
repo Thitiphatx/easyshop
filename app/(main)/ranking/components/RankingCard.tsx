@@ -81,7 +81,7 @@ const RankingCard: React.FC<IRankingCardProps> = ({
                 <Image
                     unoptimized
                     loading='eager'
-                    src={`https://mc-heads.net/body/${topDonateInfo.username}/${direction === "left" ? "left" : ""}`}
+                    src={`https://mc-heads.net/body/${topDonateInfo.username}${direction === "left" ? "/left" : ""}`}
                     alt={`${topDonateInfo.username} avatar`}
                     className='w-20 sm:w-24 h-auto'
                     width={96}
