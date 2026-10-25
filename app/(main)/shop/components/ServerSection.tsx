@@ -117,6 +117,11 @@ const ServerSection: React.FC = () => {
                             isIconOnly />
                     </div>
                 </div>
+                <Card className='text-center mb-4 w-fit! mx-auto'>
+                    <p className='text-(--default-warning)! font-bold'>
+                        Demo ไม่มีบริการเซิร์ฟเวอร์ Minecraft ให้ท่าน หากต้องการซื้อไอเท็มจริงกรุณาเปิดเซิร์ฟเวอร์ Minecraft และเชื่อมต่อ RCON เข้ากับระบบผ่าน Demo Account ด้วยตนเอง
+                    </p>
+                </Card>
                 {isLoading ? <Loading /> :
                     <div className='max-w-360 mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 place-items-stretch justify-items-center'>
                         <Card

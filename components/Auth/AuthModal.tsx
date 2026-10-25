@@ -13,7 +13,7 @@ const AuthModal: React.FC = () => {
     const { isOpen, setIsOpen, setSession, closeAuth } = useAuth()
 
     const form = useAppForm({
-        defaultValues: { username: '', password: '' },
+        defaultValues: { username: 'demo', password: '1231234x' },
         validators: {
             onSubmit: SignInSchema
         },
