@@ -129,6 +129,10 @@ POSTGRES_DATABASE="easyshop"
 POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="postgres"
 
+# Docker Compose Minecraft Server RCON config (กรณีรันผ่าน docker-compose)
+RCON_PORT=25575
+RCON_PASSWORD="minecraft"
+
 # Authentication & Security
 JWT_SECRET="your-super-secret-jwt-key"
 ENCRYPT_SECRET="your-encryption-secret-key"
@@ -142,16 +146,42 @@ TURNSTILE_SECRET="your-turnstile-secret-key"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-### 3. เตรียมฐานข้อมูลและ Prisma
+### 3. ตั้งค่าปลั๊กอิน AuthMe ให้เชื่อมต่อกับ Database
+แก้ไขไฟล์ config ของ AuthMe ให้ตรงกับฐานข้อมูลในไฟล์ `.env`:
+- **หากรันเซิร์ฟเวอร์ผ่าน Docker**: แก้ไขที่ไฟล์ `minecraft_data/plugins/AuthMe/config.yml`
+- **หากใช้เซิร์ฟเวอร์ภายนอก (ไม่ได้รันผ่าน Docker)**: ไปที่โฟลเดอร์เซิร์ฟเวอร์ของคุณแล้วแก้ไขไฟล์ `plugins/AuthMe/config.yml`
+
+```yaml
+DataSource:
+  backend: POSTGRESQL
+  caching: false
+  mySQLHost: postgres-db       # หากรันผ่าน docker-compose ใช้ 'postgres-db' (หรือ 'localhost' หากรันตรง)
+  mySQLPort: '5432'
+  mySQLUseSSL: false
+  mySQLCheckServerCertificate: false
+  mySQLUsername: easyshop      # ให้ตรงกับ POSTGRES_USER ใน .env
+  mySQLPassword: '1234'        # ให้ตรงกับ POSTGRES_PASSWORD ใน .env
+  mySQLDatabase: easyshop      # ให้ตรงกับ POSTGRES_DATABASE ใน .env
+  mySQLTablename: authme
+```
+
+### 4. รัน Service ด้วย Docker (Database & Minecraft Server)
+เริ่มต้นรันฐานข้อมูล PostgreSQL และเซิร์ฟเวอร์ Minecraft:
+```bash
+# รัน Services ในพื้นหลัง
+docker compose up -d
+```
+
+### 5. เตรียมฐานข้อมูลและ Prisma
 ```bash
 # สร้าง Prisma Client
 bunx prisma generate
 
-# พุชสคีมาไปยังฐานข้อมูล (กรณีเริ่มฐานข้อมูลใหม่)
+# พุชสคีมาไปยังฐานข้อมูล
 bunx prisma db push
 ```
 
-### 4. รันระบบสำหรับการพัฒนา (Development)
+### 6. รันระบบสำหรับการพัฒนา (Development)
 ```bash
 bun run dev
 # หรือ
@@ -159,11 +189,9 @@ npm run dev
 ```
 เปิดบราวเซอร์ไปที่ [http://localhost:3000](http://localhost:3000)
 
-### 5. รันผ่าน Docker
-```bash
-# รันเฉพาะ PostgreSQL Database
-docker compose up -d
+---
 
-# Build Image ของเว็บไซต์
+### (เสริม) Build Image ของเว็บไซต์
+```bash
 docker build -t easyshop:latest .
 ```

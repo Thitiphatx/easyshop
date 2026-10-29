@@ -42,3 +42,12 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# minecraft
+/minecraft_data/*
+!/minecraft_data/plugins/
+/minecraft_data/plugins/*
+!/minecraft_data/plugins/AuthMe/
+/minecraft_data/plugins/AuthMe/*
+!/minecraft_data/plugins/AuthMe/config.yml
+!/minecraft_data/plugins/AuthMe-5.7.0-FORK-Universal.jar

@@ -1,0 +1,336 @@
+DataSource:
+    # What type of database do you want to use?
+    # Valid values: H2, SQLITE, MARIADB, MYSQL, POSTGRESQL
+    backend: POSTGRESQL
+    # Enable the database caching system, should be disabled on bungeecord environments
+    # or when a website integration is being used.
+    caching: false
+    # Should we try to use VirtualThreads(Java 21+) for database cache loader?
+    useVirtualThreadsCache: false
+    # Database host address
+    mySQLHost: postgres-db
+    # Database port
+    mySQLPort: '5432'
+    # Replacement of Mysql's useSsl (for MariaDB only).
+    MariaDbSslMode: disabled
+    # Connect to MySQL database over SSL
+    # If you're using MariaDB, use sslMode instead
+    mySQLUseSSL: false
+    # Verification of server's certificate.
+    # We would not recommend to set this option to false.
+    mySQLCheckServerCertificate: false
+    # Authorize client to retrieve RSA server public key.
+    mySQLAllowPublicKeyRetrieval: true
+    # Username to connect to the database
+    mySQLUsername: easyshop
+    # Password to connect to the database
+    mySQLPassword: '1234'
+    # Database Name, use with converters or as SQLITE database name
+    mySQLDatabase: easyshop
+    # Table of the database
+    mySQLTablename: authme
+    # Column of IDs to sort data
+    mySQLColumnId: id
+    # Column for storing or checking players nickname
+    mySQLColumnName: username
+    # Column for storing or checking players RealName
+    mySQLRealName: realname
+    # Column for storing players passwords
+    mySQLColumnPassword: password
+    # Column for storing players passwords salts
+    mySQLColumnSalt: ''
+    # Column for storing players emails
+    mySQLColumnEmail: email
+    # Column for storing if a player is logged in or not
+    mySQLColumnLogged: isLogged
+    # Column for storing if a player has a valid session or not
+    mySQLColumnHasSession: hasSession
+    # Column for storing a player's TOTP key (for two-factor authentication)
+    mySQLtotpKey: totp
+    # Column for storing the player's last IP
+    mySQLColumnIp: ip
+    # Column for storing players lastlogins
+    mySQLColumnLastLogin: lastlogin
+    # Column storing the registration date
+    mySQLColumnRegisterDate: regdate
+    # Column for storing the IP address at the time of registration
+    mySQLColumnRegisterIp: regip
+    # Column for storing player LastLocation - X
+    mySQLlastlocX: x
+    # Column for storing player LastLocation - Y
+    mySQLlastlocY: y
+    # Column for storing player LastLocation - Z
+    mySQLlastlocZ: z
+    # Column for storing player LastLocation - World Name
+    mySQLlastlocWorld: world
+    # Column for storing player LastLocation - Yaw
+    mySQLlastlocYaw: yaw
+    # Column for storing player LastLocation - Pitch
+    mySQLlastlocPitch: pitch
+    # Column for storing players uuids (optional)
+    mySQLPlayerUUID: 'uuid'
+    # Overrides the size of the DB Connection Pool, default = 10
+    poolSize: 10
+    # The maximum lifetime of a connection in the pool, default = 1800 seconds
+    maxLifetime: 1800
+ExternalBoardOptions:
+    mySQLColumnGroup: ''
+    nonActivedUserGroup: -1
+    mySQLOtherUsernameColumns: []
+    bCryptLog2Round: 12
+    phpbbTablePrefix: phpbb_
+    phpbbActivatedGroupId: 2
+    IPBTablePrefix: ipb_
+    IPBActivatedGroupId: 3
+    XFTablePrefix: xf_
+    XFActivatedGroupId: 2
+    wordpressTablePrefix: wp_
+3rdPartyFeature:
+    compatibility:
+        menuPlugins: false
+    features:
+        i18nMessages:
+            enabled: false
+            locale-code-redirect: 
+            - 'tt_ru:ru'
+            - 'lzh:zhcn'
+        bedrockAutoLogin: false
+        purgeData:
+            purgeOnQuit: false
+            purgeWorldFolderName: world
+    fixes:
+        antiGhostPlayer: false
+        advancedShulkerFix: false
+        loginLocationFix:
+            fixPortalStuck: false
+            fixGroundStuck: false
+settings:
+    sessions:
+        enabled: true
+        timeout: 43200
+    messagesLanguage: en
+    forceVaultHook: false
+    logLevel: FINE
+    useAsyncTasks: true
+    serverName: Your Minecraft Server
+    restrictions:
+        allowChat: false
+        hideChat: false
+        allowCommands: 
+        - /login
+        - /log
+        - /l
+        - /register
+        - /reg
+        - /email
+        - /captcha
+        - /2fa
+        - /totp
+        maxRegPerIp: 3
+        minNicknameLength: 3
+        maxNicknameLength: 16
+        ForceSingleSession: true
+        ForceSpawnLocOnJoin:
+            enabled: false
+            worlds: 
+            - world
+            - world_nether
+            - world_the_end
+        SaveQuitLocation: false
+        AllowRestrictedUser: true
+        AllowedRestrictedUser: 
+        - server_land;127.0.0.1
+        - server;127.0.0.1
+        - bukkit;127.0.0.1
+        - purpur;127.0.0.1
+        - system;127.0.0.1
+        - admin;127.0.0.1
+        - md_5;127.0.0.1
+        - administrator;127.0.0.1
+        - notch;127.0.0.1
+        - spigot;127.0.0.1
+        - bukkitcraft;127.0.0.1
+        - paperclip;127.0.0.1
+        - papermc;127.0.0.1
+        - spigotmc;127.0.0.1
+        - root;127.0.0.1
+        - console;127.0.0.1
+        - authme;127.0.0.1
+        - owner;127.0.0.1
+        banUnsafedIP: false
+        kickNonRegistered: false
+        kickOnWrongPassword: false
+        teleportUnAuthedToSpawn: false
+        allowMovement: false
+        timeout: 120
+        allowedNicknameCharacters: '[a-zA-Z0-9_]*'
+        allowedMovementRadius: 0
+        ProtectInventoryBeforeLogIn: false
+        DenyTabCompleteBeforeLogin: false
+        displayOtherAccounts: false
+        spawnPriority: authme,essentials,cmi,multiverse,default
+        maxLoginPerIp: 3
+        maxJoinPerIp: 3
+        noTeleport: false
+        allowedPasswordCharacters: '[!-~]*'
+        allowedEmailCharacters: ^([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9-]+)\.([a-zA-Z]{2,})$
+    GameMode:
+        ForceSurvivalMode: false
+    unrestrictions:
+        UnrestrictedName: []
+        UnrestrictedInventories: []
+        StrictUnrestrictedInventoriesCheck: true
+    security:
+        minPasswordLength: 8
+        passwordMaxLength: 26
+        passwordHash: BCRYPT
+        legacyHashes: []
+        doubleMD5SaltLength: 8
+        pbkdf2Rounds: 10000
+        unsafePasswords: 
+        - '12345678'
+        - password
+        - qwertyui
+        - '123456789'
+        - '87654321'
+        - '1234567890'
+        - asdfghjkl
+        - zxcvbnm,
+        - asdfghjk
+        - '12312312'
+        - '123123123'
+        - '32132132'
+        - '321321321'
+    registration:
+        enabled: true
+        messageInterval: 5
+        force: true
+        type: PASSWORD
+        secondArg: CONFIRMATION
+        email:
+            unregisterOnEmailVerificationFailure: false
+            unregisterAfterMinutes: 10
+        forceKickAfterRegister: false
+        forceLoginAfterRegister: false
+    delayJoinMessage: true
+    customJoinMessage: ''
+    removeUnloggedLeaveMessage: true
+    removeJoinMessage: true
+    removeLeaveMessage: true
+    applyBlindEffect: false
+    preventOtherCase: true
+GroupOptions:
+    enablePermissionCheck: false
+    registeredPlayerGroup: ''
+    unregisteredPlayerGroup: ''
+Email:
+    mailSMTP: smtp.163.com
+    mailPort: 465
+    useTls: true
+    mailAccount: ''
+    mailPassword: ''
+    mailAddress: ''
+    mailSenderName: ''
+    RecoveryPasswordLength: 12
+    mailSubject: Your new AuthMe password
+    maxRegPerEmail: 1
+    recallPlayers: false
+    delayRecall: 5
+    generateImage: false
+    emailOauth2Token: ''
+    shutDownEmail: false
+    shutDownEmailAddress: your@mail.com
+Hooks:
+    multiverse: true
+    placeholderapi: true
+    bungeecord: false
+    velocity: false
+    proxySendDelay: 10
+    floodgate: false
+    ignoreBedrockNameCheck: true
+    sendPlayerTo: ''
+    disableSocialSpy: false
+    useEssentialsMotd: false
+Protection:
+    enableProtection: false
+    enableProtectionRegistered: false
+    countries: 
+    - LOCALHOST
+    countriesBlacklist: 
+    - A1
+    enableAntiBot: true
+    antiBotInterval: 5
+    antiBotSensibility: 10
+    antiBotDuration: 10
+    antiBotDelay: 60
+    quickCommands:
+        denyCommandsBeforeMilliseconds: 1000
+Purge:
+    useAutoPurge: false
+    daysBeforeRemovePlayer: 60
+    removePlayerDat: false
+    removeEssentialsFile: false
+    defaultWorld: world
+    removeLimitedCreativesInventories: false
+    removeAntiXRayFile: false
+    removePermissions: false
+Security:
+    SQLProblem:
+        stopServer: false
+    console:
+        logConsole: true
+    account:
+        haveIBeenPwned:
+            check: false
+            limit: 0
+        emailVerification:
+            required: true
+    captcha:
+        useCaptcha: false
+        maxLoginTry: 8
+        captchaLength: 6
+        captchaCountReset: 120
+        requireForRegistration: false
+    tempban:
+        enableTempban: false
+        maxLoginTries: 8
+        tempbanLength: 480
+        minutesBeforeCounterReset: 480
+        customCommand: ''
+    recoveryCode:
+        length: 8
+        validForHours: 6
+        maxTries: 4
+        passwordChangeTimeout: 5
+    emailRecovery:
+        cooldown: 60
+    privacy:
+        enableEmailMasking: false
+        verificationCodeExpiration: 10
+Plugin:
+    updates:
+        checkForUpdates: true
+    banners:
+        showBanners: true
+limbo:
+    persistence:
+        type: INDIVIDUAL_FILES
+        distributionSize: SIXTEEN
+    restoreAllowFlight: RESTORE
+    restoreFlySpeed: RESTORE_NO_ZERO
+    restoreWalkSpeed: RESTORE_NO_ZERO
+BackupSystem:
+    ActivateBackup: false
+    OnServerStart: false
+    OnServerStop: true
+    MysqlWindowsPath: C:\Program Files\MySQL\MySQL Server 5.1\
+Converter:
+    CrazyLogin:
+        fileName: accounts.db
+    loginSecurity:
+        useSqlite: true
+        mySql:
+            host: ''
+            database: ''
+            user: ''
+            password: ''
