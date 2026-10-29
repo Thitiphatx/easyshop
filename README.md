@@ -1,6 +1,6 @@
 # ⛏️ EasyShop - Minecraft Webshop
 
-**EasyShop** คือระบบร้านค้าเว็บช็อปสำหรับเซิร์ฟเวอร์ Minecraft ที่ออกแบบด้วยธีม Minecraft Pixel/Retro Style สวยงาม ทันสมัย รองรับการจัดการแบบเครือข่าย Multi-Network Server และเชื่อมต่อกับระบบฐานข้อมูลของเกมได้อย่างสมบูรณ์แบบ
+**EasyShop** คือระบบร้านค้าเว็บช็อปสำหรับเซิร์ฟเวอร์ Minecraft ที่ออกแบบด้วยธีม Minecraft Pixel/Retro Style สวยงาม ทันสมัย รองรับการจัดการแบบเครือข่าย Multi-Network Server
 
 ---
 
@@ -47,7 +47,7 @@
 
 ## 🗃️ Database (โครงสร้างฐานข้อมูล)
 
-ระบบใช้ **Prisma ORM** เชื่อมต่อกับ **MySQL / MariaDB** โดยแชร์ข้อมูลร่วมกับปลั๊กอิน Minecraft:
+ระบบใช้ **Prisma ORM** เชื่อมต่อกับ **PostgreSQL** โดยแชร์ข้อมูลร่วมกับปลั๊กอิน Minecraft:
 
 | Model / Table | หน้าที่และการทำงาน |
 | :--- | :--- |
@@ -91,7 +91,7 @@ easyshop/
 ├── prisma/
 │   ├── schema.prisma            # นิยามโครงสร้างฐานข้อมูล Prisma
 │   └── seed.ts                  # ข้อมูลเริ่มต้น (Seeding)
-├── docker-compose.yml           # คอนฟิก Docker สำหรับ MySQL Service
+├── docker-compose.yml           # คอนฟิก Docker สำหรับ PostgreSQL Service
 ├── Dockerfile                   # Dockerfile สำหรับ Build & Run Webshop
 ├── package.json                 # การตั้งค่า Dependencies และ Scripts
 └── proxy.ts                     # Reverse proxy / Networking helper
@@ -103,8 +103,8 @@ easyshop/
 
 ### ข้อกำหนดเบื้องต้น (Prerequisites)
 - [Node.js](https://nodejs.org/) (v20+) หรือ [Bun](https://bun.sh/) (แนะนำ)
-- [MySQL](https://www.mysql.com/) หรือ [MariaDB](https://mariadb.org/) (หรือรันผ่าน Docker)
-- เซิร์ฟเวอร์ Minecraft ที่เปิดใช้งาน **RCON**, ปลั๊กอิน **AuthMe** และ **PlayerPoints** (ใช้ฐานข้อมูล MySQL เดียวกัน)
+- [PostgreSQL](https://www.postgresql.org/) (v15+) (หรือรันผ่าน Docker)
+- เซิร์ฟเวอร์ Minecraft ที่เปิดใช้งาน **RCON**, ปลั๊กอิน **AuthMe** และ **PlayerPoints** (เชื่อมต่อฐานข้อมูล PostgreSQL เดียวกัน)
 
 ### 1. ติดตั้ง Dependencies
 ```bash
@@ -114,12 +114,32 @@ npm install
 ```
 
 ### 2. ตั้งค่า Environment Variables
-สร้างไฟล์ `.env` ที่ root directory:
+คัดลอกไฟล์ `.env.example` เป็น `.env` หรือสร้างไฟล์ `.env` ที่ root directory:
+```bash
+cp .env.example .env
+```
+
+ตัวอย่างการกำหนดค่าใน `.env`:
 ```env
-DATABASE_URL="mysql://user:password@localhost:3306/easyshop"
+# Database (PostgreSQL)
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/easyshop?schema=public"
+
+# Docker Compose PostgreSQL config (กรณีรัน Database ผ่าน docker-compose)
+POSTGRES_DATABASE="easyshop"
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="postgres"
+
+# Authentication & Security
 JWT_SECRET="your-super-secret-jwt-key"
-NEXT_PUBLIC_TURNSTILE_SITE_KEY="your-turnstile-site-key"
-TURNSTILE_SECRET_KEY="your-turnstile-secret-key"
+ENCRYPT_SECRET="your-encryption-secret-key"
+EASYSHOP_SETUP_KEY="your-setup-key"
+
+# Cloudflare Turnstile
+NEXT_PUBLIC_TURNSTILE_SITE="your-turnstile-site-key"
+TURNSTILE_SECRET="your-turnstile-secret-key"
+
+# Application URL (optional)
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
 ### 3. เตรียมฐานข้อมูลและ Prisma
@@ -141,7 +161,7 @@ npm run dev
 
 ### 5. รันผ่าน Docker
 ```bash
-# รันเฉพาะ MySQL Database
+# รันเฉพาะ PostgreSQL Database
 docker compose up -d
 
 # Build Image ของเว็บไซต์
