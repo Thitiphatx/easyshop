@@ -129,6 +129,11 @@ model Setting {
   enableBank            Boolean @default(false)
   easyslipApiKey        String? @db.VarChar(255)
   truewalletPhoneNumber String  @db.VarChar(255)
+  slipOkBranchId        String? @db.VarChar(255)
+  slipOkApiKey          String? @db.VarChar(255)
+  bank                  String? @db.VarChar(255)
+  bankName              String? @db.VarChar(255)
+  bankNumber            String? @db.VarChar(25)
 
   @@map("setting")
 }

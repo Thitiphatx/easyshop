@@ -1,4 +1,4 @@
-import { phoneRegex } from "@/app/utils/regex"
+import { numberRegex } from "@/app/utils/regex"
 import z from "zod"
 
 export const PromotionSchema = z.object({
@@ -11,7 +11,7 @@ export const TrueWalletSchema = z.object({
         z.string()
             .refine((value) => {
                 if (!value) return true
-                return phoneRegex.test(value)
+                return numberRegex.test(value)
             }, "กรุณาระบุเบอร์โทรศัพท์ TrueMoney Wallet ที่ถูกต้อง")
             .nullable()
             .optional(),
@@ -31,7 +31,20 @@ export const TopupFilterSchema = z.object({
     dateTo: z.string().optional(),
 })
 
+export const SlipOkSchema = z.object({
+    enableBank: z.boolean(),
+    slipOkBranchId: z.string().max(7).refine((value) => {
+        if (!value) return true
+        return numberRegex.test(value)
+    }, "กรุณากรอกรหัสสาขาที่ถูกต้อง").nullable().optional(),
+    slipOkApiKey: z.string().max(255).nullable().optional(),
+    bank: z.string().trim().max(255).nullable().optional(),
+    bankName: z.string().trim().max(255).nullable().optional(),
+    bankNumber: z.string().trim().max(25).nullable().optional(),
+})
+
 export type PromotionFormValues = z.infer<typeof PromotionSchema>
 export type TrueWalletFormValues = z.infer<typeof TrueWalletSchema>
 export type EasyslipFormValues = z.infer<typeof EasyslipSchema>
 export type TopupFilterFormValues = z.infer<typeof TopupFilterSchema>
+export type SlipOkFormValues = z.infer<typeof SlipOkSchema>

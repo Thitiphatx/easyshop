@@ -1,7 +1,7 @@
 'use server'
 
 import { DisplayFormValues, ServerFormValues } from '@/app/(main)/webshop/setting/schema'
-import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, TrueWalletFormValues } from '@/app/(main)/webshop/topup/schema'
+import { EasyslipFormValues, EasyslipSchema, PromotionFormValues, SlipOkFormValues, SlipOkSchema, TrueWalletFormValues } from '@/app/(main)/webshop/topup/schema'
 import { Prisma, Setting } from '@/app/generated/prisma/client'
 import { decrypt, encrypt } from '@/lib/crypto'
 import { prisma } from '@/lib/prisma'
@@ -39,6 +39,12 @@ export async function getSetting(): Promise<IActionResponse<Setting | IClientSet
         }
         if (res.easyslipApiKey) {
             res.easyslipApiKey = decrypt(res.easyslipApiKey)
+        }
+        if (res.slipOkApiKey) {
+            res.slipOkApiKey = decrypt(res.slipOkApiKey)
+        }
+        if (res.slipOkBranchId) {
+            res.slipOkBranchId = decrypt(res.slipOkBranchId)
         }
         return { success: true, data: res }
     } catch (e) {
@@ -148,6 +154,53 @@ export async function updateEasySlipApi(values: EasyslipFormValues): Promise<IAc
         })
         if (res.easyslipApiKey) {
             res.easyslipApiKey = decrypt(res.easyslipApiKey)
+        }
+        return { success: true, data: res }
+    } catch (e) {
+        console.log(e)
+        return { success: false, error: '[Setting] ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้' }
+    }
+}
+
+export async function updateSlipOk(values: SlipOkFormValues): Promise<IActionResponse<Setting>> {
+    try {
+        const validatedFields = SlipOkSchema.safeParse(values)
+
+        if (!validatedFields.success) {
+            return {
+                success: false,
+                error: validatedFields.error.issues[0]?.message || 'ข้อมูลไม่ถูกต้อง',
+            }
+        }
+        const { enableBank, slipOkApiKey, slipOkBranchId, bank, bankName, bankNumber } = validatedFields.data
+
+        const trimmedApiKey = slipOkApiKey ? slipOkApiKey.trim() : ''
+        const trimmedBranchId = slipOkBranchId?.trim() ?? ''
+        const trimmedBank = bank?.trim() ?? ''
+        const trimmedBankName = bankName?.trim() ?? ''
+        const trimmedBankNumber = bankNumber?.trim() ?? ''
+        const canEnableBank = Boolean(
+            trimmedBranchId &&
+            trimmedApiKey &&
+            trimmedBank &&
+            trimmedBankName &&
+            trimmedBankNumber
+        )
+
+        const res = await prisma.setting.update({
+            where: { id: 1 },
+            data: {
+                enableBank: enableBank && canEnableBank,
+                slipOkBranchId: trimmedBranchId ? encrypt(trimmedBranchId) : null,
+                slipOkApiKey: trimmedApiKey ? encrypt(trimmedApiKey) : null,
+                bank: trimmedBank || null,
+                bankName: trimmedBankName || null,
+                bankNumber: trimmedBankNumber || null,
+            },
+        })
+        if (res.slipOkApiKey && res.slipOkBranchId) {
+            res.slipOkBranchId = decrypt(res.slipOkBranchId)
+            res.slipOkApiKey = decrypt(res.slipOkApiKey)
         }
         return { success: true, data: res }
     } catch (e) {

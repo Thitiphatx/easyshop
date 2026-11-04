@@ -1,5 +1,17 @@
 // --------------- Bank --------------- //
 
+import type { TopupChannel } from "@/app/generated/prisma/enums"
+import type { ISessionPayload } from "../session/interface"
+
+export interface ICreateTopupInput {
+    session: ISessionPayload
+    amount: number
+    pointAmount?: number
+    pointMultiplier: number
+    channel: TopupChannel
+    reference: string
+}
+
 export interface VerifyBankRequest {
     // ต้องระบุอย่างใดอย่างหนึ่ง
     payload?: string;      // QR payload (1-128 ตัวอักษร)

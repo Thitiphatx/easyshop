@@ -1,10 +1,10 @@
 "use client"
 
 import React from 'react'
-import TopupHistorySection from './sections/TopupHistorySection'
 import PromotionSection from './sections/PromotionSection'
+import SlipOkSection from './sections/SlipOkSection'
+import TopupHistorySection from './sections/TopupHistorySection'
 import TrueWalletSection from './sections/TrueWalletSection'
-import EasySlipSection from './sections/EasySlipSection'
 
 const TopupPage: React.FC = () => {
     return (
@@ -12,7 +12,8 @@ const TopupPage: React.FC = () => {
             <TopupHistorySection />
             <PromotionSection />
             <TrueWalletSection />
-            <EasySlipSection />
+            {/* <EasySlipSection /> */}
+            <SlipOkSection />
         </div>
     )
 }

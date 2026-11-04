@@ -14,6 +14,7 @@ interface SettingContextValue {
     mcStatus?: MCServerStatus
     fetchSetting: () => Promise<void>
     isLoading: boolean
+    isSettingLoading: boolean
 }
 
 const SettingContext = createContext<SettingContextValue | null>(null)
@@ -58,7 +59,7 @@ export function SettingProvider({ children }: { children: React.ReactNode }) {
     }, [setting?.serverIp, fetchMcStatus])
 
     return (
-        <SettingContext.Provider value={{ isLoading, setting, mcStatus, fetchSetting }}>
+        <SettingContext.Provider value={{ isLoading, isSettingLoading, setting, mcStatus, fetchSetting }}>
             {children}
         </SettingContext.Provider>
     )
