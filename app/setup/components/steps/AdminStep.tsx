@@ -102,6 +102,8 @@ export const AdminStep: React.FC<IAdminStepProps> = ({ onBack, onFinish, isSubmi
                                     <Image
                                         unoptimized
                                         loading='eager'
+                                        width={24}
+                                        height={112}
                                         src={`https://mc-heads.net/body/${foundUser.username}/120`}
                                         alt={foundUser.username}
                                         className="h-28 w-auto object-contain"

@@ -3,10 +3,9 @@
 import { TmnVoucherClient } from "@prakrit_m/tmn-voucher";
 import { ApiResponse } from "../../interface";
 import { prisma } from "@/lib/prisma";
-import { verifyTurnstile } from "@/lib/turnstile";
+import { TopupChannel } from "@/app/generated/prisma/enums";
 import { getPaymentError } from "../utils/errors";
-import { getSession } from "../../session";
-import { TopupChannel, TopupStatus } from "@/app/generated/prisma/enums";
+import { authorizePayment, createTopup } from "../index";
 import type { ITopupResult } from "../interface";
 
 function createCookieJarFetch() {
@@ -76,27 +75,8 @@ function createClient() {
 
 export async function redeem(voucherCode: string, turnstileToken: string): Promise<ApiResponse<ITopupResult>> {
     try {
-        const turnstile = await verifyTurnstile(turnstileToken)
-        if (!turnstile) {
-            return {
-                success: false,
-                error: {
-                    code: 'CF_UNKNOWN_ERROR',
-                    message: getPaymentError('CF_UNKNOWN_ERROR')
-                }
-            }
-        }
-
-        const session = await getSession()
-        if (!session || !session.username) {
-            return {
-                success: false,
-                error: {
-                    code: 'UNAUTHORIZED',
-                    message: getPaymentError('UNAUTHORIZED')
-                }
-            }
-        }
+        const authorization = await authorizePayment(turnstileToken)
+        if (!authorization.success) return authorization
 
         const setting = await prisma.setting.findFirst({
             where: { id: 1 },
@@ -124,43 +104,14 @@ export async function redeem(voucherCode: string, turnstileToken: string): Promi
             };
         }
 
-        const amount = res.data.amount
-        const receivePoint = Number(amount / 100 * setting.pointMultiplier) || 0
-
-        const account = await prisma.$transaction(async (tx) => {
-            const updatedAccount = await tx.authMe.update({
-                where: { username: session.username },
-                data: {
-                    points: {
-                        increment: receivePoint
-                    }
-                },
-                select: {
-                    points: true
-                }
-            })
-
-            await tx.topup.create({
-                data: {
-                    userId: session.id,
-                    amount: amount,
-                    channel: TopupChannel.TRUEWALLET,
-                    status: TopupStatus.SUCCESS,
-                    reference: voucherCode,
-                    pointsAdded: receivePoint,
-                }
-            })
-
-            return updatedAccount
+        return createTopup({
+            session: authorization.data,
+            amount: res.data.amount,
+            pointAmount: res.data.amount / 100,
+            pointMultiplier: setting.pointMultiplier,
+            channel: TopupChannel.TRUEWALLET,
+            reference: voucherCode
         })
-
-        return {
-            success: true,
-            data: {
-                receivePoint: receivePoint,
-                totalPoint: account.points
-            }
-        };
     } catch (error: any) {
         console.log(error)
         return {

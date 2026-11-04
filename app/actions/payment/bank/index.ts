@@ -1,11 +1,8 @@
 "use server"
-import { TopupChannel, TopupStatus } from "@/app/generated/prisma/enums";
-import { prisma } from "@/lib/prisma";
-import { verifyTurnstile } from "@/lib/turnstile";
+import { TopupChannel } from "@/app/generated/prisma/enums";
 import { ApiResponse } from "../../interface";
-import { getSession } from "../../session";
 import type { ITopupResult, VerifyBankData } from "../interface";
-import { IBank, IListBankAccountsRequest } from "../types/bank-accounts";
+import { authorizePayment, createTopup, getPointMultiplier } from "../index";
 import { getPaymentError } from "../utils/errors";
 
 async function devTopup(devMode: string): Promise<ApiResponse<VerifyBankData>> {
@@ -75,19 +72,10 @@ async function devTopup(devMode: string): Promise<ApiResponse<VerifyBankData>> {
         data: data
     }
 }
-
 export async function topupBank(base64: string, devMode: string, turnstileToken: string): Promise<ApiResponse<ITopupResult>> {
     try {
-        const turnstile = await verifyTurnstile(turnstileToken)
-        if (!turnstile) {
-            return {
-                success: false,
-                error: {
-                    code: 'FORBIDDEN',
-                    message: getPaymentError('FORBIDDEN')
-                }
-            }
-        }
+        const authorization = await authorizePayment(turnstileToken)
+        if (!authorization.success) return authorization
 
         // require easyslip api 
         // const { data } = await easyslip.post<ApiResponse<VerifyBankData>>('/verify/bank', {
@@ -113,67 +101,17 @@ export async function topupBank(base64: string, devMode: string, turnstileToken:
                 }
             }
         }
-        const setting = await prisma.setting.findFirst({
-            where: { id: 1 },
-            select: { pointMultiplier: true }
+
+        const multiplier = await getPointMultiplier()
+        if (!multiplier.success) return multiplier
+
+        return createTopup({
+            session: authorization.data,
+            amount: data.rawSlip.amount.amount,
+            pointMultiplier: multiplier.data,
+            channel: TopupChannel.BANK,
+            reference: data.rawSlip.transRef
         })
-
-        if (!setting) {
-            return {
-                success: false,
-                error: {
-                    code: 'NOT_FOUND',
-                    message: 'ไม่พบข้อมูลการตั้งค่า'
-                }
-            }
-        }
-
-        const receivePoint = data.rawSlip.amount.amount * setting.pointMultiplier
-        const session = await getSession()
-        if (!session || !session.username) {
-            return {
-                success: false,
-                error: {
-                    code: 'UNAUTHORIZED',
-                    message: 'กรุณาเข้าสู้ระบบก่อนทำรายการ'
-                }
-            }
-        }
-
-        const account = await prisma.$transaction(async (tx) => {
-            const updatedAccount = await tx.authMe.update({
-                where: { username: session.username },
-                data: {
-                    points: {
-                        increment: receivePoint
-                    }
-                },
-                select: {
-                    points: true
-                }
-            })
-
-            await tx.topup.create({
-                data: {
-                    userId: session.id,
-                    amount: data.rawSlip.amount.amount,
-                    channel: TopupChannel.BANK,
-                    status: TopupStatus.SUCCESS,
-                    reference: data.rawSlip.transRef,
-                    pointsAdded: receivePoint,
-                }
-            })
-
-            return updatedAccount
-        })
-
-        return {
-            success: true,
-            data: {
-                receivePoint: receivePoint,
-                totalPoint: account.points
-            }
-        }
 
     } catch (error: any) {
         // if (error.response) {
@@ -192,66 +130,8 @@ export async function topupBank(base64: string, devMode: string, turnstileToken:
             success: false,
             error: {
                 code: 'SERVER_ERROR',
-                message: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้'
+                message: getPaymentError('SERVER_ERROR')
             }
-        }
-    }
-}
-
-export async function getBankInfo(request?: IListBankAccountsRequest): Promise<ApiResponse<IBank>> {
-    try {
-        return await getBankInfoDev()
-        // const { data } = await easyslip.get<ApiResponse<ListBankAccountsResponse>>('/bank-accounts', {
-        //     params: request,
-        // })
-        // if (data.success) {
-        //     const first = data.data.items.find(item => item.bankCode !== 'TRUEMONEYWALLET') ?? null
-        //     if (!first) {
-        //         return {
-        //             success: false,
-        //             error: {
-        //                 code: 'NOT_FOUND',
-        //                 message: 'ไม่พบข้อมูลธนาคาร'
-        //             }
-        //         }
-        //     }
-        //     return {
-        //         success: true,
-        //         data: {
-        //             ...first,
-        //             bankNameTh: getBankNameByCode(first.bankCode).nameTh,
-        //         }
-        //     }
-        // }
-        // return {
-        //     success: false,
-        //     error: data.error
-        // }
-    } catch (error) {
-        return {
-            success: false,
-            error: {
-                code: 'SERVER_ERROR',
-                message: 'ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้'
-            }
-        }
-    }
-}
-
-async function getBankInfoDev(): Promise<ApiResponse<IBank>> {
-    return {
-        success: true,
-        data: {
-            id: 0,
-            bankCode: '002',
-            bankNumber: '123456789',
-            nameTh: 'ทดสอบ',
-            nameEn: 'TEST',
-            type: 'NATURAL',
-            extraVerify: null,
-            createdAt: '',
-            updatedAt: '',
-            bankNameTh: 'ทดสอบ'
         }
     }
 }

@@ -1,27 +1,25 @@
 "use client"
 
-import { getBankInfo, topupBank } from '@/app/actions/payment/bank'
-import { IBank } from '@/app/actions/payment/types/bank-accounts'
+import { getBankInfo, verifySlip } from '@/app/actions/payment/slipok'
+import type { ISlipOkBankInfo } from '@/app/actions/payment/slipok/interface'
 import { useAuth } from '@/app/contexts/authContext'
 import { useSetting } from '@/app/contexts/settingContext'
-import { formatCurrency } from '@/app/utils/formatter'
 import { fileToBase64 } from '@/app/utils/utils'
 import Card from '@/components/Card/Card'
 import { useAppForm } from '@/components/Form'
-import Select from '@/components/Select/Select'
 import Swal from '@/lib/Swal'
 import { Turnstile, TurnstileInstance } from '@marsidev/react-turnstile'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ClosedTopupCard from '../../components/ClosedTopupCard'
 import { BankSchema } from '../schema'
+import { IBankPageProps } from '../interface'
 
-const BankPage: React.FC = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+const BankPage: React.FC<IBankPageProps> = ({ isExceedQuota }) => {
+    const [isBankInfoLoading, setIsBankInfoLoading] = useState<boolean>(true)
     const [turnstileToken, setTurnstileToken] = useState<string>("")
-    const [bankInfo, setBankInfo] = useState<IBank>()
-    const [devMode, setDevMode] = useState<string>("success")
+    const [bankInfo, setBankInfo] = useState<ISlipOkBankInfo>()
     const turnstileRef = useRef<TurnstileInstance>(null)
-    const { setting } = useSetting()
+    const { setting, isSettingLoading } = useSetting()
     const { fetchSession } = useAuth()
 
     const form = useAppForm({
@@ -33,10 +31,10 @@ const BankPage: React.FC = () => {
             if (!value.imageSlip) return;
             const base64 = await fileToBase64(value.imageSlip)
             if (!base64) return;
-            const res = await topupBank(base64, devMode, turnstileToken)
+            const res = await verifySlip(base64, turnstileToken)
             if (res.success) {
                 Swal.fire({
-                    text: `ได้รับ ${formatCurrency(res.data.receivePoint)} พ้อยท์รวม ${formatCurrency(res.data.totalPoint)} พ้อยท์`,
+                    text: `คุณได้รับพอยท์จำนวน ${res.data.receivePoint} พอยท์`,
                     icon: "success",
                 })
             } else {
@@ -49,10 +47,10 @@ const BankPage: React.FC = () => {
         },
     })
 
-    const isEnable = useMemo(() => setting?.enableBank && bankInfo, [setting, bankInfo])
+    const isEnable = useMemo(() => setting?.enableBank && bankInfo && !isExceedQuota, [setting?.enableBank, bankInfo, isExceedQuota])
 
     const fetchBankInfo = useCallback(async () => {
-        setIsLoading(true)
+        setIsBankInfoLoading(true)
         const res = await getBankInfo()
 
         if (res.success) {
@@ -60,13 +58,16 @@ const BankPage: React.FC = () => {
                 setBankInfo(res.data)
             }
         } else {
-            Swal.fire({
-                text: res.error.message,
-                icon: "error",
-            })
+            setBankInfo(undefined)
+            if (res.error.code !== 'BANK_INFO_NOT_FOUND') {
+                Swal.fire({
+                    text: res.error.message,
+                    icon: "error",
+                })
+            }
         }
 
-        setIsLoading(false)
+        setIsBankInfoLoading(false)
     }, [])
 
     const handleReset = useCallback(() => {
@@ -88,7 +89,9 @@ const BankPage: React.FC = () => {
                     <h1 className='font-pixel text-5xl sm:text-7xl lg:text-8xl font-bold bg-clip-text text-transparent bg-(image:--marketplace-gradient-gold)'>Bank</h1>
                     <h2 className='text-3xl sm:text-5xl font-bold mt-2'>อัปโหลดสลิปโอนเงิน</h2>
                 </span>
-                {isEnable ? (
+                {isSettingLoading || isBankInfoLoading ? (
+                    <Card className='mt-8 sm:mt-12 w-full min-h-56' isLoading />
+                ) : isEnable ? (
                     <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 mt-8 sm:mt-12'>
                         <div className='flex flex-col gap-2'>
                             {bankInfo ? (
@@ -96,13 +99,13 @@ const BankPage: React.FC = () => {
                                     <Card>
                                         <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
                                             <b className='text-(--core-green-2)'>ธนาคาร</b>
-                                            <p className='text-(--core-white)'>{bankInfo.bankNameTh}</p>
+                                            <p className='text-(--core-white)'>{bankInfo.bank}</p>
                                         </div>
                                     </Card>
                                     <Card>
                                         <div className='grid grid-cols-2 gap-2 text-sm sm:text-base'>
                                             <b className='text-(--core-green-2)'>ชื่อบัญชี</b>
-                                            <p className='text-(--core-white)'>{bankInfo.nameTh}</p>
+                                            <p className='text-(--core-white)'>{bankInfo.bankName}</p>
                                         </div>
                                     </Card>
                                     <Card>
@@ -120,10 +123,6 @@ const BankPage: React.FC = () => {
                             )}
                         </div>
                         <Card className='col-span-1 lg:col-span-2'>
-                            <div>
-                                <p>Test Mode</p>
-                                <Select onChange={(e) => setDevMode(e.target.value)} options={[{ label: "Success", value: "success" }, { label: "Fail", value: "fail" }, { label: "Duplicate", value: "duplicate" }]}></Select>
-                            </div>
                             <form className='w-full' onSubmit={(e) => { e.preventDefault(); form.handleSubmit() }}>
                                 <form.AppField
                                     name="imageSlip"
@@ -140,7 +139,7 @@ const BankPage: React.FC = () => {
                                     onExpire={() => setTurnstileToken('')}
                                 />
                                 <form.AppForm>
-                                    <form.SubmitButton isLoading={isLoading} block>ยืนยัน</form.SubmitButton>
+                                    <form.SubmitButton isLoading={isBankInfoLoading} block>ยืนยัน</form.SubmitButton>
                                 </form.AppForm>
                             </form>
                         </Card>
